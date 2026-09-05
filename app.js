@@ -1,14 +1,14 @@
 (()=>{'use strict';
 
 const demo=[
-{id:'demo-1',name:'فستان وردي ناعم',category:'ملابس',price:2900,image:'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-2',name:'بلوزة أنيقة',category:'ملابس',price:1850,image:'https://images.unsplash.com/photo-1564257577054-0e5ab90e0f0f?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-3',name:'عباية مطرزة',category:'ملابس',price:3500,image:'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-4',name:'عطر نسائي أنيق',category:'عطور',price:2200,image:'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-5',name:'سيروم للبشرة',category:'مواد التجميل',price:1950,image:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-6',name:'أحمر شفاه مطفي',category:'مواد التجميل',price:1250,image:'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-7',name:'حذاء نسائي أنيق',category:'أحذية',price:3200,image:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=80'},
-{id:'demo-8',name:'حذاء بكعب أنيق',category:'أحذية',price:3900,image:'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=700&q=80'}
+{id:'demo-1',name:'فستان وردي ناعم',category:'ملابس',price:2900,old_price:3500,image:'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-2',name:'بلوزة أنيقة',category:'ملابس',price:1850,old_price:2200,image:'https://images.unsplash.com/photo-1564257577054-0e5ab90e0f0f?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-3',name:'عباية مطرزة',category:'ملابس',price:3500,old_price:4200,image:'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-4',name:'عطر نسائي أنيق',category:'عطور',price:2200,old_price:2800,image:'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-5',name:'سيروم للبشرة',category:'مواد التجميل',price:1950,old_price:2400,image:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-6',name:'أحمر شفاه مطفي',category:'مواد التجميل',price:1250,old_price:1600,image:'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-7',name:'حذاء نسائي أنيق',category:'أحذية',price:3200,old_price:3900,image:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=80'},
+{id:'demo-8',name:'حذاء بكعب أنيق',category:'أحذية',price:3900,old_price:4500,image:'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=700&q=80'}
 ];
 
 const wilayas=[
@@ -92,7 +92,23 @@ if(!container)return;
 
 container.innerHTML=list.length
 ?
-list.map(p=>`
+list.map(p=>{
+
+const price=Number(p.price)||0;
+
+const oldPrice=
+Number(
+p.old_price ??
+p.oldPrice ??
+p.price_old ??
+p.previous_price ??
+0
+)||0;
+
+const showOld=
+oldPrice>price&&price>0;
+
+return `
 <article class="product">
 
 <div class="pic">
@@ -110,7 +126,20 @@ onerror="this.style.display='none';this.parentElement.textContent='🛍️'"
 
 <span>${esc(p.category)}</span>
 
-<p class="price">${money(p.price)}</p>
+<div class="price-box">
+
+<p class="price">${money(price)}</p>
+
+${
+showOld
+?
+`<p class="old-price" style="text-decoration:line-through;opacity:.65;margin:0;">
+${money(oldPrice)}
+</p>`
+:''
+}
+
+</div>
 
 <button class="buy" data-id="${esc(p.id)}">
 أضيفي إلى السلة
@@ -119,7 +148,9 @@ onerror="this.style.display='none';this.parentElement.textContent='🛍️'"
 </div>
 
 </article>
-`).join('')
+`;
+
+}).join('')
 :
 '<div class="status">لا توجد منتجات حاليا.</div>';
 
@@ -212,12 +243,17 @@ change(button.dataset.plus,1);
 
 document.querySelectorAll('[data-remove]').forEach(button=>{
 button.onclick=()=>{
+
+const id=button.dataset.remove;
+
 cart=cart.filter(
-item=>String(item.id)!==
-String(button.dataset.remove)
+item=>String(item.id)!==String(id)
 );
 
 save();
+
+toast('تم حذف المنتج من السلة ✓');
+
 };
 });
 
@@ -238,17 +274,24 @@ item=>String(item.id)===String(id)
 if(existing){
 existing.qty++;
 }else{
+
 cart.push({
+
 id:product.id,
+
 name:product.name,
+
 price:Number(product.price)||0,
+
 qty:1
+
 });
+
 }
 
 save();
 
-toast('تمت إضافة طلبك إلى السلة ✓');
+toast('تمت إضافة المنتج إلى السلة ✓');
 }
 
 function change(id,difference){
@@ -278,7 +321,11 @@ function openModal(modal){
 if(!modal)return;
 
 modal.style.display='flex';
-modal.setAttribute('aria-hidden','false');
+
+modal.setAttribute(
+'aria-hidden',
+'false'
+);
 
 }
 
@@ -287,7 +334,11 @@ function closeModal(modal){
 if(!modal)return;
 
 modal.style.display='none';
-modal.setAttribute('aria-hidden','true');
+
+modal.setAttribute(
+'aria-hidden',
+'true'
+);
 
 }
 
@@ -300,13 +351,19 @@ if(
 !config.SUPABASE_ANON_KEY||
 !window.supabase
 ){
-console.error('Supabase configuration is missing.');
+
+console.error(
+'Supabase configuration is missing.'
+);
+
 return;
+
 }
 
 try{
 
-const db=window.supabase.createClient(
+const db=
+window.supabase.createClient(
 config.SUPABASE_URL,
 config.SUPABASE_ANON_KEY
 );
@@ -326,6 +383,7 @@ result.error
 );
 
 return;
+
 }
 
 if(
@@ -349,6 +407,15 @@ product.category||
 price:
 Number(product.price)||0,
 
+old_price:
+Number(
+product.old_price ??
+product.oldPrice ??
+product.price_old ??
+product.previous_price ??
+0
+)||0,
+
 image:
 product.image_url||
 product.image||
@@ -358,6 +425,8 @@ product.image||
 
 }
 
+await loadLogo(db);
+
 }catch(error){
 
 console.error(
@@ -366,6 +435,93 @@ error
 );
 
 }
+
+}
+
+async function loadLogo(db){
+
+try{
+
+const result=
+await db
+.from('site_settings')
+.select('*')
+.eq('key','logo_url')
+.maybeSingle();
+
+if(result.error){
+
+console.warn(
+'Logo settings error:',
+result.error
+);
+
+return;
+
+}
+
+const logoUrl=
+result.data?.value||
+result.data?.url||
+result.data?.logo_url||
+'';
+
+if(logoUrl){
+
+window.HAYATI_LOGO_URL=logoUrl;
+
+showLogo(logoUrl);
+
+}
+
+}catch(error){
+
+console.warn(
+'Logo loading error:',
+error
+);
+
+}
+
+}
+
+function showLogo(url){
+
+if(!url)return;
+
+const logo=document.querySelector('.logo');
+
+if(!logo)return;
+
+const oldImage=
+logo.querySelector('.hayati-logo-image');
+
+if(oldImage)
+oldImage.remove();
+
+const img=
+document.createElement('img');
+
+img.className='hayati-logo-image';
+
+img.src=url;
+
+img.alt='حياتي Hayati';
+
+img.style.maxWidth='170px';
+
+img.style.maxHeight='90px';
+
+img.style.objectFit='contain';
+
+img.style.display='block';
+
+img.style.margin='0 auto 6px';
+
+logo.insertBefore(
+img,
+logo.firstChild
+);
 
 }
 
@@ -548,27 +704,37 @@ try{
 
 if(!window.HAYATI_DB){
 
-throw new Error('Supabase غير متصل');
+throw new Error(
+'Supabase غير متصل'
+);
 
 }
 
 const order={
 
-customer_name:customer_name,
+customer_name:
+customer_name,
 
-phone:phone,
+phone:
+phone,
 
-wilaya:wilaya,
+wilaya:
+wilaya,
 
-address:pickup,
+address:
+pickup,
 
-notes:municipality,
+notes:
+municipality,
 
-items:cart,
+items:
+cart,
 
-total:total,
+total:
+total,
 
-status:'pending'
+status:
+'pending'
 
 };
 
