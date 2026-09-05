@@ -37,11 +37,10 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     }
 
     try {
-
       const { data, error } =
         await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
+          email,
+          password
         });
 
       if (error) {
@@ -56,41 +55,27 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       }
 
       loginMsg.textContent = "";
-
       showPanel();
 
     } catch (error) {
-
       console.error(error);
-
-      loginMsg.textContent =
-        "حدث خطأ أثناء تسجيل الدخول";
+      loginMsg.textContent = "حدث خطأ أثناء تسجيل الدخول";
     }
   });
 
-
   // =========================
-  // إظهار لوحة الإدارة
+  // لوحة الإدارة
   // =========================
 
   function showPanel() {
 
-    if (login) {
-      login.style.display = "none";
-    }
-
-    if (panel) {
-      panel.style.display = "block";
-    }
-
-    if (logoutBtn) {
-      logoutBtn.style.display = "block";
-    }
+    if (login) login.style.display = "none";
+    if (panel) panel.style.display = "block";
+    if (logoutBtn) logoutBtn.style.display = "block";
 
     loadOrders();
     loadProducts();
   }
-
 
   // =========================
   // تسجيل الخروج
@@ -100,27 +85,12 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     await supabaseClient.auth.signOut();
 
-    if (panel) {
-      panel.style.display = "none";
-    }
-
-    if (logoutBtn) {
-      logoutBtn.style.display = "none";
-    }
-
-    if (login) {
-      login.style.display = "block";
-    }
-
-    if (loginForm) {
-      loginForm.reset();
-    }
-
-    if (loginMsg) {
-      loginMsg.textContent = "";
-    }
+    if (panel) panel.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (login) login.style.display = "block";
+    if (loginForm) loginForm.reset();
+    if (loginMsg) loginMsg.textContent = "";
   });
-
 
   // =========================
   // التحقق من الجلسة
@@ -149,7 +119,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
   checkSession();
 
-
   // =========================
   // التبويبات
   // =========================
@@ -167,7 +136,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     loadOrders();
   });
 
-
   $("productsTab")?.addEventListener("click", () => {
 
     if (ordersSection) ordersSection.style.display = "none";
@@ -177,7 +145,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     loadProducts();
   });
 
-
   $("siteTab")?.addEventListener("click", () => {
 
     if (ordersSection) ordersSection.style.display = "none";
@@ -186,7 +153,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     loadCurrentLogo();
   });
-
 
   // =========================
   // الطلبات
@@ -298,7 +264,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       box.appendChild(div);
     });
 
-
     document
       .querySelectorAll(".status-select")
       .forEach((select) => {
@@ -314,7 +279,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
       });
   }
-
 
   // =========================
   // تحديث حالة الطلب
@@ -339,7 +303,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     alert("تم تحديث حالة الطلب بنجاح.");
   }
-
 
   // =========================
   // المنتجات
@@ -468,7 +431,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       list.appendChild(div);
     });
 
-
     document
       .querySelectorAll(".edit-product")
       .forEach((button) => {
@@ -483,7 +445,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
         });
 
       });
-
 
     document
       .querySelectorAll(".delete-product")
@@ -500,9 +461,8 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       });
   }
 
-
   // =========================
-  // صورة المنتج
+  // معاينة صورة المنتج
   // =========================
 
   $("pimageFile")?.addEventListener("change", () => {
@@ -521,7 +481,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     preview.style.display = "block";
   });
 
-
   // =========================
   // حفظ المنتج
   // =========================
@@ -530,14 +489,9 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     e.preventDefault();
 
-    const pid =
-      $("pid").value.trim();
-
-    const name =
-      $("pname").value.trim();
-
-    const category =
-      $("pcat").value.trim();
+    const pid = $("pid").value.trim();
+    const name = $("pname").value.trim();
+    const category = $("pcat").value.trim();
 
     const price =
       Number($("pprice").value);
@@ -567,7 +521,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     const file =
       $("pimageFile").files?.[0];
 
-
     if (file) {
 
       const fileName =
@@ -583,37 +536,31 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       const path =
         "products/" + fileName;
 
-
       const { error } =
         await supabaseClient.storage
-          .from("product-images")
+          .from("hayati-assets")
           .upload(path, file, {
             upsert: true,
             contentType: file.type
           });
 
-
       if (error) {
 
         console.error(error);
 
-        alert(
-          "تعذر رفع صورة المنتج."
-        );
+        alert("تعذر رفع صورة المنتج.");
 
         return;
       }
 
-
       const { data } =
         supabaseClient.storage
-          .from("product-images")
+          .from("hayati-assets")
           .getPublicUrl(path);
 
       image_url =
         data.publicUrl;
     }
-
 
     const productData = {
       name,
@@ -625,9 +572,7 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       image_url
     };
 
-
     let result;
-
 
     if (pid) {
 
@@ -646,18 +591,14 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     }
 
-
     if (result.error) {
 
       console.error(result.error);
 
-      alert(
-        "لم يتم حفظ المنتج."
-      );
+      alert("لم يتم حفظ المنتج.");
 
       return;
     }
-
 
     alert(
       pid
@@ -665,13 +606,10 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
         : "تمت إضافة المنتج بنجاح."
     );
 
-
     resetProductForm();
 
     loadProducts();
-
   });
-
 
   // =========================
   // تعديل المنتج
@@ -687,29 +625,14 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     if (!product) return;
 
-    $("pid").value =
-      product.id;
-
-    $("pname").value =
-      product.name || "";
-
-    $("pcat").value =
-      product.category || "";
-
-    $("pprice").value =
-      product.price ?? "";
-
-    $("pold").value =
-      product.old_price ?? "";
-
-    $("pstock").value =
-      product.stock ?? "";
-
-    $("pdesc").value =
-      product.description || "";
-
-    $("pimage").value =
-      product.image_url || "";
+    $("pid").value = product.id;
+    $("pname").value = product.name || "";
+    $("pcat").value = product.category || "";
+    $("pprice").value = product.price ?? "";
+    $("pold").value = product.old_price ?? "";
+    $("pstock").value = product.stock ?? "";
+    $("pdesc").value = product.description || "";
+    $("pimage").value = product.image_url || "";
 
     const preview =
       $("productPreview");
@@ -731,7 +654,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       behavior: "smooth"
     });
   }
-
 
   // =========================
   // حذف المنتج
@@ -763,7 +685,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     loadProducts();
   }
 
-
   // =========================
   // إلغاء التعديل
   // =========================
@@ -773,13 +694,11 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     resetProductForm
   );
 
-
   function resetProductForm() {
 
     $("productForm")?.reset();
 
     $("pid").value = "";
-
     $("pimage").value = "";
 
     const preview =
@@ -788,18 +707,15 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     if (preview) {
 
       preview.src = "";
-
-      preview.style.display =
-        "none";
+      preview.style.display = "none";
     }
 
     $("cancelEdit").style.display =
       "none";
   }
 
-
   // =========================
-  // شعار الموقع
+  // معاينة الشعار
   // =========================
 
   $("logoFile")?.addEventListener("change", () => {
@@ -819,6 +735,9 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       "block";
   });
 
+  // =========================
+  // حفظ الشعار
+  // =========================
 
   $("logoForm")?.addEventListener("submit", async (e) => {
 
@@ -827,18 +746,23 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     const file =
       $("logoFile").files?.[0];
 
+    const msg =
+      $("logoMsg");
+
     if (!file) {
 
-      $("logoMsg").textContent =
-        "اختر صورة الشعار أولًا.";
+      if (msg) {
+        msg.textContent =
+          "اختر صورة الشعار أولًا.";
+      }
 
       return;
     }
 
-
-    $("logoMsg").textContent =
-      "جارٍ رفع الشعار...";
-
+    if (msg) {
+      msg.textContent =
+        "جارٍ رفع الشعار...";
+    }
 
     const fileName =
       "logo-" +
@@ -846,40 +770,39 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       "." +
       getExtension(file.name);
 
-
     const path =
       "site/" + fileName;
 
-
     const { error: uploadError } =
       await supabaseClient.storage
-        .from("site-images")
+        .from("hayati-assets")
         .upload(path, file, {
           upsert: true,
           contentType: file.type
         });
 
-
     if (uploadError) {
 
-      console.error(uploadError);
+      console.error(
+        "Logo upload error:",
+        uploadError
+      );
 
-      $("logoMsg").textContent =
-        "تعذر رفع الشعار.";
+      if (msg) {
+        msg.textContent =
+          "تعذر رفع الشعار.";
+      }
 
       return;
     }
 
-
     const { data } =
       supabaseClient.storage
-        .from("site-images")
+        .from("hayati-assets")
         .getPublicUrl(path);
-
 
     const logoUrl =
       data.publicUrl;
-
 
     const { error } =
       await supabaseClient
@@ -894,28 +817,38 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
           }
         );
 
-
     if (error) {
 
-      console.error(error);
+      console.error(
+        "Logo database error:",
+        error
+      );
 
-      $("logoMsg").textContent =
-        "تعذر حفظ الشعار.";
+      if (msg) {
+        msg.textContent =
+          "تعذر حفظ الشعار.";
+      }
 
       return;
     }
 
+    if (msg) {
+      msg.textContent =
+        "تم حفظ الشعار بنجاح ✅";
+    }
 
-    $("logoMsg").textContent =
-      "تم حفظ الشعار بنجاح ✅";
+    const preview =
+      $("logoPreview");
 
-    $("logoPreview").src =
-      logoUrl;
+    if (preview) {
 
-    $("logoPreview").style.display =
-      "block";
+      preview.src =
+        logoUrl;
+
+      preview.style.display =
+        "block";
+    }
   });
-
 
   // =========================
   // تحميل الشعار
@@ -928,7 +861,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
 
     if (!preview) return;
 
-
     const { data, error } =
       await supabaseClient
         .from("site_settings")
@@ -936,14 +868,12 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
         .eq("key", "logo_url")
         .maybeSingle();
 
-
     if (error) {
 
       console.error(error);
 
       return;
     }
-
 
     if (data?.value) {
 
@@ -954,7 +884,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
         "block";
     }
   }
-
 
   // =========================
   // أدوات مساعدة
@@ -977,7 +906,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     );
   }
 
-
   function formatDate(value) {
 
     if (!value) return "";
@@ -993,7 +921,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     }
   }
 
-
   function formatItems(items) {
 
     if (!items) return "";
@@ -1007,14 +934,12 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       }
     }
 
-
     if (!Array.isArray(items)) {
 
       return escapeHtml(
         JSON.stringify(items)
       );
     }
-
 
     return items.map((item) => {
 
@@ -1038,7 +963,6 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
     }).join("");
   }
 
-
   function escapeHtml(value) {
 
     return String(value ?? "")
@@ -1049,11 +973,9 @@ if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       .replaceAll("'", "&#039;");
   }
 
-
   function escapeAttribute(value) {
     return escapeHtml(value);
   }
-
 
   function getExtension(filename) {
 
