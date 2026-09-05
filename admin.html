@@ -1,276 +1,674 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>حياتي - لوحة المدير</title>  <link rel="stylesheet" href="admin.css">  <script src="config.js"></script>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><div class="wrap">  <header>
-    <div>
-      <b>حياتي Hayati</b>
-    </div><button id="logoutBtn" style="display:none;">
-  خروج
-</button>
 
-  </header>  <!-- تسجيل الدخول -->  <section id="login"><h1>قويتا زعوفتي</h1>
-<p>المديرة</p>
-
-<form id="loginForm">
-
-  <label for="email">
-    البريد الإلكتروني
-  </label>
-
-  <input
-    id="email"
-    type="email"
-    placeholder="أدخل البريد الإلكتروني"
-    required
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <label for="password">
-    كلمة المرور
-  </label>
+  <meta name="theme-color" content="#c85a82">
 
-  <div class="password-wrap">
+  <title>حياتي - لوحة المدير</title>
 
-    <input
-      id="password"
-      type="password"
-      placeholder="أدخل كلمة المرور"
-      required
+  <link rel="stylesheet" href="admin.css">
+
+  <script src="config.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       التطبيق
+       ===================================================== -->
+
+  <div class="app">
+
+    <!-- ===================================================
+         رأس التطبيق
+         =================================================== -->
+
+    <header class="app-header">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          🛍️
+        </div>
+
+        <div>
+          <strong>حياتي Hayati</strong>
+          <small>لوحة المدير</small>
+        </div>
+
+      </div>
+
+
+      <!-- جرس الإشعارات -->
+
+      <div
+        id="notificationBox"
+        class="notification-box"
+        style="display:none;"
+      >
+
+        <button
+          type="button"
+          id="notificationBtn"
+          class="notification-btn"
+          aria-label="إشعارات الطلبات"
+        >
+          🔔
+
+          <span
+            id="notificationCount"
+            class="notification-count"
+            style="display:none;"
+          >
+            0
+          </span>
+
+        </button>
+
+
+        <!-- قائمة الإشعارات -->
+
+        <div
+          id="notificationMenu"
+          class="notification-menu"
+          style="display:none;"
+        >
+
+          <div class="notification-title">
+            طلبات جديدة
+          </div>
+
+          <div id="notificationList">
+
+            لا توجد إشعارات.
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- ===================================================
+         تسجيل الدخول
+         =================================================== -->
+
+    <section id="login" class="login-screen">
+
+      <div class="login-card">
+
+        <div class="login-logo">
+          🛍️
+        </div>
+
+        <h1>
+          قويتا زعوفتي
+        </h1>
+
+        <p class="login-role">
+          المديرة
+        </p>
+
+
+        <form id="loginForm">
+
+          <label for="email">
+            البريد الإلكتروني
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            placeholder="أدخل البريد الإلكتروني"
+            autocomplete="email"
+            required
+          >
+
+
+          <label for="password">
+            كلمة المرور
+          </label>
+
+
+          <div class="password-wrap">
+
+            <input
+              id="password"
+              type="password"
+              placeholder="أدخل كلمة المرور"
+              autocomplete="current-password"
+              required
+            >
+
+            <button
+              type="button"
+              id="password-toggle"
+              class="password-toggle"
+              onclick="togglePassword()"
+              aria-label="إظهار كلمة المرور"
+            >
+              👁️
+            </button>
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="main-action"
+          >
+            دخول
+          </button>
+
+
+          <p id="loginMsg"></p>
+
+        </form>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         لوحة المدير
+         =================================================== -->
+
+    <section
+      id="panel"
+      class="admin-panel"
+      style="display:none;"
     >
 
-    <button
-      type="button"
-      id="password-toggle"
-      class="password-toggle"
-      onclick="togglePassword()"
-      aria-label="إظهار كلمة المرور"
-    >
-      👁️
-    </button>
+
+      <!-- =================================================
+           شريط الترحيب
+           ================================================= -->
+
+      <div class="welcome-card">
+
+        <div>
+
+          <small>
+            مرحبًا بك
+          </small>
+
+          <h2>
+            قويتا زعوفتي 👑
+          </h2>
+
+          <p>
+            إدارة متجر حياتي
+          </p>
+
+        </div>
+
+        <div class="welcome-icon">
+          💼
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           شريط التنقل
+           ================================================= -->
+
+      <nav class="tabs">
+
+        <button
+          type="button"
+          id="ordersTab"
+          class="tab-btn active"
+        >
+          <span>📦</span>
+          <span>الطلبات</span>
+        </button>
+
+
+        <button
+          type="button"
+          id="productsTab"
+          class="tab-btn"
+        >
+          <span>🛍️</span>
+          <span>المنتجات</span>
+        </button>
+
+
+        <button
+          type="button"
+          id="siteTab"
+          class="tab-btn"
+        >
+          <span>⚙️</span>
+          <span>الإعدادات</span>
+        </button>
+
+      </nav>
+
+
+      <!-- =================================================
+           الطلبات
+           ================================================= -->
+
+      <section
+        id="orders"
+        class="content-section"
+      >
+
+        <div class="section-header">
+
+          <div>
+
+            <small>
+              إدارة المتجر
+            </small>
+
+            <h2>
+              طلبات الزبائن
+            </h2>
+
+          </div>
+
+          <div class="section-icon">
+            📦
+          </div>
+
+        </div>
+
+
+        <div id="ordersList">
+
+          <div class="loading-card">
+            جاري تحميل الطلبات...
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           المنتجات
+           ================================================= -->
+
+      <section
+        id="products"
+        class="content-section"
+        style="display:none;"
+      >
+
+        <div class="section-header">
+
+          <div>
+
+            <small>
+              إدارة المتجر
+            </small>
+
+            <h2>
+              إدارة المنتجات
+            </h2>
+
+          </div>
+
+          <div class="section-icon">
+            🛍️
+          </div>
+
+        </div>
+
+
+        <!-- نموذج المنتج -->
+
+        <form
+          id="productForm"
+          class="admin-form"
+        >
+
+          <input
+            id="pid"
+            type="hidden"
+          >
+
+
+          <div class="form-title">
+            <span>➕</span>
+            إضافة أو تعديل منتج
+          </div>
+
+
+          <label for="pname">
+            اسم المنتج
+          </label>
+
+          <input
+            id="pname"
+            type="text"
+            placeholder="اسم المنتج"
+            required
+          >
+
+
+          <label for="pcat">
+            القسم
+          </label>
+
+          <select
+            id="pcat"
+            required
+          >
+
+            <option value="">
+              اختر القسم
+            </option>
+
+            <option value="ملابس">
+              ملابس نسائية
+            </option>
+
+            <option value="عطور">
+              عطور
+            </option>
+
+            <option value="تجميل">
+              مواد التجميل
+            </option>
+
+            <option value="أحذية">
+              أحذية
+            </option>
+
+          </select>
+
+
+          <label for="pprice">
+            السعر الحالي
+          </label>
+
+          <div class="price-input">
+
+            <input
+              id="pprice"
+              type="number"
+              min="0"
+              placeholder="السعر الحالي"
+              required
+            >
+
+            <span>
+              دج
+            </span>
+
+          </div>
+
+
+          <label for="pold">
+            السعر القديم
+          </label>
+
+          <div class="price-input">
+
+            <input
+              id="pold"
+              type="number"
+              min="0"
+              placeholder="السعر القديم"
+            >
+
+            <span>
+              دج
+            </span>
+
+          </div>
+
+
+          <label for="pstock">
+            المخزون
+          </label>
+
+          <input
+            id="pstock"
+            type="number"
+            min="0"
+            placeholder="الكمية المتوفرة"
+          >
+
+
+          <label for="pimageFile">
+            صورة المنتج
+          </label>
+
+          <input
+            id="pimageFile"
+            type="file"
+            accept="image/*"
+            class="image-upload"
+          >
+
+
+          <img
+            id="productPreview"
+            class="preview"
+            style="display:none;"
+            alt="معاينة صورة المنتج"
+          >
+
+
+          <input
+            id="pimage"
+            type="hidden"
+          >
+
+
+          <label for="pdesc">
+            وصف المنتج
+          </label>
+
+          <textarea
+            id="pdesc"
+            placeholder="اكتب وصف المنتج هنا..."
+          ></textarea>
+
+
+          <button
+            type="submit"
+            class="main-action"
+          >
+            حفظ المنتج
+          </button>
+
+
+          <button
+            type="button"
+            id="cancelEdit"
+            class="secondary-action"
+            style="display:none;"
+          >
+            إلغاء التعديل
+          </button>
+
+        </form>
+
+
+        <!-- قائمة المنتجات -->
+
+        <div
+          id="productList"
+          class="items-list"
+        >
+
+          <div class="loading-card">
+            جاري تحميل المنتجات...
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           إعدادات الموقع
+           ================================================= -->
+
+      <section
+        id="site"
+        class="content-section"
+        style="display:none;"
+      >
+
+        <div class="section-header">
+
+          <div>
+
+            <small>
+              تخصيص المتجر
+            </small>
+
+            <h2>
+              إعدادات الموقع
+            </h2>
+
+          </div>
+
+          <div class="section-icon">
+            ⚙️
+          </div>
+
+        </div>
+
+
+        <form
+          id="logoForm"
+          class="admin-form"
+        >
+
+          <div class="form-title">
+            <span>🖼️</span>
+            شعار المتجر
+          </div>
+
+
+          <label for="logoFile">
+            اختيار الشعار
+          </label>
+
+          <input
+            id="logoFile"
+            type="file"
+            accept="image/*"
+            class="image-upload"
+          >
+
+
+          <img
+            id="logoPreview"
+            class="preview logo-preview"
+            style="display:none;"
+            alt="معاينة الشعار"
+          >
+
+
+          <button
+            type="submit"
+            class="main-action"
+          >
+            حفظ الشعار
+          </button>
+
+
+          <p id="logoMsg"></p>
+
+        </form>
+
+      </section>
+
+
+      <!-- =================================================
+           زر الخروج
+           ================================================= -->
+
+      <button
+        type="button"
+        id="logoutBtn"
+        class="logout-action"
+        style="display:none;"
+      >
+        🚪 خروج
+      </button>
+
+
+    </section>
 
   </div>
 
-  <button type="submit">
-    دخول
-  </button>
 
-  <p id="loginMsg"></p>
+  <!-- =====================================================
+       إظهار / إخفاء كلمة المرور
+       ===================================================== -->
 
-</form>
+  <script>
 
-  </section>  <!-- لوحة المدير -->  <section id="panel" style="display:none;"><div class="tabs">
+    function togglePassword() {
 
-  <button id="ordersTab">
-    الطلبات
-  </button>
+      const input =
+        document.getElementById('password');
 
-  <button id="productsTab">
-    المنتجات
-  </button>
+      const button =
+        document.getElementById('password-toggle');
 
-  <button id="siteTab">
-    إعدادات الموقع
-  </button>
-
-</div>
+      if (!input) return;
 
 
-<!-- الطلبات -->
-<section id="orders">
+      if (input.type === 'password') {
 
-  <h2>طلبات الزبائن</h2>
+        input.type = 'text';
 
-  <div id="ordersList">
-    جاري تحميل الطلبات...
-  </div>
+        if (button) {
+          button.textContent = '🙈';
+          button.setAttribute(
+            'aria-label',
+            'إخفاء كلمة المرور'
+          );
+        }
 
-</section>
+      } else {
 
+        input.type = 'password';
 
-<!-- المنتجات -->
-<section id="products" style="display:none;">
+        if (button) {
+          button.textContent = '👁️';
+          button.setAttribute(
+            'aria-label',
+            'إظهار كلمة المرور'
+          );
+        }
 
-  <h2>إدارة المنتجات</h2>
+      }
 
-  <form id="productForm">
-
-    <input
-      id="pid"
-      type="hidden"
-    >
-
-    <label for="pname">
-      اسم المنتج
-    </label>
-
-    <input
-      id="pname"
-      type="text"
-      placeholder="اسم المنتج"
-      required
-    >
-
-    <label for="pcat">
-      القسم
-    </label>
-
-    <select id="pcat" required>
-      <option value="">اختر القسم</option>
-      <option value="ملابس">ملابس نسائية</option>
-      <option value="عطور">عطور</option>
-      <option value="تجميل">مواد التجميل</option>
-      <option value="أحذية">أحذية</option>
-    </select>
-
-    <label for="pprice">
-      السعر الحالي
-    </label>
-
-    <input
-      id="pprice"
-      type="number"
-      min="0"
-      placeholder="السعر الحالي"
-      required
-    >
-
-    <label for="pold">
-      السعر القديم
-    </label>
-
-    <input
-      id="pold"
-      type="number"
-      min="0"
-      placeholder="السعر القديم"
-    >
-
-    <label for="pstock">
-      المخزون
-    </label>
-
-    <input
-      id="pstock"
-      type="number"
-      min="0"
-      placeholder="الكمية المتوفرة"
-    >
-
-    <label for="pimageFile">
-      صورة المنتج
-    </label>
-
-    <input
-      id="pimageFile"
-      type="file"
-      accept="image/*"
-      class="image-upload"
-    >
-
-    <img
-      id="productPreview"
-      class="preview"
-      style="display:none;"
-      alt="معاينة صورة المنتج"
-    >
-
-    <input
-      id="pimage"
-      type="hidden"
-    >
-
-    <label for="pdesc">
-      وصف المنتج
-    </label>
-
-    <textarea
-      id="pdesc"
-      placeholder="وصف المنتج"
-    ></textarea>
-
-    <button type="submit">
-      حفظ المنتج
-    </button>
-
-    <button
-      type="button"
-      id="cancelEdit"
-      style="display:none;"
-    >
-      إلغاء التعديل
-    </button>
-
-  </form>
-
-  <div id="productList">
-    جاري تحميل المنتجات...
-  </div>
-
-</section>
-
-
-<!-- إعدادات الموقع -->
-<section id="site" style="display:none;">
-
-  <h2>إعدادات الموقع</h2>
-
-  <form id="logoForm">
-
-    <label for="logoFile">
-      شعار المتجر
-    </label>
-
-    <input
-      id="logoFile"
-      type="file"
-      accept="image/*"
-      class="image-upload"
-    >
-
-    <img
-      id="logoPreview"
-      class="preview"
-      style="display:none;"
-      alt="معاينة الشعار"
-    >
-
-    <button type="submit">
-      حفظ الشعار
-    </button>
-
-    <p id="logoMsg"></p>
-
-  </form>
-
-</section>
-
-  </section></div><script>
-
-function togglePassword(){
-
-  const input = document.getElementById("password");
-  const button = document.getElementById("password-toggle");
-
-  if(!input) return;
-
-  if(input.type === "password"){
-
-    input.type = "text";
-
-    if(button){
-      button.textContent = "🙈";
     }
 
-  }else{
+  </script>
 
-    input.type = "password";
 
-    if(button){
-      button.textContent = "👁️";
-    }
+  <!-- =====================================================
+       كود لوحة المدير
+       ===================================================== -->
 
-  }
+  <script src="admin.js?v=6"></script>
 
-}
+</body>
 
-</script><script src="admin.js?v=5"></script></body>
 </html>
