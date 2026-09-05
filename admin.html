@@ -11,11 +11,11 @@
 
 <style>
 .password-wrap{
-  position:relative
+  position:relative;
 }
 
 .password-wrap input{
-  padding-left:48px
+  padding-left:48px;
 }
 
 .password-toggle{
@@ -28,27 +28,28 @@
   cursor:pointer;
   font-size:20px;
   line-height:1;
-  padding:4px
+  padding:4px;
+  color:#333;
 }
 
 .manager-title{
   text-align:center;
   margin:0 auto 24px;
   direction:rtl;
-  font-family:"Amiri","Scheherazade New","Noto Naskh Arabic",serif
+  font-family:"Amiri","Scheherazade New","Noto Naskh Arabic",serif;
 }
 
 .manager-name{
   font-size:32px;
   font-weight:700;
-  line-height:1.25
+  line-height:1.25;
 }
 
 .manager-role{
   font-size:22px;
   font-weight:600;
   margin-top:2px;
-  line-height:1.3
+  line-height:1.3;
 }
 
 .image-upload{
@@ -56,13 +57,13 @@
   border-radius:12px;
   padding:12px;
   margin:8px 0;
-  background:#fff7fa
+  background:#fff7fa;
 }
 
 .image-upload label{
   display:block;
   font-weight:700;
-  margin-bottom:7px
+  margin-bottom:7px;
 }
 
 .preview{
@@ -71,23 +72,23 @@
   height:100px;
   object-fit:cover;
   border-radius:12px;
-  margin-top:8px
+  margin-top:8px;
 }
 </style>
 
 <script>
 function togglePassword(){
-  const i=document.getElementById('password');
-  const b=document.getElementById('password-toggle');
+  const input = document.getElementById("password");
+  const button = document.getElementById("password-toggle");
 
-  if(!i)return;
+  if(!input || !button) return;
 
-  if(i.type==='password'){
-    i.type='text';
-    b.textContent='🙈';
+  if(input.type === "password"){
+    input.type = "text";
+    button.textContent = "🙈";
   }else{
-    i.type='password';
-    b.textContent='👁️';
+    input.type = "password";
+    button.textContent = "👁️";
   }
 }
 </script>
@@ -109,4 +110,205 @@ function togglePassword(){
     <span class="manager-name">قويتا زعوفتي</span>
     <br>
     <span class="manager-role">المديرة</span>
-  </
+  </h1>
+
+  <p>دخول المدير</p>
+
+  <form id="loginForm">
+
+    <input
+      id="email"
+      type="email"
+      required
+      placeholder="البريد الإلكتروني"
+    >
+
+    <div class="password-wrap">
+
+      <input
+        id="password"
+        type="password"
+        required
+        placeholder="كلمة المرور"
+      >
+
+      <button
+        type="button"
+        id="password-toggle"
+        class="password-toggle"
+        onclick="togglePassword()"
+        aria-label="إظهار كلمة المرور"
+      >👁️</button>
+
+    </div>
+
+    <button type="submit">دخول</button>
+
+    <p id="loginMsg"></p>
+
+  </form>
+
+</section>
+
+<section id="panel" hidden>
+
+  <div class="tabs">
+
+    <button data-tab="orders">
+      📦 الطلبات
+    </button>
+
+    <button data-tab="products">
+      🛍️ المنتجات
+    </button>
+
+    <button data-tab="site">
+      🎨 شعار الموقع
+    </button>
+
+  </div>
+
+  <div id="ordersTab">
+
+    <h2>الطلبات</h2>
+
+    <div id="orders"></div>
+
+  </div>
+
+  <div id="productsTab" hidden>
+
+    <h2>المنتجات</h2>
+
+    <form id="productForm">
+
+      <input type="hidden" id="pid">
+
+      <input
+        id="pname"
+        required
+        placeholder="اسم المنتج"
+      >
+
+      <input
+        id="pcat"
+        required
+        placeholder="الفئة"
+      >
+
+      <input
+        id="pprice"
+        required
+        type="number"
+        placeholder="السعر الجديد"
+      >
+
+      <input
+        id="pold"
+        type="number"
+        placeholder="السعر القديم"
+      >
+
+      <input
+        id="pstock"
+        type="number"
+        placeholder="المخزون"
+      >
+
+      <div class="image-upload">
+
+        <label for="pimageFile">
+          📷 صورة المنتج من الهاتف
+        </label>
+
+        <input
+          id="pimageFile"
+          type="file"
+          accept="image/*"
+        >
+
+        <img
+          id="productPreview"
+          class="preview"
+          hidden
+          alt="معاينة المنتج"
+        >
+
+      </div>
+
+      <input
+        id="pimage"
+        placeholder="أو رابط صورة (اختياري)"
+      >
+
+      <textarea
+        id="pdesc"
+        placeholder="الوصف"
+      ></textarea>
+
+      <button type="submit">
+        حفظ المنتج
+      </button>
+
+      <button
+        type="button"
+        id="cancelEdit"
+      >
+        إلغاء
+      </button>
+
+    </form>
+
+    <div id="productList"></div>
+
+  </div>
+
+  <div id="siteTab" hidden>
+
+    <h2>شعار الموقع</h2>
+
+    <p>
+      اختاري صورة الشعار من هاتفك ثم احفظيها.
+    </p>
+
+    <form id="logoForm">
+
+      <div class="image-upload">
+
+        <label for="logoFile">
+          🖼️ اختيار شعار من الهاتف
+        </label>
+
+        <input
+          id="logoFile"
+          type="file"
+          accept="image/*"
+        >
+
+        <img
+          id="logoPreview"
+          class="preview"
+          hidden
+          alt="معاينة الشعار"
+        >
+
+      </div>
+
+      <button type="submit">
+        حفظ الشعار
+      </button>
+
+      <p id="logoMsg"></p>
+
+    </form>
+
+  </div>
+
+</section>
+
+</div>
+
+<script src="admin.js?v=3"></script>
+
+</body>
+</html>
