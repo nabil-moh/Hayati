@@ -1,1367 +1,1099 @@
-(() => {
-  'use strict';
+/* =========================================================
+   HAYATI STORE - ADMIN CSS
+   لوحة قويتا زعوفتي المديرة
+   النسخة الجديدة - تصميم تطبيق الهاتف
+   ========================================================= */
 
-  /*
-   * =========================================================
-   * HAYATI - ADMIN.JS
-   * لوحة المدير
-   * =========================================================
-   */
+*{
+  box-sizing:border-box;
+}
 
-  const $ = (selector) => document.querySelector(selector);
+html{
+  scroll-behavior:smooth;
+}
 
-  const config = window.HAYATI_CONFIG || {};
+body{
+  margin:0;
+  font-family:Arial,"Noto Naskh Arabic",Tahoma,sans-serif;
+  background:#fff5f8;
+  color:#333;
+  direction:rtl;
+}
 
-  let db = null;
-  let editingProductId = null;
+button,
+input,
+textarea,
+select{
+  font-family:inherit;
+}
 
-  const money = (value) =>
-    new Intl.NumberFormat('ar-DZ').format(Number(value) || 0) + ' دج';
+button{
+  cursor:pointer;
+}
 
-  const esc = (value) =>
-    String(value ?? '').replace(/[&<>"']/g, (char) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[char]));
+img{
+  max-width:100%;
+  display:block;
+}
 
-  function showLoginMessage(message, success = false) {
-    const el = $('#loginMsg');
-    if (!el) return;
-    el.textContent = message;
-    el.style.color = success ? 'green' : 'crimson';
+/* =========================================================
+   التطبيق
+   ========================================================= */
+
+.app{
+  width:100%;
+  min-height:100vh;
+}
+
+.app-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+
+  width:100%;
+  min-height:70px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:12px 16px;
+
+  background:#fff;
+  border-bottom:1px solid #f0dce4;
+  box-shadow:0 3px 15px rgba(0,0,0,.07);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand-icon{
+  width:42px;
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#c85a82;
+  color:#fff;
+
+  border-radius:13px;
+  font-size:21px;
+
+  box-shadow:0 4px 10px rgba(200,90,130,.25);
+}
+
+.brand b{
+  display:block;
+  font-size:19px;
+  color:#333;
+}
+
+.brand small{
+  display:block;
+  margin-top:2px;
+  color:#888;
+  font-size:12px;
+}
+
+/* =========================================================
+   الإشعارات
+   ========================================================= */
+
+.notification-box{
+  position:relative;
+}
+
+.notification-btn{
+  position:relative;
+
+  width:46px;
+  height:46px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+
+  border:1px solid #ead5dd;
+  border-radius:14px;
+
+  background:#fff;
+  color:#333;
+
+  font-size:22px;
+
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.notification-btn:hover{
+  background:#fff5f8;
+}
+
+/* العداد الأسود */
+
+.notification-count{
+  position:absolute;
+
+  top:-6px;
+  left:-6px;
+
+  min-width:22px;
+  height:22px;
+
+  padding:0 6px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#000;
+  color:#fff;
+
+  border-radius:50px;
+
+  font-size:11px;
+  font-weight:bold;
+
+  border:2px solid #fff;
+}
+
+.notification-menu{
+  position:absolute;
+
+  top:56px;
+  left:0;
+
+  width:300px;
+  max-width:calc(100vw - 20px);
+
+  background:#fff;
+
+  border:1px solid #eadbe1;
+  border-radius:16px;
+
+  overflow:hidden;
+
+  box-shadow:0 8px 30px rgba(0,0,0,.14);
+
+  z-index:2000;
+}
+
+.notification-title{
+  padding:14px;
+
+  font-weight:bold;
+  font-size:16px;
+
+  background:#fff8fa;
+
+  border-bottom:1px solid #f0e1e6;
+}
+
+#notificationList{
+  max-height:380px;
+  overflow-y:auto;
+}
+
+.notification-item{
+  display:block;
+
+  width:100%;
+
+  padding:13px;
+
+  text-align:right;
+
+  background:#fff;
+
+  color:#333;
+
+  border:0;
+  border-bottom:1px solid #f1e5e9;
+
+  border-radius:0;
+
+  font-size:14px;
+
+  line-height:1.6;
+}
+
+.notification-item:hover{
+  background:#fff5f8;
+}
+
+.notification-item:last-child{
+  border-bottom:0;
+}
+
+.notification-item strong{
+  display:block;
+  margin-bottom:3px;
+}
+
+.notification-item small{
+  color:#888;
+}
+
+/* =========================================================
+   تسجيل الدخول
+   ========================================================= */
+
+.login-screen{
+  width:100%;
+  min-height:calc(100vh - 70px);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:25px 15px;
+}
+
+.login-card{
+  width:100%;
+  max-width:430px;
+
+  background:#fff;
+
+  padding:28px 22px;
+
+  border-radius:24px;
+
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+
+  text-align:center;
+}
+
+.login-logo{
+  width:72px;
+  height:72px;
+
+  margin:0 auto 15px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#c85a82;
+  color:#fff;
+
+  border-radius:22px;
+
+  font-size:31px;
+
+  box-shadow:0 7px 18px rgba(200,90,130,.25);
+}
+
+.login-card h1{
+  margin:8px 0 3px;
+
+  font-size:25px;
+  color:#333;
+}
+
+.login-role{
+  margin:0 0 24px;
+
+  color:#c85a82;
+  font-size:17px;
+  font-weight:bold;
+}
+
+.login-card form{
+  text-align:right;
+}
+
+.login-card label{
+  display:block;
+
+  margin-top:13px;
+  margin-bottom:5px;
+
+  font-weight:bold;
+  font-size:14px;
+}
+
+.login-card input{
+  width:100%;
+}
+
+#loginForm button[type="submit"]{
+  width:100%;
+
+  margin-top:16px;
+
+  padding:13px;
+
+  border:0;
+  border-radius:12px;
+
+  background:#c85a82;
+  color:#fff;
+
+  font-size:16px;
+  font-weight:bold;
+}
+
+#loginForm button[type="submit"]:hover{
+  opacity:.92;
+}
+
+#loginMsg{
+  min-height:20px;
+
+  margin:12px 0 0;
+
+  color:#c0395f;
+
+  font-size:14px;
+  font-weight:bold;
+
+  text-align:center;
+}
+
+/* =========================================================
+   كلمة المرور
+   ========================================================= */
+
+.password-wrap{
+  position:relative;
+  width:100%;
+}
+
+.password-wrap input{
+  width:100%;
+
+  padding-left:52px;
+  padding-right:12px;
+}
+
+.password-toggle{
+  position:absolute !important;
+
+  left:7px !important;
+  top:50% !important;
+
+  transform:translateY(-50%) !important;
+
+  width:40px !important;
+  height:40px !important;
+
+  padding:0 !important;
+  margin:0 !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+
+  background:transparent !important;
+
+  color:#555 !important;
+
+  border:0 !important;
+  box-shadow:none !important;
+
+  font-size:19px !important;
+}
+
+/* =========================================================
+   لوحة المدير
+   ========================================================= */
+
+.admin-panel{
+  width:100%;
+  max-width:1000px;
+
+  margin:auto;
+
+  padding:18px 15px 40px;
+}
+
+.welcome-card{
+  display:flex;
+  align-items:center;
+  gap:13px;
+
+  padding:17px;
+
+  margin-bottom:17px;
+
+  background:#fff;
+
+  border-radius:18px;
+
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+}
+
+.welcome-icon{
+  width:50px;
+  height:50px;
+
+  flex:none;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#fff0f5;
+
+  border-radius:15px;
+
+  font-size:24px;
+}
+
+.welcome-card h2{
+  margin:0 0 4px;
+
+  font-size:20px;
+}
+
+.welcome-card p{
+  margin:0;
+
+  color:#888;
+
+  font-size:13px;
+}
+
+/* =========================================================
+   التبويبات
+   ========================================================= */
+
+.tabs{
+  display:grid;
+
+  grid-template-columns:repeat(3,1fr);
+
+  gap:9px;
+
+  margin-bottom:18px;
+}
+
+.tab-btn{
+  min-height:48px;
+
+  padding:10px;
+
+  background:#fff;
+
+  color:#666;
+
+  border:1px solid #ead5dd;
+
+  border-radius:13px;
+
+  font-size:14px;
+  font-weight:bold;
+
+  box-shadow:0 2px 7px rgba(0,0,0,.04);
+}
+
+.tab-btn:hover{
+  background:#fff5f8;
+}
+
+.tab-btn.active{
+  background:#c85a82;
+  color:#fff;
+
+  border-color:#c85a82;
+
+  box-shadow:0 4px 12px rgba(200,90,130,.2);
+}
+
+/* =========================================================
+   أقسام المحتوى
+   ========================================================= */
+
+.content-section{
+  width:100%;
+}
+
+.section-header{
+  display:flex;
+  align-items:center;
+
+  gap:10px;
+
+  margin-bottom:12px;
+}
+
+.section-icon{
+  width:40px;
+  height:40px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#fff;
+
+  border-radius:12px;
+
+  font-size:20px;
+
+  box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+
+.section-header h2{
+  margin:0;
+
+  font-size:20px;
+}
+
+/* =========================================================
+   البطاقات العامة
+   ========================================================= */
+
+.loading-card,
+.empty-card{
+  padding:25px 18px;
+
+  background:#fff;
+
+  border-radius:17px;
+
+  text-align:center;
+
+  color:#888;
+
+  box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.empty-card{
+  color:#777;
+}
+
+/* =========================================================
+   الطلبات
+   ========================================================= */
+
+.order-card{
+  position:relative;
+
+  background:#fff;
+
+  padding:17px;
+
+  margin:12px 0;
+
+  border-radius:18px;
+
+  box-shadow:0 4px 15px rgba(0,0,0,.06);
+
+  border:1px solid #f1e2e7;
+}
+
+.order-card h3{
+  margin:0 0 12px;
+
+  font-size:18px;
+}
+
+.order-card p{
+  margin:7px 0;
+
+  line-height:1.65;
+
+  font-size:14px;
+}
+
+.order-card strong{
+  color:#444;
+}
+
+.order-card button{
+  margin-top:10px;
+}
+
+/* =========================================================
+   قائمة المنتجات
+   ========================================================= */
+
+.product-card{
+  background:#fff;
+
+  padding:16px;
+
+  margin:12px 0;
+
+  border-radius:18px;
+
+  box-shadow:0 4px 15px rgba(0,0,0,.06);
+
+  border:1px solid #f1e2e7;
+}
+
+.product-card h3{
+  margin:0 0 10px;
+
+  font-size:18px;
+}
+
+.product-card p{
+  margin:7px 0;
+
+  line-height:1.6;
+
+  font-size:14px;
+}
+
+.product-card img{
+  width:110px;
+  height:110px;
+
+  object-fit:cover;
+
+  margin-bottom:12px;
+
+  border-radius:14px;
+
+  border:1px solid #eee;
+}
+
+/* =========================================================
+   أزرار المنتجات
+   ========================================================= */
+
+.edit-product{
+  background:#777 !important;
+}
+
+.delete-product{
+  background:#b33a3a !important;
+}
+
+.product-card button{
+  margin:6px 4px 0 0;
+}
+
+/* =========================================================
+   النماذج
+   ========================================================= */
+
+.admin-form{
+  background:#fff;
+
+  padding:19px;
+
+  margin-bottom:20px;
+
+  border-radius:19px;
+
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+}
+
+.form-title{
+  margin:0 0 15px;
+
+  font-size:18px;
+
+  font-weight:bold;
+}
+
+.admin-form label{
+  display:block;
+
+  margin-top:12px;
+  margin-bottom:5px;
+
+  font-size:14px;
+  font-weight:bold;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+
+  padding:12px 13px;
+
+  margin:5px 0;
+
+  background:#fff;
+
+  color:#333;
+
+  border:1px solid #ddd;
+
+  border-radius:11px;
+
+  outline:none;
+
+  font-size:15px;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:#c85a82;
+
+  box-shadow:0 0 0 3px rgba(200,90,130,.09);
+}
+
+textarea{
+  min-height:105px;
+
+  resize:vertical;
+}
+
+.admin-form button[type="submit"]{
+  width:100%;
+
+  margin-top:15px;
+
+  padding:13px;
+
+  background:#c85a82;
+
+  color:#fff;
+
+  border:0;
+
+  border-radius:12px;
+
+  font-weight:bold;
+
+  font-size:15px;
+}
+
+.secondary-action{
+  width:100%;
+
+  margin-top:9px;
+
+  padding:12px;
+
+  background:#eee !important;
+
+  color:#555 !important;
+
+  border:0;
+
+  border-radius:11px;
+}
+
+/* =========================================================
+   الأسعار
+   ========================================================= */
+
+.price-input{
+  position:relative;
+}
+
+.price-input input{
+  padding-left:55px;
+}
+
+.price-input::before{
+  content:"دج";
+
+  position:absolute;
+
+  left:12px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:#888;
+
+  font-size:13px;
+
+  z-index:2;
+}
+
+/* =========================================================
+   رفع الصور
+   ========================================================= */
+
+.image-upload{
+  background:#fff7fa !important;
+
+  border:1px dashed #d9aabb !important;
+
+  padding:11px !important;
+}
+
+.preview{
+  width:120px;
+  height:120px;
+
+  object-fit:cover;
+
+  margin:10px auto;
+
+  border-radius:15px;
+
+  border:1px solid #eee;
+}
+
+.logo-preview{
+  width:130px;
+  height:130px;
+
+  object-fit:contain;
+
+  margin:12px auto;
+
+  padding:8px;
+
+  background:#fff;
+
+  border:1px solid #eee;
+
+  border-radius:18px;
+}
+
+/* =========================================================
+   قائمة عناصر الطلب
+   ========================================================= */
+
+.items-list{
+  margin-top:10px;
+
+  padding:12px;
+
+  background:#fff8fa;
+
+  border-radius:12px;
+
+  border:1px solid #f0dfe5;
+
+  line-height:1.7;
+
+  font-size:13px;
+}
+
+/* =========================================================
+   الشعار
+   ========================================================= */
+
+#logoForm{
+  background:#fff;
+
+  padding:19px;
+
+  border-radius:19px;
+
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+}
+
+#logoForm label{
+  display:block;
+
+  margin-bottom:6px;
+
+  font-weight:bold;
+}
+
+#logoForm button{
+  width:100%;
+
+  margin-top:10px;
+}
+
+#logoMsg{
+  min-height:20px;
+
+  margin:10px 0 0;
+
+  text-align:center;
+
+  font-weight:bold;
+}
+
+/* =========================================================
+   زر الخروج
+   ========================================================= */
+
+.logout-action{
+  background:#fff !important;
+
+  color:#b33a3a !important;
+
+  border:1px solid #e5c8ce !important;
+
+  border-radius:11px !important;
+
+  padding:9px 13px !important;
+
+  font-size:13px !important;
+}
+
+.logout-action:hover{
+  background:#fff4f4 !important;
+}
+
+/* =========================================================
+   شريط التمرير
+   ========================================================= */
+
+#notificationList::-webkit-scrollbar{
+  width:5px;
+}
+
+#notificationList::-webkit-scrollbar-thumb{
+  background:#d7b7c3;
+  border-radius:10px;
+}
+
+/* =========================================================
+   الشاشات المتوسطة
+   ========================================================= */
+
+@media(min-width:700px){
+
+  .admin-panel{
+    padding-left:20px;
+    padding-right:20px;
   }
 
-  function showLogoMessage(message, success = false) {
-    const el = $('#logoMsg');
-    if (!el) return;
-    el.textContent = message;
-    el.style.color = success ? 'green' : 'crimson';
+  .product-card{
+    display:block;
   }
 
-  function showPanel() {
-    const login = $('#login');
-    const panel = $('#panel');
-    const logoutBtn = $('#logoutBtn');
+}
 
-    if (login) login.style.display = 'none';
-    if (panel) panel.style.display = 'block';
-    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+/* =========================================================
+   الهاتف
+   ========================================================= */
 
-    loadOrders();
-    loadProducts();
+@media(max-width:600px){
+
+  .app-header{
+    padding:10px 12px;
   }
 
-  function showLogin() {
-    const login = $('#login');
-    const panel = $('#panel');
-    const logoutBtn = $('#logoutBtn');
-
-    if (login) login.style.display = 'block';
-    if (panel) panel.style.display = 'none';
-    if (logoutBtn) logoutBtn.style.display = 'none';
+  .brand b{
+    font-size:17px;
   }
 
-  function createDatabase() {
-    if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) {
-      showLoginMessage('إعدادات Supabase غير موجودة في config.js');
-      console.error('HAYATI_CONFIG غير موجود أو ناقص.');
-      return null;
-    }
-
-    if (!window.supabase) {
-      showLoginMessage('تعذر تحميل مكتبة Supabase.');
-      console.error('Supabase JS library غير موجودة.');
-      return null;
-    }
-
-    try {
-      return window.supabase.createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_ANON_KEY
-      );
-    } catch (error) {
-      console.error(error);
-      showLoginMessage('تعذر إنشاء اتصال Supabase.');
-      return null;
-    }
+  .brand small{
+    font-size:11px;
   }
 
-  async function checkSession() {
-    if (!db) return;
+  .brand-icon{
+    width:39px;
+    height:39px;
 
-    try {
-      const result = await db.auth.getSession();
+    border-radius:12px;
 
-      if (result.error) {
-        console.error(result.error);
-        showLogin();
-        return;
-      }
-
-      if (result.data?.session) {
-        showPanel();
-      } else {
-        showLogin();
-      }
-    } catch (error) {
-      console.error('Session error:', error);
-      showLogin();
-    }
+    font-size:19px;
   }
 
-  /*
-   * =========================================================
-   * تسجيل الدخول
-   * =========================================================
-   */
+  .notification-btn{
+    width:43px;
+    height:43px;
 
-  const loginForm = $('#loginForm');
-
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      if (!db) {
-        showLoginMessage('Supabase غير متصل.');
-        return;
-      }
-
-      const email = String($('#email')?.value || '').trim();
-      const password = String($('#password')?.value || '');
-
-      if (!email || !password) {
-        showLoginMessage('أدخلي البريد الإلكتروني وكلمة المرور.');
-        return;
-      }
-
-      const submitButton =
-        loginForm.querySelector('button[type="submit"]');
-
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.textContent = 'جاري الدخول...';
-      }
-
-      showLoginMessage('');
-
-      try {
-        const result = await db.auth.signInWithPassword({
-          email,
-          password
-        });
-
-        if (result.error) {
-          console.error('Login error:', result.error);
-          showLoginMessage('بيانات الدخول غير صحيحة.');
-          return;
-        }
-
-        showLoginMessage(
-          'تم تسجيل الدخول بنجاح ✓',
-          true
-        );
-
-        showPanel();
-
-      } catch (error) {
-        console.error(error);
-        showLoginMessage('حدث خطأ أثناء تسجيل الدخول.');
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.textContent = 'دخول';
-        }
-      }
-    });
+    border-radius:13px;
   }
 
-  /*
-   * =========================================================
-   * تسجيل الخروج
-   * =========================================================
-   */
+  .notification-menu{
+    position:fixed;
 
-  const logoutBtn = $('#logoutBtn');
+    top:65px;
+    left:10px;
+    right:10px;
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      if (!db) return;
-
-      try {
-        await db.auth.signOut();
-        showLogin();
-
-        const password = $('#password');
-        if (password) password.value = '';
-
-        showLoginMessage('تم تسجيل الخروج.');
-
-      } catch (error) {
-        console.error('Logout error:', error);
-      }
-    });
+    width:auto;
+    max-width:none;
   }
 
-  /*
-   * =========================================================
-   * التبويبات
-   * =========================================================
-   */
-
-  function showTab(tabName) {
-    const orders = $('#orders');
-    const products = $('#products');
-    const site = $('#site');
-
-    if (orders) {
-      orders.style.display =
-        tabName === 'orders' ? 'block' : 'none';
-    }
-
-    if (products) {
-      products.style.display =
-        tabName === 'products' ? 'block' : 'none';
-    }
-
-    if (site) {
-      site.style.display =
-        tabName === 'site' ? 'block' : 'none';
-    }
+  .admin-panel{
+    padding:12px 10px 35px;
   }
 
-  const ordersTab = $('#ordersTab');
-  const productsTab = $('#productsTab');
-  const siteTab = $('#siteTab');
-
-  if (ordersTab) {
-    ordersTab.addEventListener('click', () => {
-      showTab('orders');
-      loadOrders();
-    });
+  .welcome-card{
+    padding:14px;
   }
 
-  if (productsTab) {
-    productsTab.addEventListener('click', () => {
-      showTab('products');
-      loadProducts();
-    });
+  .welcome-card h2{
+    font-size:18px;
   }
 
-  if (siteTab) {
-    siteTab.addEventListener('click', () => {
-      showTab('site');
-    });
+  .section-header h2{
+    font-size:18px;
   }
 
-  /*
-   * =========================================================
-   * الطلبات
-   * =========================================================
-   */
+  .tabs{
+    grid-template-columns:1fr;
 
-  async function loadOrders() {
-    const container = $('#ordersList');
-
-    if (!container || !db) return;
-
-    container.innerHTML =
-      '<p>جاري تحميل الطلبات...</p>';
-
-    try {
-      const result = await db
-        .from('orders')
-        .select('*')
-        .order('created_at', {
-          ascending: false
-        });
-
-      if (result.error) {
-        console.error('Orders error:', result.error);
-
-        container.innerHTML =
-          '<p style="color:crimson;">' +
-          'تعذر تحميل الطلبات.<br>' +
-          esc(result.error.message) +
-          '</p>';
-
-        return;
-      }
-
-      const orders = Array.isArray(result.data)
-        ? result.data
-        : [];
-
-      if (!orders.length) {
-        container.innerHTML =
-          '<p>لا توجد طلبات حاليا.</p>';
-        return;
-      }
-
-      container.innerHTML =
-        orders.map(renderOrder).join('');
-
-    } catch (error) {
-      console.error(error);
-
-      container.innerHTML =
-        '<p style="color:crimson;">' +
-        'حدث خطأ أثناء تحميل الطلبات.' +
-        '</p>';
-    }
+    gap:7px;
   }
 
-  function renderOrder(order) {
-    let items = [];
-
-    try {
-      if (Array.isArray(order.items)) {
-        items = order.items;
-      } else if (typeof order.items === 'string') {
-        items = JSON.parse(order.items);
-      }
-    } catch {
-      items = [];
-    }
-
-    const itemsHtml = items.length
-      ? items.map(item => `
-          <div style="
-            padding:6px 0;
-            border-bottom:1px solid #eee;
-          ">
-            <b>${esc(item.name || 'منتج')}</b>
-            <br>
-            <small>
-              الكمية:
-              ${Number(item.qty) || 0}
-              ×
-              ${money(item.price)}
-            </small>
-          </div>
-        `).join('')
-      : '<span>لا توجد تفاصيل المنتجات</span>';
-
-    const date = order.created_at
-      ? new Date(order.created_at).toLocaleString('ar-DZ')
-      : '';
-
-    return `
-      <article
-        class="admin-order"
-        style="
-          border:1px solid #ddd;
-          border-radius:12px;
-          padding:15px;
-          margin:12px 0;
-          background:#fff;
-        "
-      >
-
-        <h3>
-          طلب رقم:
-          ${esc(order.id || '')}
-        </h3>
-
-        <p>
-          <b>الزبون:</b>
-          ${esc(order.customer_name || '')}
-        </p>
-
-        <p>
-          <b>الهاتف:</b>
-          ${esc(order.phone || '')}
-        </p>
-
-        <p>
-          <b>الولاية:</b>
-          ${esc(order.wilaya || '')}
-        </p>
-
-        <p>
-          <b>البلدية:</b>
-          ${esc(order.municipality || '')}
-        </p>
-
-        <p>
-          <b>نقطة الاستلام:</b>
-          ${esc(order.pickup_point || '')}
-        </p>
-
-        <p>
-          <b>المجموع:</b>
-          ${money(order.total)}
-        </p>
-
-        ${
-          date
-            ? `
-              <p>
-                <b>التاريخ:</b>
-                ${esc(date)}
-              </p>
-            `
-            : ''
-        }
-
-        <div style="
-          margin-top:12px;
-          padding:10px;
-          background:#f8f8f8;
-          border-radius:8px;
-        ">
-          <b>المنتجات:</b>
-          ${itemsHtml}
-        </div>
-
-        <button
-          type="button"
-          class="delete-order"
-          data-id="${esc(order.id || '')}"
-          style="
-            margin-top:12px;
-            background:#c62828;
-            color:#fff;
-            border:0;
-            padding:10px 16px;
-            border-radius:7px;
-            cursor:pointer;
-          "
-        >
-          حذف الطلب
-        </button>
-
-      </article>
-    `;
+  .tab-btn{
+    min-height:46px;
   }
 
-  /*
-   * =========================================================
-   * حذف الطلب - النسخة المصححة
-   * =========================================================
-   */
-
-  async function deleteOrder(id, button) {
-    if (!id || !db) {
-      alert('رقم الطلب غير موجود.');
-      return;
-    }
-
-    const confirmed = confirm(
-      'هل أنت متأكدة من حذف هذا الطلب نهائيًا؟'
-    );
-
-    if (!confirmed) return;
-
-    const originalText = button
-      ? button.textContent
-      : 'حذف الطلب';
-
-    if (button) {
-      button.disabled = true;
-      button.textContent = 'جاري الحذف...';
-    }
-
-    try {
-      /*
-       * نستخدم select بعد DELETE
-       * حتى نتأكد أن Supabase حذف الصف فعلًا.
-       */
-
-      const result = await db
-        .from('orders')
-        .delete()
-        .eq('id', id)
-        .select('id');
-
-      if (result.error) {
-        console.error(
-          'Delete order error:',
-          result.error
-        );
-
-        alert(
-          'لم يتم حذف الطلب.\n\n' +
-          'رسالة Supabase:\n' +
-          result.error.message
-        );
-
-        return;
-      }
-
-      const deletedRows = Array.isArray(result.data)
-        ? result.data
-        : [];
-
-      /*
-       * إذا لم تُرجع Supabase أي صف،
-       * فهذا يعني أن RLS قد تمنع الحذف
-       * أو أن الطلب غير موجود.
-       */
-
-      if (deletedRows.length === 0) {
-        alert(
-          'لم يتم حذف الطلب.\n\n' +
-          'غالبًا صلاحيات Supabase (RLS) تمنع حذف الطلبات.'
-        );
-
-        return;
-      }
-
-      alert('تم حذف الطلب بنجاح ✓');
-
-      await loadOrders();
-
-    } catch (error) {
-      console.error(
-        'Delete order exception:',
-        error
-      );
-
-      alert(
-        'حدث خطأ أثناء حذف الطلب:\n' +
-        (error?.message || error)
-      );
-
-    } finally {
-      if (button) {
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-    }
+  .login-screen{
+    padding:18px 12px;
   }
 
-  /*
-   * مستمع واحد لأزرار حذف الطلبات
-   */
+  .login-card{
+    padding:23px 17px;
 
-  document.addEventListener('click', event => {
-    const button =
-      event.target.closest('.delete-order');
-
-    if (!button) return;
-
-    const id = button.dataset.id;
-
-    deleteOrder(id, button);
-  });
-
-  /*
-   * =========================================================
-   * المنتجات
-   * =========================================================
-   */
-
-  async function loadProducts() {
-    const container = $('#productList');
-
-    if (!container || !db) return;
-
-    container.innerHTML =
-      '<p>جاري تحميل المنتجات...</p>';
-
-    try {
-      const result = await db
-        .from('products')
-        .select('*')
-        .order('created_at', {
-          ascending: false
-        });
-
-      if (result.error) {
-        console.error(
-          'Products error:',
-          result.error
-        );
-
-        container.innerHTML =
-          '<p style="color:crimson;">' +
-          'تعذر تحميل المنتجات.<br>' +
-          esc(result.error.message) +
-          '</p>';
-
-        return;
-      }
-
-      const products = Array.isArray(result.data)
-        ? result.data
-        : [];
-
-      if (!products.length) {
-        container.innerHTML =
-          '<p>لا توجد منتجات حاليا.</p>';
-        return;
-      }
-
-      container.innerHTML =
-        products.map(renderProduct).join('');
-
-    } catch (error) {
-      console.error(error);
-
-      container.innerHTML =
-        '<p style="color:crimson;">' +
-        'حدث خطأ أثناء تحميل المنتجات.' +
-        '</p>';
-    }
+    border-radius:20px;
   }
 
-  function renderProduct(product) {
-    const image =
-      product.image_url ||
-      product.image ||
-      '';
+  .login-logo{
+    width:65px;
+    height:65px;
 
-    const oldPrice =
-      product.old_price !== null &&
-      product.old_price !== undefined &&
-      product.old_price !== ''
-        ? `
-          <div>
-            <del>${money(product.old_price)}</del>
-          </div>
-        `
-        : '';
-
-    return `
-      <article
-        class="admin-product"
-        style="
-          border:1px solid #ddd;
-          border-radius:12px;
-          padding:12px;
-          margin:12px 0;
-          background:#fff;
-        "
-      >
-
-        ${
-          image
-            ? `
-              <img
-                src="${esc(image)}"
-                alt="${esc(product.name || '')}"
-                style="
-                  width:100%;
-                  max-width:180px;
-                  height:180px;
-                  object-fit:cover;
-                  border-radius:10px;
-                  margin-bottom:10px;
-                "
-              >
-            `
-            : `
-              <div style="
-                width:180px;
-                height:180px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                background:#f3f3f3;
-                border-radius:10px;
-                margin-bottom:10px;
-              ">
-                🛍️
-              </div>
-            `
-        }
-
-        <h3>
-          ${esc(product.name || 'منتج')}
-        </h3>
-
-        <p>
-          القسم:
-          <b>${esc(product.category || '')}</b>
-        </p>
-
-        ${oldPrice}
-
-        <p>
-          السعر:
-          <b>${money(product.price)}</b>
-        </p>
-
-        <p>
-          المخزون:
-          <b>${Number(product.stock) || 0}</b>
-        </p>
-
-        ${
-          product.description
-            ? `
-              <p>
-                ${esc(product.description)}
-              </p>
-            `
-            : ''
-        }
-
-        <div style="
-          display:flex;
-          gap:8px;
-          flex-wrap:wrap;
-          margin-top:10px;
-        ">
-
-          <button
-            type="button"
-            class="edit-product"
-            data-id="${esc(product.id)}"
-          >
-            تعديل
-          </button>
-
-          <button
-            type="button"
-            class="delete-product"
-            data-id="${esc(product.id)}"
-            style="
-              background:#c62828;
-              color:#fff;
-              border:0;
-              padding:8px 14px;
-              border-radius:7px;
-              cursor:pointer;
-            "
-          >
-            حذف
-          </button>
-
-        </div>
-
-      </article>
-    `;
+    border-radius:19px;
   }
 
-  /*
-   * =========================================================
-   * تعديل المنتج
-   * =========================================================
-   */
-
-  async function editProduct(id) {
-    if (!id || !db) return;
-
-    try {
-      const result = await db
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
-
-      if (result.error) {
-        console.error(result.error);
-
-        alert(
-          'تعذر تحميل المنتج:\n' +
-          result.error.message
-        );
-
-        return;
-      }
-
-      const product = result.data;
-
-      if (!product) {
-        alert('المنتج غير موجود.');
-        return;
-      }
-
-      editingProductId = product.id;
-
-      if ($('#pid')) $('#pid').value = product.id || '';
-      if ($('#pname')) $('#pname').value = product.name || '';
-      if ($('#pcat')) $('#pcat').value = product.category || '';
-      if ($('#pprice')) $('#pprice').value = product.price ?? '';
-      if ($('#pold')) $('#pold').value = product.old_price ?? '';
-      if ($('#pstock')) $('#pstock').value = product.stock ?? 0;
-      if ($('#pdesc')) $('#pdesc').value = product.description || '';
-
-      const image =
-        product.image_url ||
-        product.image ||
-        '';
-
-      if ($('#pimage')) {
-        $('#pimage').value = image;
-      }
-
-      const preview = $('#productPreview');
-
-      if (preview && image) {
-        preview.src = image;
-        preview.style.display = 'block';
-      }
-
-      const cancel = $('#cancelEdit');
-
-      if (cancel) {
-        cancel.style.display = 'inline-block';
-      }
-
-      const form = $('#productForm');
-
-      if (form) {
-        form.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        'حدث خطأ أثناء تعديل المنتج.'
-      );
-    }
+  .login-card h1{
+    font-size:22px;
   }
 
-  /*
-   * =========================================================
-   * حذف المنتج - أيضًا مع التحقق
-   * =========================================================
-   */
-
-  async function deleteProduct(id, button) {
-    if (!id || !db) {
-      alert('رقم المنتج غير موجود.');
-      return;
-    }
-
-    const confirmed = confirm(
-      'هل أنت متأكد من حذف هذا المنتج نهائيًا؟'
-    );
-
-    if (!confirmed) return;
-
-    const originalText = button
-      ? button.textContent
-      : 'حذف';
-
-    if (button) {
-      button.disabled = true;
-      button.textContent = 'جاري الحذف...';
-    }
-
-    try {
-      const result = await db
-        .from('products')
-        .delete()
-        .eq('id', id)
-        .select('id');
-
-      if (result.error) {
-        console.error(
-          'Delete product error:',
-          result.error
-        );
-
-        alert(
-          'لم يتم حذف المنتج.\n\n' +
-          result.error.message
-        );
-
-        return;
-      }
-
-      const deletedRows = Array.isArray(result.data)
-        ? result.data
-        : [];
-
-      if (deletedRows.length === 0) {
-        alert(
-          'لم يتم حذف المنتج.\n\n' +
-          'غالبًا صلاحيات Supabase (RLS) تمنع الحذف.'
-        );
-
-        return;
-      }
-
-      alert('تم حذف المنتج بنجاح ✓');
-
-      if (
-        String(editingProductId) === String(id)
-      ) {
-        resetProductForm();
-      }
-
-      await loadProducts();
-
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        'حدث خطأ أثناء حذف المنتج:\n' +
-        (error?.message || error)
-      );
-
-    } finally {
-      if (button) {
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-    }
+  button{
+    -webkit-tap-highlight-color:transparent;
   }
 
-  document.addEventListener('click', event => {
-    const editButton =
-      event.target.closest('.edit-product');
+  .product-card button{
+    width:100%;
 
-    if (editButton) {
-      editProduct(editButton.dataset.id);
-      return;
-    }
-
-    const deleteButton =
-      event.target.closest('.delete-product');
-
-    if (deleteButton) {
-      deleteProduct(
-        deleteButton.dataset.id,
-        deleteButton
-      );
-    }
-  });
-
-  /*
-   * =========================================================
-   * رفع الصور
-   * =========================================================
-   */
-
-  async function uploadImage(file, folder) {
-    if (!file || !db) return null;
-
-    const extension =
-      (file.name.split('.').pop() || 'jpg')
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '');
-
-    const random =
-      Math.random()
-        .toString(36)
-        .substring(2, 10);
-
-    const path =
-      `${folder}/${Date.now()}-${random}.${extension}`;
-
-    const bucket = 'hayati';
-
-    try {
-      const upload = await db.storage
-        .from(bucket)
-        .upload(path, file, {
-          upsert: true,
-          contentType:
-            file.type || 'image/jpeg'
-        });
-
-      if (upload.error) {
-        console.error(
-          'Storage upload error:',
-          upload.error
-        );
-
-        return null;
-      }
-
-      const publicUrl =
-        db.storage
-          .from(bucket)
-          .getPublicUrl(path);
-
-      return publicUrl.data?.publicUrl || null;
-
-    } catch (error) {
-      console.error(
-        'Image upload error:',
-        error
-      );
-
-      return null;
-    }
+    margin:7px 0 0;
   }
 
-  /*
-   * =========================================================
-   * معاينة صورة المنتج
-   * =========================================================
-   */
-
-  const pimageFile = $('#pimageFile');
-
-  if (pimageFile) {
-    pimageFile.addEventListener('change', () => {
-      const file =
-        pimageFile.files &&
-        pimageFile.files[0];
-
-      const preview = $('#productPreview');
-
-      if (!file || !preview) return;
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        preview.src = reader.result;
-        preview.style.display = 'block';
-      };
-
-      reader.readAsDataURL(file);
-    });
+  .order-card{
+    padding:14px;
   }
 
-  /*
-   * =========================================================
-   * حفظ المنتج
-   * =========================================================
-   */
-
-  const productForm = $('#productForm');
-
-  if (productForm) {
-    productForm.addEventListener('submit', async event => {
-      event.preventDefault();
-
-      if (!db) {
-        alert('Supabase غير متصل.');
-        return;
-      }
-
-      const name =
-        String($('#pname')?.value || '').trim();
-
-      const category =
-        String($('#pcat')?.value || '').trim();
-
-      const price =
-        Number($('#pprice')?.value || 0);
-
-      const oldPriceRaw =
-        String($('#pold')?.value || '').trim();
-
-      const stock =
-        Number($('#pstock')?.value || 0);
-
-      const description =
-        String($('#pdesc')?.value || '').trim();
-
-      let image =
-        String($('#pimage')?.value || '').trim();
-
-      if (!name) {
-        alert('أدخلي اسم المنتج.');
-        return;
-      }
-
-      if (!category) {
-        alert('اختاري القسم.');
-        return;
-      }
-
-      if (price < 0) {
-        alert('السعر غير صحيح.');
-        return;
-      }
-
-      if (oldPriceRaw !== '' && Number(oldPriceRaw) < 0) {
-        alert('السعر القديم غير صحيح.');
-        return;
-      }
-
-      if (stock < 0) {
-        alert('المخزون غير صحيح.');
-        return;
-      }
-
-      const submit =
-        productForm.querySelector(
-          'button[type="submit"]'
-        );
-
-      if (submit) {
-        submit.disabled = true;
-        submit.textContent = 'جاري الحفظ...';
-      }
-
-      try {
-        const file =
-          pimageFile &&
-          pimageFile.files &&
-          pimageFile.files[0];
-
-        if (file) {
-          const uploaded =
-            await uploadImage(
-              file,
-              'products'
-            );
-
-          if (!uploaded) {
-            alert(
-              'تعذر رفع الصورة.\n' +
-              'تأكدي من وجود Storage bucket باسم hayati وصلاحياته.'
-            );
-
-            return;
-          }
-
-          image = uploaded;
-        }
-
-        const productData = {
-          name,
-          category,
-          price,
-          old_price:
-            oldPriceRaw === ''
-              ? null
-              : Number(oldPriceRaw),
-          stock,
-          description,
-          image_url: image || null
-        };
-
-        let result;
-
-        if (editingProductId) {
-          result = await db
-            .from('products')
-            .update(productData)
-            .eq('id', editingProductId);
-        } else {
-          result = await db
-            .from('products')
-            .insert(productData);
-        }
-
-        if (result.error) {
-          console.error(
-            'Save product error:',
-            result.error
-          );
-
-          alert(
-            'تعذر حفظ المنتج:\n' +
-            result.error.message
-          );
-
-          return;
-        }
-
-        alert(
-          editingProductId
-            ? 'تم تعديل المنتج بنجاح ✓'
-            : 'تمت إضافة المنتج بنجاح ✓'
-        );
-
-        resetProductForm();
-        await loadProducts();
-
-      } catch (error) {
-        console.error(error);
-
-        alert(
-          'حدث خطأ أثناء حفظ المنتج:\n' +
-          (error?.message || error)
-        );
-
-      } finally {
-        if (submit) {
-          submit.disabled = false;
-          submit.textContent = 'حفظ المنتج';
-        }
-      }
-    });
+  .admin-form{
+    padding:15px;
   }
 
-  /*
-   * =========================================================
-   * إعادة نموذج المنتج
-   * =========================================================
-   */
+}
 
-  function resetProductForm() {
-    editingProductId = null;
+/* =========================================================
+   الشاشات الصغيرة جدًا
+   ========================================================= */
 
-    const form = $('#productForm');
-    if (form) form.reset();
+@media(max-width:380px){
 
-    const pid = $('#pid');
-    if (pid) pid.value = '';
-
-    const pimage = $('#pimage');
-    if (pimage) pimage.value = '';
-
-    if (pimageFile) {
-      pimageFile.value = '';
-    }
-
-    const preview = $('#productPreview');
-
-    if (preview) {
-      preview.src = '';
-      preview.style.display = 'none';
-    }
-
-    const cancel = $('#cancelEdit');
-
-    if (cancel) {
-      cancel.style.display = 'none';
-    }
+  .brand small{
+    display:none;
   }
 
-  const cancelEdit = $('#cancelEdit');
-
-  if (cancelEdit) {
-    cancelEdit.addEventListener(
-      'click',
-      resetProductForm
-    );
+  .welcome-card{
+    align-items:flex-start;
   }
 
-  /*
-   * =========================================================
-   * الشعار
-   * =========================================================
-   */
-
-  const logoFile = $('#logoFile');
-
-  if (logoFile) {
-    logoFile.addEventListener('change', () => {
-      const file =
-        logoFile.files &&
-        logoFile.files[0];
-
-      const preview = $('#logoPreview');
-
-      if (!file || !preview) return;
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        preview.src = reader.result;
-        preview.style.display = 'block';
-      };
-
-      reader.readAsDataURL(file);
-    });
+  .welcome-icon{
+    width:44px;
+    height:44px;
   }
 
-  const logoForm = $('#logoForm');
-
-  if (logoForm) {
-    logoForm.addEventListener('submit', async event => {
-      event.preventDefault();
-
-      if (!db) {
-        showLogoMessage('Supabase غير متصل.');
-        return;
-      }
-
-      const file =
-        logoFile &&
-        logoFile.files &&
-        logoFile.files[0];
-
-      if (!file) {
-        showLogoMessage(
-          'اختاري صورة الشعار أولا.'
-        );
-        return;
-      }
-
-      const button =
-        logoForm.querySelector(
-          'button[type="submit"]'
-        );
-
-      if (button) {
-        button.disabled = true;
-        button.textContent = 'جاري الحفظ...';
-      }
-
-      showLogoMessage('');
-
-      try {
-        const url =
-          await uploadImage(
-            file,
-            'site'
-          );
-
-        if (!url) {
-          showLogoMessage(
-            'تعذر رفع الشعار. تأكدي من Storage bucket باسم hayati.'
-          );
-          return;
-        }
-
-        localStorage.setItem(
-          'hayati_logo',
-          url
-        );
-
-        showLogoMessage(
-          'تم حفظ الشعار بنجاح ✓',
-          true
-        );
-
-      } catch (error) {
-        console.error(error);
-
-        showLogoMessage(
-          'حدث خطأ أثناء حفظ الشعار.'
-        );
-
-      } finally {
-        if (button) {
-          button.disabled = false;
-          button.textContent = 'حفظ الشعار';
-        }
-      }
-    });
+  .notification-menu{
+    left:7px;
+    right:7px;
   }
 
-  /*
-   * =========================================================
-   * بدء لوحة المدير
-   * =========================================================
-   */
-
-  async function start() {
-    db = createDatabase();
-
-    if (!db) return;
-
-    window.HAYATI_DB = db;
-
-    try {
-      db.auth.onAuthStateChange(
-        (event, session) => {
-          if (session) {
-            showPanel();
-          } else {
-            showLogin();
-          }
-        }
-      );
-    } catch (error) {
-      console.error(
-        'Auth listener error:',
-        error
-      );
-    }
-
-    await checkSession();
-  }
-
-  start();
-
-})();
+}
