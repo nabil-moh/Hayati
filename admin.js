@@ -1,1286 +1,790 @@
-const cfg = window.HAYATI_CONFIG;
+(() => {
+  'use strict';
 
-if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
-console.error("إعدادات Supabase غير موجودة");
-const msg = document.getElementById("loginMsg");
-if (msg) msg.textContent = "خطأ في إعدادات الموقع";
-} else {
-
-const supabaseClient = window.supabase.createClient(
-cfg.SUPABASE_URL,
-cfg.SUPABASE_ANON_KEY
-);
-
-const $ = (id) => document.getElementById(id);
-
-const login = $("login");
-const panel = $("panel");
-const loginForm = $("loginForm");
-const loginMsg = $("loginMsg");
-const logoutBtn = $("logoutBtn");
-
-// =========================
-// تسجيل الدخول
-// =========================
-
-loginForm?.addEventListener("submit", async (e) => {
-e.preventDefault();
-
-loginMsg.textContent = "جارٍ تسجيل الدخول...";
-
-const email = $("email")?.value.trim();
-const password = $("password")?.value || "";
-
-if (!email || !password) {
-  loginMsg.textContent = "أدخل البريد الإلكتروني وكلمة المرور";
-  return;
-}
-
-try {
-  const { data, error } =
-    await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-
-  if (error) {
-    console.error("Supabase Login Error:", error);
-    loginMsg.textContent = "بيانات الدخول غير صحيحة";
-    return;
-  }
-
-  if (!data?.session) {
-    loginMsg.textContent = "لم يتم إنشاء جلسة الدخول";
-    return;
-  }
-
-  loginMsg.textContent = "";
-  showPanel();
-
-} catch (error) {
-  console.error(error);
-  loginMsg.textContent = "حدث خطأ أثناء تسجيل الدخول";
-}
-
-});
-
-// =========================
-// إظهار لوحة الإدارة
-// =========================
-
-function showPanel() {
-
-if (login) login.style.display = "none";
-if (panel) panel.style.display = "block";
-if (logoutBtn) logoutBtn.style.display = "block";
-
-loadOrders();
-loadProducts();
-
-}
-
-// =========================
-// تسجيل الخروج
-// =========================
-
-logoutBtn?.addEventListener("click", async () => {
-
-await supabaseClient.auth.signOut();
-
-if (panel) panel.style.display = "none";
-if (logoutBtn) logoutBtn.style.display = "none";
-if (login) login.style.display = "block";
-if (loginForm) loginForm.reset();
-if (loginMsg) loginMsg.textContent = "";
-
-});
-
-// =========================
-// التحقق من الجلسة
-// =========================
-
-async function checkSession() {
-
-try {
-
-  const { data, error } =
-    await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  if (data?.session) {
-    showPanel();
-  }
-
-} catch (error) {
-  console.error(error);
-}
-
-}
-
-checkSession();
-
-// =========================
-// التبويبات
-// =========================
-
-const ordersSection = $("orders");
-const productsSection = $("products");
-const siteSection = $("site");
-
-$("ordersTab")?.addEventListener("click", () => {
-
-if (ordersSection) ordersSection.style.display = "block";
-if (productsSection) productsSection.style.display = "none";
-if (siteSection) siteSection.style.display = "none";
-
-loadOrders();
-
-});
-
-$("productsTab")?.addEventListener("click", () => {
-
-if (ordersSection) ordersSection.style.display = "none";
-if (productsSection) productsSection.style.display = "block";
-if (siteSection) siteSection.style.display = "none";
-
-loadProducts();
-
-});
-
-$("siteTab")?.addEventListener("click", () => {
-
-if (ordersSection) ordersSection.style.display = "none";
-if (productsSection) productsSection.style.display = "none";
-if (siteSection) siteSection.style.display = "block";
-
-loadCurrentLogo();
-
-});
-
-// =========================
-// الطلبات
-// =========================
-
-async function loadOrders() {
-
-const box = $("ordersList") || $("orders");
-
-if (!box) return;
-
-box.innerHTML = "<p>جارٍ تحميل الطلبات...</p>";
-
-try {
-
-  // جلب الطلبات
-  const { data: orders, error } =
-    await supabaseClient
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error(error);
-    box.innerHTML =
-      "<p>حدث خطأ أثناء تحميل الطلبات.</p>";
-    return;
-  }
-
-  if (!orders || orders.length === 0) {
-    box.innerHTML =
-      "<p>لا توجد طلبات حاليًا.</p>";
-    return;
-  }
-
-  // جلب المنتجات حتى نتمكن من إظهار صورها
-  const { data: products, error: productsError } =
-    await supabaseClient
-      .from("products")
-      .select("*");
-
-  if (productsError) {
-    console.error(productsError);
-  }
-
-  const productMap = {};
-
-  (products || []).forEach((product) => {
-
-    productMap[String(product.id)] = product;
-
-    if (product.name) {
-      productMap["name:" + product.name] = product;
+  const demo = [
+    {
+      id: 'demo-1',
+      name: 'فستان وردي ناعم',
+      category: 'ملابس',
+      price: 2900,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-2',
+      name: 'بلوزة أنيقة',
+      category: 'ملابس',
+      price: 1850,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1564257577054-0e5ab90e0f0f?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-3',
+      name: 'عباية مطرزة',
+      category: 'ملابس',
+      price: 3500,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-4',
+      name: 'عطر نسائي أنيق',
+      category: 'عطور',
+      price: 2200,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-5',
+      name: 'سيروم للبشرة',
+      category: 'مواد التجميل',
+      price: 1950,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-6',
+      name: 'أحمر شفاه مطفي',
+      category: 'مواد التجميل',
+      price: 1250,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-7',
+      name: 'حذاء نسائي أنيق',
+      category: 'أحذية',
+      price: 3200,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      id: 'demo-8',
+      name: 'حذاء بكعب أنيق',
+      category: 'أحذية',
+      price: 3900,
+      old_price: null,
+      image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=700&q=80'
     }
-  });
-
-  box.innerHTML = "";
-
-  orders.forEach((order) => {
-
-    const div = document.createElement("div");
-
-    div.className = "order-card";
-
-    div.innerHTML = `
-      <h3>🛒 طلب جديد</h3>
-
-      <p>
-        <b>الاسم:</b>
-        ${escapeHtml(order.customer_name || "")}
-      </p>
-
-      <p>
-        <b>الهاتف:</b>
-        ${escapeHtml(order.phone || "")}
-      </p>
-
-      <p>
-        <b>الولاية والبلدية:</b>
-        ${escapeHtml(order.notes || "")}
-      </p>
-
-      <p>
-        <b>العنوان:</b>
-        ${escapeHtml(order.address || "")}
-      </p>
-
-      <p>
-        <b>التاريخ:</b>
-        ${formatDate(order.created_at)}
-      </p>
-
-      <p>
-        <b>المجموع:</b>
-        ${formatPrice(order.total)}
-      </p>
-
-      <p>
-        <b>المنتجات:</b>
-      </p>
-
-      <div class="order-items">
-        ${formatItems(order.items, productMap)}
-      </div>
-
-      <label>
-        <b>حالة الطلب:</b>
-
-        <select
-          class="status-select"
-          data-id="${escapeAttribute(order.id)}">
-
-          <option value="pending"
-            ${order.status === "pending" ? "selected" : ""}>
-            🆕 جديد
-          </option>
-
-          <option value="preparing"
-            ${order.status === "preparing" ? "selected" : ""}>
-            📦 قيد التجهيز
-          </option>
-
-          <option value="shipped"
-            ${order.status === "shipped" ? "selected" : ""}>
-            🚚 تم الشحن
-          </option>
-
-          <option value="completed"
-            ${order.status === "completed" ? "selected" : ""}>
-            ✅ مكتمل
-          </option>
-
-          <option value="cancelled"
-            ${order.status === "cancelled" ? "selected" : ""}>
-            ❌ ملغى
-          </option>
-
-        </select>
-      </label>
-
-      <br>
-
-      <button
-        type="button"
-        class="delete-order"
-        data-id="${escapeAttribute(order.id)}">
-        🗑️ حذف الطلب
-      </button>
-    `;
-
-    box.appendChild(div);
-  });
-
-  // تغيير حالة الطلب
-  document
-    .querySelectorAll(".status-select")
-    .forEach((select) => {
-
-      select.addEventListener("change", async () => {
-
-        await updateOrderStatus(
-          select.dataset.id,
-          select.value
-        );
-
-      });
-
-    });
-
-  // حذف الطلب
-  document
-    .querySelectorAll(".delete-order")
-    .forEach((button) => {
-
-      button.addEventListener("click", async () => {
-
-        await deleteOrder(
-          button.dataset.id
-        );
-
-      });
-
-    });
-
-} catch (error) {
-
-  console.error(error);
-
-  box.innerHTML =
-    "<p>حدث خطأ أثناء تحميل الطلبات.</p>";
-}
-
-}
-
-// =========================
-// حذف الطلب
-// =========================
-
-async function deleteOrder(id) {
-
-const confirmed =
-  confirm(
-    "هل أنت متأكد من حذف هذا الطلب؟\nلا يمكن التراجع عن الحذف."
-  );
-
-if (!confirmed) {
-  return;
-}
-
-try {
-
-  const { error } =
-    await supabaseClient
-      .from("orders")
-      .delete()
-      .eq("id", id);
-
-  if (error) {
-
-    console.error("Delete order error:", error);
-
-    alert(
-      "لم يتم حذف الطلب.\n" +
-      "تأكد من صلاحيات الحذف في Supabase."
-    );
-
-    return;
-  }
-
-  alert("تم حذف الطلب بنجاح ✅");
-
-  loadOrders();
-
-} catch (error) {
-
-  console.error(error);
-
-  alert("حدث خطأ أثناء حذف الطلب.");
-}
-
-}
-
-// =========================
-// تحديث حالة الطلب
-// =========================
-
-async function updateOrderStatus(id, status) {
-
-const { error } =
-  await supabaseClient
-    .from("orders")
-    .update({ status })
-    .eq("id", id);
-
-if (error) {
-
-  console.error(error);
-
-  alert("لم يتم تحديث حالة الطلب.");
-
-  return;
-}
-
-alert("تم تحديث حالة الطلب بنجاح.");
-
-}
-
-// =========================
-// المنتجات
-// =========================
-
-async function loadProducts() {
-
-const list = $("productList");
-
-if (!list) return;
-
-list.innerHTML =
-  "<p>جارٍ تحميل المنتجات...</p>";
-
-const { data, error } =
-  await supabaseClient
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-if (error) {
-
-  console.error(error);
-
-  list.innerHTML =
-    "<p>حدث خطأ أثناء تحميل المنتجات.</p>";
-
-  return;
-}
-
-if (!data || data.length === 0) {
-
-  list.innerHTML =
-    "<p>لا توجد منتجات حاليًا.</p>";
-
-  return;
-}
-
-list.innerHTML = "";
-
-data.forEach((product) => {
-
-  const div = document.createElement("div");
-
-  div.className = "product-card";
-
-  const image =
-    product.image_url ||
-    product.image ||
-    "";
-
-  div.innerHTML = `
-
-    ${
-      image
-        ? `
-          <img
-            src="${escapeAttribute(image)}"
-            alt="${escapeAttribute(product.name || "")}"
-            style="
-              width:100px;
-              height:100px;
-              object-fit:cover;
-              border-radius:12px;
-            "
-          >
-        `
-        : ""
-    }
-
-    <h3>
-      ${escapeHtml(product.name || "")}
-    </h3>
-
-    <p>
-      <b>الفئة:</b>
-      ${escapeHtml(product.category || "")}
-    </p>
-
-    <p>
-      <b>السعر الحالي:</b>
-      ${formatPrice(product.price)}
-    </p>
-
-    ${
-      product.old_price !== null &&
-      product.old_price !== undefined &&
-      product.old_price !== ""
-        ? `
-          <p>
-            <b>السعر القديم:</b>
-            <del>${formatPrice(product.old_price)}</del>
-          </p>
-        `
-        : ""
-    }
-
-    <p>
-      <b>المخزون:</b>
-      ${product.stock ?? 0}
-    </p>
-
-    ${
-      product.description
-        ? `
-          <p>
-            ${escapeHtml(product.description)}
-          </p>
-        `
-        : ""
-    }
-
-    <button
-      type="button"
-      class="edit-product"
-      data-id="${escapeAttribute(product.id)}">
-      ✏️ تعديل
-    </button>
-
-    <button
-      type="button"
-      class="delete-product"
-      data-id="${escapeAttribute(product.id)}">
-      🗑️ حذف المنتج
-    </button>
-  `;
-
-  list.appendChild(div);
-});
-
-// تعديل المنتجات
-document
-  .querySelectorAll(".edit-product")
-  .forEach((button) => {
-
-    button.addEventListener("click", () => {
-
-      editProduct(
-        button.dataset.id,
-        data
+  ];
+
+  const wilayas = [
+    'أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار',
+    'البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو',
+    'الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس',
+    'عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر',
+    'ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف',
+    'تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة',
+    'عين الدفلى','النعامة','عين تموشنت','غرداية','غليزان','تيميمون',
+    'برج باجي مختار','أولاد جلال','بني عباس','عين صالح','عين قزام',
+    'تقرت','جانت','المغير','المنيعة'
+  ];
+
+  const $ = selector => document.querySelector(selector);
+
+  const money = value =>
+    new Intl.NumberFormat('ar-DZ').format(Number(value) || 0) + ' دج';
+
+  const esc = value =>
+    String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char]));
+
+  let products = [...demo];
+  let cart = loadCart();
+  let activeCat = '';
+  let toastTimer;
+
+  function loadCart() {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem('hayati_cart') || '[]'
       );
 
-    });
-
-  });
-
-// حذف المنتجات
-document
-  .querySelectorAll(".delete-product")
-  .forEach((button) => {
-
-    button.addEventListener("click", () => {
-
-      deleteProduct(
-        button.dataset.id
-      );
-
-    });
-
-  });
-
-}
-
-// =========================
-// معاينة صورة المنتج
-// =========================
-
-$("pimageFile")?.addEventListener("change", () => {
-
-const file =
-  $("pimageFile").files?.[0];
-
-const preview =
-  $("productPreview");
-
-if (!file || !preview) return;
-
-preview.src =
-  URL.createObjectURL(file);
-
-preview.style.display =
-  "block";
-
-});
-
-// =========================
-// حفظ المنتج
-// =========================
-
-$("productForm")?.addEventListener("submit", async (e) => {
-
-e.preventDefault();
-
-const pid =
-  $("pid").value.trim();
-
-const name =
-  $("pname").value.trim();
-
-const category =
-  $("pcat").value.trim();
-
-const price =
-  Number($("pprice").value);
-
-const oldValue =
-  $("pold").value;
-
-const stockValue =
-  $("pstock").value;
-
-const old_price =
-  oldValue === ""
-    ? null
-    : Number(oldValue);
-
-const stock =
-  stockValue === ""
-    ? 0
-    : Number(stockValue);
-
-const description =
-  $("pdesc").value.trim();
-
-let image_url =
-  $("pimage").value.trim();
-
-const file =
-  $("pimageFile").files?.[0];
-
-if (file) {
-
-  const fileName =
-    "product-" +
-    Date.now() +
-    "-" +
-    Math.random()
-      .toString(36)
-      .slice(2) +
-    "." +
-    getExtension(file.name);
-
-  const path =
-    "products/" + fileName;
-
-  const { error } =
-    await supabaseClient.storage
-      .from("hayati-assets")
-      .upload(path, file, {
-        upsert: true,
-        contentType: file.type
-      });
-
-  if (error) {
-
-    console.error(error);
-
-    alert("تعذر رفع صورة المنتج.");
-
-    return;
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
   }
 
-  const { data } =
-    supabaseClient.storage
-      .from("hayati-assets")
-      .getPublicUrl(path);
-
-  image_url =
-    data.publicUrl;
-}
-
-const productData = {
-  name,
-  category,
-  price,
-  old_price,
-  stock,
-  description,
-  image_url
-};
-
-let result;
-
-if (pid) {
-
-  result =
-    await supabaseClient
-      .from("products")
-      .update(productData)
-      .eq("id", pid);
-
-} else {
-
-  result =
-    await supabaseClient
-      .from("products")
-      .insert(productData);
-
-}
-
-if (result.error) {
-
-  console.error(result.error);
-
-  alert(
-    "لم يتم حفظ المنتج.\n" +
-    "تأكد من وجود عمود old_price في جدول products."
-  );
-
-  return;
-}
-
-alert(
-  pid
-    ? "تم تعديل المنتج بنجاح ✅"
-    : "تمت إضافة المنتج بنجاح ✅"
-);
-
-resetProductForm();
-
-loadProducts();
-
-});
-
-// =========================
-// تعديل المنتج
-// =========================
-
-function editProduct(id, products) {
-
-const product =
-  products.find(
-    (item) =>
-      String(item.id) === String(id)
-  );
-
-if (!product) return;
-
-$("pid").value =
-  product.id;
-
-$("pname").value =
-  product.name || "";
-
-$("pcat").value =
-  product.category || "";
-
-$("pprice").value =
-  product.price ?? "";
-
-$("pold").value =
-  product.old_price ?? "";
-
-$("pstock").value =
-  product.stock ?? "";
-
-$("pdesc").value =
-  product.description || "";
-
-$("pimage").value =
-  product.image_url ||
-  product.image ||
-  "";
-
-const preview =
-  $("productPreview");
-
-const image =
-  product.image_url ||
-  product.image ||
-  "";
-
-if (preview && image) {
-
-  preview.src =
-    image;
-
-  preview.style.display =
-    "block";
-}
-
-$("cancelEdit").style.display =
-  "block";
-
-window.scrollTo({
-  top: $("productForm").offsetTop,
-  behavior: "smooth"
-});
-
-}
-
-// =========================
-// حذف المنتج
-// =========================
-
-async function deleteProduct(id) {
-
-const confirmed =
-  confirm(
-    "هل أنت متأكد من حذف هذا المنتج؟\nلا يمكن التراجع عن الحذف."
-  );
-
-if (!confirmed) {
-  return;
-}
-
-try {
-
-  const { error } =
-    await supabaseClient
-      .from("products")
-      .delete()
-      .eq("id", id);
-
-  if (error) {
-
-    console.error("Delete product error:", error);
-
-    alert(
-      "لم يتم حذف المنتج.\n" +
-      "تأكد من صلاحيات الحذف في Supabase."
+  function save() {
+    localStorage.setItem(
+      'hayati_cart',
+      JSON.stringify(cart)
     );
 
-    return;
+    renderCart();
   }
 
-  alert("تم حذف المنتج بنجاح ✅");
+  function toast(text) {
+    const t = $('#toast');
 
-  loadProducts();
+    if (!t) return;
 
-} catch (error) {
+    t.textContent = text;
+    t.classList.add('show');
 
-  console.error(error);
+    clearTimeout(toastTimer);
 
-  alert("حدث خطأ أثناء حذف المنتج.");
-}
-
-}
-
-// =========================
-// إلغاء التعديل
-// =========================
-
-$("cancelEdit")?.addEventListener(
-"click",
-resetProductForm
-);
-
-function resetProductForm() {
-
-$("productForm")?.reset();
-
-$("pid").value = "";
-$("pimage").value = "";
-
-const preview =
-  $("productPreview");
-
-if (preview) {
-
-  preview.src = "";
-  preview.style.display = "none";
-}
-
-$("cancelEdit").style.display =
-  "none";
-
-}
-
-// =========================
-// معاينة الشعار
-// =========================
-
-$("logoFile")?.addEventListener("change", () => {
-
-const file =
-  $("logoFile").files?.[0];
-
-const preview =
-  $("logoPreview");
-
-if (!file || !preview) return;
-
-preview.src =
-  URL.createObjectURL(file);
-
-preview.style.display =
-  "block";
-
-});
-
-// =========================
-// حفظ الشعار
-// =========================
-
-$("logoForm")?.addEventListener("submit", async (e) => {
-
-e.preventDefault();
-
-const file =
-  $("logoFile").files?.[0];
-
-const msg =
-  $("logoMsg");
-
-if (!file) {
-
-  if (msg) {
-    msg.textContent =
-      "اختر صورة الشعار أولًا.";
+    toastTimer = setTimeout(() => {
+      t.classList.remove('show');
+    }, 2300);
   }
 
-  return;
-}
+  function renderProducts() {
+    const search = $('#search');
 
-if (msg) {
-  msg.textContent =
-    "جارٍ رفع الشعار...";
-}
+    const q = (search?.value || '')
+      .trim()
+      .toLowerCase();
 
-const fileName =
-  "logo-" +
-  Date.now() +
-  "." +
-  getExtension(file.name);
-
-const path =
-  "site/" + fileName;
-
-const { error: uploadError } =
-  await supabaseClient.storage
-    .from("hayati-assets")
-    .upload(path, file, {
-      upsert: true,
-      contentType: file.type
-    });
-
-if (uploadError) {
-
-  console.error(
-    "Logo upload error:",
-    uploadError
-  );
-
-  if (msg) {
-    msg.textContent =
-      "تعذر رفع الشعار.";
-  }
-
-  return;
-}
-
-const { data } =
-  supabaseClient.storage
-    .from("hayati-assets")
-    .getPublicUrl(path);
-
-const logoUrl =
-  data.publicUrl;
-
-const { error } =
-  await supabaseClient
-    .from("site_settings")
-    .upsert(
-      {
-        key: "logo_url",
-        value: logoUrl
-      },
-      {
-        onConflict: "key"
-      }
+    const list = products.filter(product =>
+      (!activeCat || product.category === activeCat) &&
+      (
+        !q ||
+        String(product.name || '')
+          .toLowerCase()
+          .includes(q) ||
+        String(product.category || '')
+          .toLowerCase()
+          .includes(q)
+      )
     );
 
-if (error) {
+    const container = $('#list');
 
-  console.error(
-    "Logo database error:",
-    error
-  );
+    if (!container) return;
 
-  if (msg) {
-    msg.textContent =
-      "تعذر حفظ الشعار.";
-  }
+    container.innerHTML = list.length
+      ? list.map(product => `
+        <article class="product">
 
-  return;
-}
-
-if (msg) {
-  msg.textContent =
-    "تم حفظ الشعار بنجاح ✅";
-}
-
-const preview =
-  $("logoPreview");
-
-if (preview) {
-
-  preview.src =
-    logoUrl;
-
-  preview.style.display =
-    "block";
-}
-
-});
-
-// =========================
-// تحميل الشعار
-// =========================
-
-async function loadCurrentLogo() {
-
-const preview =
-  $("logoPreview");
-
-if (!preview) return;
-
-const { data, error } =
-  await supabaseClient
-    .from("site_settings")
-    .select("value")
-    .eq("key", "logo_url")
-    .maybeSingle();
-
-if (error) {
-
-  console.error(error);
-
-  return;
-}
-
-if (data?.value) {
-
-  preview.src =
-    data.value;
-
-  preview.style.display =
-    "block";
-}
-
-}
-
-// =========================
-// تنسيق المنتجات داخل الطلب
-// =========================
-
-function formatItems(items, productMap) {
-
-if (!items) {
-  return "<p>لا توجد منتجات.</p>";
-}
-
-if (typeof items === "string") {
-
-  try {
-    items = JSON.parse(items);
-  } catch {
-    return escapeHtml(items);
-  }
-}
-
-if (!Array.isArray(items)) {
-
-  return escapeHtml(
-    JSON.stringify(items)
-  );
-}
-
-return items.map((item) => {
-
-  const productId =
-    item.product_id ||
-    item.productId ||
-    item.id ||
-    "";
-
-  const productName =
-    item.name ||
-    item.product_name ||
-    item.productName ||
-    "منتج";
-
-  const product =
-    productMap[
-      String(productId)
-    ] ||
-    productMap[
-      "name:" + productName
-    ];
-
-  const image =
-    item.image_url ||
-    item.image ||
-    product?.image_url ||
-    product?.image ||
-    "";
-
-  const quantity =
-    item.quantity ||
-    item.qty ||
-    1;
-
-  const price =
-    item.price ??
-    product?.price ??
-    null;
-
-  return `
-    <div
-      class="order-product"
-      style="
-        display:flex;
-        align-items:center;
-        gap:12px;
-        margin:10px 0;
-        padding:10px;
-        border:1px solid #ddd;
-        border-radius:12px;
-      "
-    >
-
-      ${
-        image
-          ? `
+          <div class="pic">
             <img
-              src="${escapeAttribute(image)}"
-              alt="${escapeAttribute(productName)}"
-              style="
-                width:70px;
-                height:70px;
-                object-fit:cover;
-                border-radius:10px;
-                flex-shrink:0;
-              "
+              src="${esc(product.image || '')}"
+              alt="${esc(product.name)}"
+              style="width:100%;height:100%;object-fit:cover"
+              onerror="this.style.display='none';this.parentElement.textContent='🛍️'"
             >
-          `
-          : `
-            <div
-              style="
-                width:70px;
-                height:70px;
-                border-radius:10px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                background:#eee;
-                flex-shrink:0;
-              "
-            >
-              🛍️
-            </div>
-          `
+          </div>
+
+          <div class="info">
+
+            <h3>${esc(product.name)}</h3>
+
+            <span>${esc(product.category)}</span>
+
+            ${
+              product.old_price !== null &&
+              product.old_price !== undefined &&
+              product.old_price !== ''
+                ? `
+                  <p style="
+                    margin:6px 0 0;
+                    color:#888;
+                  ">
+                    <del>${money(product.old_price)}</del>
+                  </p>
+                `
+                : ''
+            }
+
+            <p class="price">
+              ${money(product.price)}
+            </p>
+
+            <button
+              class="buy"
+              data-id="${esc(product.id)}">
+              أضيفي إلى السلة
+            </button>
+
+          </div>
+
+        </article>
+      `).join('')
+      : '<div class="status">لا توجد منتجات حاليا.</div>';
+
+    document.querySelectorAll('.buy').forEach(button => {
+      button.onclick = () => {
+        add(button.dataset.id);
+      };
+    });
+  }
+
+  function renderCart() {
+    const count = cart.reduce(
+      (sum, item) =>
+        sum + (Number(item.qty) || 0),
+      0
+    );
+
+    const countEl = $('#cartCount');
+
+    if (countEl) {
+      countEl.textContent = count;
+    }
+
+    const total = cart.reduce(
+      (sum, item) =>
+        sum +
+        (Number(item.price) || 0) *
+        (Number(item.qty) || 0),
+      0
+    );
+
+    const items = $('#cartItems');
+
+    if (items) {
+      items.innerHTML = cart.length
+        ? cart.map(item => `
+          <div class="row">
+
+            <span>
+              ${esc(item.name)}
+              <br>
+              <small>
+                ${money(item.price)} × ${item.qty}
+              </small>
+            </span>
+
+            <span>
+
+              <button
+                data-minus="${esc(item.id)}">
+                −
+              </button>
+
+              ${item.qty}
+
+              <button
+                data-plus="${esc(item.id)}">
+                +
+              </button>
+
+              <button
+                class="remove"
+                data-remove="${esc(item.id)}">
+                حذف
+              </button>
+
+            </span>
+
+          </div>
+        `).join('')
+        : '<p class="status">السلة فارغة.</p>';
+    }
+
+    const totalEl = $('#total');
+
+    if (totalEl) {
+      totalEl.textContent =
+        new Intl.NumberFormat('ar-DZ').format(total);
+    }
+
+    document.querySelectorAll('[data-minus]')
+      .forEach(button => {
+        button.onclick = () => {
+          change(button.dataset.minus, -1);
+        };
+      });
+
+    document.querySelectorAll('[data-plus]')
+      .forEach(button => {
+        button.onclick = () => {
+          change(button.dataset.plus, 1);
+        };
+      });
+
+    document.querySelectorAll('[data-remove]')
+      .forEach(button => {
+        button.onclick = () => {
+
+          cart = cart.filter(
+            item =>
+              String(item.id) !==
+              String(button.dataset.remove)
+          );
+
+          save();
+        };
+      });
+  }
+
+  function add(id) {
+    const product = products.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+    if (!product) return;
+
+    const existing = cart.find(
+      item =>
+        String(item.id) ===
+        String(id)
+    );
+
+    if (existing) {
+      existing.qty++;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: Number(product.price) || 0,
+        qty: 1
+      });
+    }
+
+    save();
+
+    toast('تمت إضافة طلبك إلى السلة ✓');
+  }
+
+  function change(id, difference) {
+    const item = cart.find(
+      x =>
+        String(x.id) ===
+        String(id)
+    );
+
+    if (!item) return;
+
+    item.qty =
+      (Number(item.qty) || 0) +
+      difference;
+
+    if (item.qty < 1) {
+      cart = cart.filter(
+        x =>
+          String(x.id) !==
+          String(id)
+      );
+    }
+
+    save();
+  }
+
+  function openModal(modal) {
+    if (!modal) return;
+
+    modal.style.display = 'flex';
+    modal.setAttribute(
+      'aria-hidden',
+      'false'
+    );
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+
+    modal.style.display = 'none';
+
+    modal.setAttribute(
+      'aria-hidden',
+      'true'
+    );
+  }
+
+  async function connect() {
+
+    const config =
+      window.HAYATI_CONFIG || {};
+
+    if (
+      !config.SUPABASE_URL ||
+      !config.SUPABASE_ANON_KEY ||
+      !window.supabase
+    ) {
+      console.error(
+        'Supabase configuration is missing.'
+      );
+      return;
+    }
+
+    try {
+
+      const db =
+        window.supabase.createClient(
+          config.SUPABASE_URL,
+          config.SUPABASE_ANON_KEY
+        );
+
+      window.HAYATI_DB = db;
+
+      const result =
+        await db
+          .from('products')
+          .select('*');
+
+      if (result.error) {
+
+        console.error(
+          'Products error:',
+          result.error
+        );
+
+        return;
       }
 
-      <div>
+      if (
+        Array.isArray(result.data) &&
+        result.data.length
+      ) {
 
-        <div>
-          <b>
-            ${escapeHtml(String(productName))}
-          </b>
-        </div>
+        products =
+          result.data.map(product => ({
+            id: product.id,
 
-        <div>
-          الكمية:
-          ${escapeHtml(String(quantity))}
-        </div>
+            name:
+              product.name ||
+              product.title ||
+              'منتج',
 
-        ${
-          price !== null
-            ? `
-              <div>
-                السعر:
-                ${formatPrice(price)}
-              </div>
-            `
-            : ""
+            category:
+              product.category || '',
+
+            price:
+              Number(product.price) || 0,
+
+            old_price:
+              product.old_price !== null &&
+              product.old_price !== undefined
+                ? Number(product.old_price)
+                : null,
+
+            image:
+              product.image_url ||
+              product.image ||
+              ''
+          }));
+
+      }
+
+    } catch (error) {
+
+      console.error(
+        'Supabase connection error:',
+        error
+      );
+    }
+  }
+
+  const wilayaSelect = $('#wilaya');
+
+  if (wilayaSelect) {
+
+    wilayaSelect.innerHTML =
+      '<option value="">اختاري الولاية</option>' +
+      wilayas.map(wilaya =>
+        `<option value="${esc(wilaya)}">${esc(wilaya)}</option>`
+      ).join('');
+  }
+
+  document.querySelectorAll('.cat')
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        activeCat =
+          activeCat === button.dataset.cat
+            ? ''
+            : button.dataset.cat;
+
+        document.querySelectorAll('.cat')
+          .forEach(item => {
+
+            item.classList.toggle(
+              'active',
+              item === button &&
+              !!activeCat
+            );
+
+          });
+
+        renderProducts();
+
+        const productsSection =
+          $('#products');
+
+        if (productsSection) {
+          productsSection.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      };
+
+    });
+
+  const search = $('#search');
+
+  if (search) {
+    search.oninput = renderProducts;
+  }
+
+  const cartButton = $('#cartBtn');
+
+  if (cartButton) {
+
+    cartButton.onclick = () => {
+      openModal($('#cartModal'));
+    };
+
+  }
+
+  const closeCart = $('#closeCart');
+
+  if (closeCart) {
+
+    closeCart.onclick = () => {
+      closeModal($('#cartModal'));
+    };
+
+  }
+
+  const closeCheckout =
+    $('#closeCheckout');
+
+  if (closeCheckout) {
+
+    closeCheckout.onclick = () => {
+      closeModal($('#checkoutModal'));
+    };
+
+  }
+
+  const checkoutButton =
+    $('#checkoutBtn');
+
+  if (checkoutButton) {
+
+    checkoutButton.onclick = () => {
+
+      if (!cart.length) {
+
+        toast(
+          'السلة فارغة، أضيفي منتجا أولا'
+        );
+
+        return;
+      }
+
+      closeModal($('#cartModal'));
+
+      openModal(
+        $('#checkoutModal')
+      );
+
+      const message =
+        $('#orderMsg');
+
+      if (message) {
+        message.textContent = '';
+      }
+    };
+  }
+
+  document.querySelectorAll('.modal')
+    .forEach(modal => {
+
+      modal.addEventListener(
+        'click',
+        event => {
+
+          if (event.target === modal) {
+            closeModal(modal);
+          }
+
+        }
+      );
+
+    });
+
+  const orderForm =
+    $('#orderForm');
+
+  if (orderForm) {
+
+    orderForm.onsubmit =
+      async event => {
+
+        event.preventDefault();
+
+        const message =
+          $('#orderMsg');
+
+        if (message) {
+          message.textContent =
+            'جاري إرسال الطلب...';
         }
 
-      </div>
+        const form =
+          new FormData(orderForm);
 
-    </div>
-  `;
+        const customer_name =
+          String(
+            form.get('customer_name') || ''
+          ).trim();
 
-}).join("");
+        const phone =
+          String(
+            form.get('phone') || ''
+          ).trim();
 
-}
+        const wilaya =
+          String(
+            form.get('wilaya') || ''
+          ).trim();
 
-// =========================
-// أدوات مساعدة
-// =========================
+        const municipality =
+          String(
+            form.get('municipality') || ''
+          ).trim();
 
-function formatPrice(value) {
+        const pickup =
+          String(
+            form.get('pickup_point') || ''
+          ).trim();
 
-if (
-  value === null ||
-  value === undefined ||
-  value === ""
-) {
-  return "0 دج";
-}
+        const total =
+          cart.reduce(
+            (sum, item) =>
+              sum +
+              (Number(item.price) || 0) *
+              (Number(item.qty) || 0),
+            0
+          );
 
-return (
-  Number(value)
-    .toLocaleString("fr-DZ") +
-  " دج"
-);
+        if (
+          !customer_name ||
+          !phone ||
+          !wilaya ||
+          !municipality ||
+          !pickup
+        ) {
 
-}
+          if (message) {
+            message.textContent =
+              'يرجى ملء جميع الخانات المطلوبة.';
+          }
 
-function formatDate(value) {
+          return;
+        }
 
-if (!value) return "";
+        try {
 
-try {
+          if (!window.HAYATI_DB) {
+            throw new Error(
+              'Supabase غير متصل'
+            );
+          }
 
-  return new Date(value)
-    .toLocaleString("ar-DZ");
+          const order = {
 
-} catch {
+            customer_name,
+            phone,
+            wilaya,
+            municipality,
+            pickup_point: pickup,
 
-  return value;
-}
+            items: cart,
 
-}
+            total
+          };
 
-function escapeHtml(value) {
+          const result =
+            await window.HAYATI_DB
+              .from('orders')
+              .insert(order);
 
-return String(value ?? "")
-  .replaceAll("&", "&amp;")
-  .replaceAll("<", "&lt;")
-  .replaceAll(">", "&gt;")
-  .replaceAll('"', "&quot;")
-  .replaceAll("'", "&#039;");
+          if (result.error) {
 
-}
+            console.error(
+              'Hayati Supabase order error:',
+              result.error
+            );
 
-function escapeAttribute(value) {
-return escapeHtml(value);
-}
+            const error =
+              result.error;
 
-function getExtension(filename) {
+            if (message) {
 
-const parts =
-  filename.split(".");
+              message.textContent =
+                'خطأ Supabase:' +
+                (
+                  error.code
+                    ? ' | الكود: ' +
+                      error.code
+                    : ''
+                ) +
+                (
+                  error.message
+                    ? ' | ' +
+                      error.message
+                    : ''
+                ) +
+                (
+                  error.details
+                    ? ' | التفاصيل: ' +
+                      error.details
+                    : ''
+                ) +
+                (
+                  error.hint
+                    ? ' | الحل: ' +
+                      error.hint
+                    : ''
+                );
+            }
 
-if (parts.length < 2) {
-  return "jpg";
-}
+            return;
+          }
 
-return parts
-  .pop()
-  .toLowerCase()
-  .replace(/[^a-z0-9]/g, "") || "jpg";
+          cart = [];
 
-}
+          save();
 
-}
+          orderForm.reset();
+
+          if (message) {
+            message.textContent =
+              'تم تأكيد طلبك بنجاح ✓';
+          }
+
+          toast(
+            'تم تأكيد طلبك بنجاح ✓'
+          );
+
+        } catch (error) {
+
+          console.error(
+            'Hayati final order error:',
+            error
+          );
+
+          if (message) {
+            message.textContent =
+              'خطأ: ' +
+              (
+                error.message ||
+                'تعذر إرسال الطلب'
+              );
+          }
+        }
+      };
+  }
+
+  renderCart();
+
+  renderProducts();
+
+  connect().then(() => {
+    renderProducts();
+  });
+
+})();
