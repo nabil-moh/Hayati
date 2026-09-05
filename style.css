@@ -30,10 +30,7 @@ img {
   display: block;
 }
 
-/* =========================
-   الشريط العلوي
-========================= */
-
+/* الشريط العلوي */
 .top {
   background: #111;
   color: #fff;
@@ -46,10 +43,7 @@ img {
   flex-wrap: wrap;
 }
 
-/* =========================
-   رأس الصفحة
-========================= */
-
+/* رأس الصفحة */
 .header {
   background: #fff;
   border-bottom: 1px solid #eee;
@@ -122,10 +116,7 @@ img {
   background: #c2185b;
 }
 
-/* =========================
-   NAV
-========================= */
-
+/* القائمة */
 .nav {
   display: flex;
   justify-content: center;
@@ -146,10 +137,7 @@ img {
   color: #c2185b;
 }
 
-/* =========================
-   البطل
-========================= */
-
+/* الواجهة الرئيسية */
 .hero {
   min-height: 430px;
   padding: 60px 20px;
@@ -215,10 +203,7 @@ img {
   background: #111;
 }
 
-/* =========================
-   الأقسام
-========================= */
-
+/* الأقسام */
 .section {
   padding: 55px 18px;
 }
@@ -238,10 +223,7 @@ img {
   margin: 0;
 }
 
-/* =========================
-   الفئات
-========================= */
-
+/* الفئات */
 .cats {
   max-width: 1200px;
   margin: auto;
@@ -283,10 +265,7 @@ img {
   line-height: 1.6;
 }
 
-/* =========================
-   الفوائد
-========================= */
-
+/* الفوائد */
 .benefits {
   max-width: 1200px;
   margin: auto;
@@ -315,10 +294,7 @@ img {
   font-size: 12px;
 }
 
-/* =========================
-   المنتجات
-========================= */
-
+/* المنتجات */
 .products {
   max-width: 1200px;
   margin: auto;
@@ -397,10 +373,7 @@ img {
   color: #777;
 }
 
-/* =========================
-   PROMO
-========================= */
-
+/* العرض الترويجي */
 .promo {
   padding: 50px 20px;
   background: #f8e9ef;
@@ -416,10 +389,7 @@ img {
   margin-bottom: 20px;
 }
 
-/* =========================
-   FOOTER
-========================= */
-
+/* أسفل الصفحة */
 .footer {
   background: #111;
   color: #fff;
@@ -427,10 +397,7 @@ img {
   padding: 30px 15px;
 }
 
-/* =========================
-   النوافذ المنبثقة
-========================= */
-
+/* النوافذ المنبثقة */
 .modal {
   position: fixed !important;
   inset: 0 !important;
@@ -453,10 +420,7 @@ img {
   display: none !important;
 }
 
-/* =========================
-   مربع النافذة
-========================= */
-
+/* مربع النافذة */
 .box {
   position: relative !important;
   width: 100% !important;
@@ -483,13 +447,432 @@ img {
   }
 }
 
-/* =========================
-   زر الإغلاق
-========================= */
-
+/* زر الإغلاق */
 .close,
 #closeCart,
 #closeCheckout {
   position: absolute !important;
   top: 12px !important;
-  left: 12px
+  left: 12px !important;
+  width: 36px !important;
+  height: 36px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #f2f2f2 !important;
+  color: #333 !important;
+  font-size: 24px !important;
+  line-height: 36px !important;
+  padding: 0 !important;
+  z-index: 5 !important;
+}
+
+.close:hover,
+#closeCart:hover,
+#closeCheckout:hover {
+  background: #e00000 !important;
+  color: #fff !important;
+}
+
+/* عناوين النوافذ */
+.box h2 {
+  text-align: center;
+  margin: 5px 35px 12px;
+  font-size: 23px;
+}
+
+.box > p {
+  text-align: center;
+  color: #777;
+  line-height: 1.7;
+}
+
+/* السلة */
+#cartItems {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.cart-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-row img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.cart-row strong {
+  font-size: 15px;
+}
+
+.cart-row small {
+  color: #777;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.qty button {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 7px;
+  min-width: 30px;
+  height: 30px;
+}
+
+.qty .remove {
+  color: #c00000;
+  border-color: #ffcaca;
+}
+
+.box h3 {
+  text-align: center;
+  padding: 15px 0;
+  margin: 0;
+}
+
+#checkoutBtn {
+  width: 100%;
+  border: 0;
+  background: #c2185b;
+  color: #fff;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+#checkoutBtn:hover {
+  background: #111;
+}
+
+/* نموذج الطلب */
+#orderForm {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 13px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#orderForm label {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+#orderForm input,
+#orderForm select,
+#orderForm textarea {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  margin: 0 !important;
+  padding: 11px 13px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: #222 !important;
+  outline: none !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  box-sizing: border-box !important;
+}
+
+#orderForm textarea {
+  min-height: 90px !important;
+  resize: vertical;
+}
+
+#orderForm input:focus,
+#orderForm select:focus,
+#orderForm textarea:focus {
+  border-color: #c2185b !important;
+}
+
+#orderForm button[type="submit"] {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  margin: 3px 0 0 !important;
+  padding: 13px !important;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: #111 !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  box-sizing: border-box !important;
+}
+
+#orderForm button[type="submit"]:hover {
+  background: #c2185b !important;
+}
+
+#orderMsg {
+  display: block !important;
+  width: 100% !important;
+  margin: 3px 0 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  line-height: 1.7 !important;
+}
+
+/* الرسائل */
+.toast {
+  position: fixed;
+  bottom: 25px;
+  right: 50%;
+  transform: translateX(50%) translateY(20px);
+  background: #111;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 25px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.25s;
+  z-index: 10000;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(50%) translateY(0);
+}
+
+/* الشاشات المتوسطة */
+@media (max-width: 900px) {
+  .products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .benefits {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero {
+    gap: 30px;
+  }
+}
+
+/* الهاتف */
+@media (max-width: 600px) {
+  .top {
+    gap: 8px 15px;
+    font-size: 11px;
+  }
+
+  .header {
+    padding: 11px 12px;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    min-width: 110px;
+  }
+
+  .logo b {
+    font-size: 18px;
+  }
+
+  .logo span {
+    font-size: 11px;
+  }
+
+  .site-logo img {
+    max-width: 120px;
+    max-height: 65px;
+  }
+
+  .search {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  .cart {
+    padding: 9px 12px;
+  }
+
+  .nav {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 18px;
+    white-space: nowrap;
+  }
+
+  .nav a {
+    flex-shrink: 0;
+  }
+
+  .hero {
+    min-height: 360px;
+    padding: 45px 15px;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .heroArt {
+    font-size: 80px;
+  }
+
+  .section {
+    padding: 40px 12px;
+  }
+
+  .title h2 {
+    font-size: 24px;
+  }
+
+  .cats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .cat {
+    padding: 18px 10px;
+  }
+
+  .cat .icon {
+    font-size: 32px;
+  }
+
+  .cat strong {
+    font-size: 16px;
+  }
+
+  .cat small {
+    font-size: 11px;
+  }
+
+  .benefits {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .benefit {
+    padding: 17px 8px;
+    font-size: 24px;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .card-body {
+    padding: 11px;
+  }
+
+  .card-body h3 {
+    font-size: 15px;
+  }
+
+  .price {
+    font-size: 16px;
+  }
+
+  .modal {
+    padding: 10px !important;
+  }
+
+  .box {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: calc(100vh - 20px) !important;
+    padding: 25px 15px 18px !important;
+    border-radius: 18px !important;
+  }
+
+  .box h2 {
+    font-size: 21px;
+    margin-bottom: 12px;
+  }
+
+  #orderForm {
+    gap: 10px !important;
+  }
+
+  #orderForm label {
+    width: 100% !important;
+    gap: 5px !important;
+  }
+
+  #orderForm input,
+  #orderForm select,
+  #orderForm textarea {
+    width: 100% !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    font-size: 14px !important;
+  }
+
+  #orderForm textarea {
+    min-height: 80px !important;
+  }
+
+  #orderForm button[type="submit"] {
+    width: 100% !important;
+    min-height: 47px !important;
+  }
+
+  .cart-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .qty {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* الهواتف الصغيرة */
+@media (max-width: 380px) {
+  .products {
+    grid-template-columns: 1fr;
+  }
+
+  .cats {
+    grid-template-columns: 1fr;
+  }
+
+  .benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+}
