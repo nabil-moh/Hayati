@@ -1,522 +1,1001 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <title>حياتي Hayati | متجر نسائي</title>
-
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="top">
-  <span>🚚 توصيل سريع لكل الولايات</span>
-  <span>💵 الدفع عند الاستلام</span>
-  <span>✓ منتجات أصلية</span>
-</div>
-
-<header class="header">
-
-  <div class="logo">
-
-    <!-- الشعار المحفوظ من لوحة المدير سيظهر هنا -->
-    <div id="siteLogo" class="site-logo"></div>
-
-    <b>حياتي Hayati</b>
-
-    <span>متجر نسائي</span>
-
-  </div>
-
-  <input
-    id="search"
-    class="search"
-    placeholder="ابحث عن منتج...">
-
-  <button id="cartBtn" class="cart">
-    🛍️ السلة <b id="cartCount">0</b>
-  </button>
-
-</header>
-
-<nav class="nav">
-
-  <a href="#home">الرئيسية</a>
-
-  <a href="#categories">
-    ملابس نسائية
-  </a>
-
-  <a href="#categories">
-    مواد التجميل
-  </a>
-
-  <a href="#products">
-    العروض والتخفيضات
-  </a>
-
-  <a href="#contact">
-    اتصل بنا
-  </a>
-
-</nav>
-
-<main id="home">
-
-<section class="hero">
-
-  <div class="heroText">
-
-    <span class="eyebrow">
-      HAYATI STORE
-    </span>
-
-    <h1>
-      أناقتك سيدتي<br>
-      <em>مع حياتي</em>
-    </h1>
-
-    <p>
-      ملابس نسائية، أحذية، عطور ومستحضرات تجميل.
-    </p>
-
-    <a class="btn" href="#categories">
-      تسوقي الآن ←
-    </a>
-
-  </div>
-
-  <div class="heroArt">
-    👗
-  </div>
-
-</section>
-
-<section id="categories" class="section">
-
-  <div class="title">
-
-    <h2>
-      تسوقي حسب القسم
-    </h2>
-
-    <p>
-      اختاري ما يناسب أناقتك
-    </p>
-
-  </div>
-
-  <div class="cats">
-
-    <button class="cat" data-cat="ملابس">
-
-      <span class="icon">
-        👗
-      </span>
-
-      <strong>
-        ملابس
-      </strong>
-
-      <small>
-        فساتين، بلوزات، عبايات والمزيد
-      </small>
-
-    </button>
-
-    <button class="cat" data-cat="عطور">
-
-      <span class="icon">
-        🌸
-      </span>
-
-      <strong>
-        عطور
-      </strong>
-
-      <small>
-        عطور نسائية بروائح مميزة
-      </small>
-
-    </button>
-
-    <button class="cat" data-cat="مواد التجميل">
-
-      <span class="icon">
-        💄
-      </span>
-
-      <strong>
-        مواد التجميل
-      </strong>
-
-      <small>
-        ماكياج وعناية بالبشرة
-      </small>
-
-    </button>
-
-    <button class="cat" data-cat="أحذية">
-
-      <span class="icon">
-        👠
-      </span>
-
-      <strong>
-        أحذية
-      </strong>
-
-      <small>
-        أحذية نسائية أنيقة ومريحة
-      </small>
-
-    </button>
-
-  </div>
-
-</section>
-
-<section class="section benefits">
-
-  <div class="benefit">
-    🎧
-    <b>
-      خدمة عملاء مميزة
-    </b>
-    <small>
-      نحن هنا لمساعدتك
-    </small>
-  </div>
-
-  <div class="benefit">
-    💵
-    <b>
-      الدفع عند الاستلام
-    </b>
-    <small>
-      بكل أمان
-    </small>
-  </div>
-
-  <div class="benefit">
-    🚚
-    <b>
-      توصيل سريع
-    </b>
-    <small>
-      إلى جميع ولايات الجزائر
-    </small>
-  </div>
-
-  <div class="benefit">
-    ✓
-    <b>
-      جودة مضمونة
-    </b>
-    <small>
-      منتجات أصلية
-    </small>
-  </div>
-
-</section>
-
-<section id="products" class="section">
-
-  <div class="title">
-
-    <span class="eyebrow">
-      HAYATI
-    </span>
-
-    <h2>
-      منتجاتنا المميزة ♡
-    </h2>
-
-  </div>
-
-  <div id="list" class="products">
-
-    <div class="status">
-      جارٍ تحميل المنتجات...
-    </div>
-
-  </div>
-
-</section>
-
-<section id="contact" class="promo">
-
-  <div>
-
-    <h2>
-      أهلاً بكِ في حياتي 🎁
-    </h2>
-
-    <p>
-      اختاري منتجاتك وسنعتني بباقي التفاصيل.
-    </p>
-
-  </div>
-
-  <a class="btn" href="#products">
-    ابدئي التسوق
-  </a>
-
-</section>
-
-</main>
-
-<footer class="footer">
-
-  حياتي Hayati — جميع الحقوق محفوظة © 2026
-
-</footer>
-
-
-<!-- ========================= -->
-<!-- سلة المشتريات -->
-<!-- ========================= -->
-
-<div
-  id="cartModal"
-  class="modal"
-  aria-hidden="true">
-
-  <div class="box">
-
-    <button
-      class="close"
-      id="closeCart">
-      ×
-    </button>
-
-    <h2>
-      سلة المشتريات
-    </h2>
-
-    <div id="cartItems"></div>
-
-    <h3>
-
-      المجموع:
-
-      <span id="total">
-        0
-      </span>
-
-      دج
-
-    </h3>
-
-    <button
-      id="checkoutBtn"
-      class="btn full">
-
-      إتمام الطلب
-
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- ========================= -->
-<!-- إتمام الطلب -->
-<!-- ========================= -->
-
-<div
-  id="checkoutModal"
-  class="modal"
-  aria-hidden="true">
-
-  <div class="box">
-
-    <button
-      class="close"
-      id="closeCheckout">
-      ×
-    </button>
-
-    <h2>
-      إتمام الطلب
-    </h2>
-
-    <p>
-      يرجى ملء الخانات لتأكيد الطلب.
-    </p>
-
-    <form
-      id="orderForm"
-      class="form">
-
-      <label>
-
-        الاسم واللقب
-
-        <input
-          name="customer_name"
-          required
-          placeholder="اكتبي الاسم واللقب">
-
-      </label>
-
-      <label>
-
-        رقم الهاتف
-
-        <input
-          name="phone"
-          required
-          inputmode="tel"
-          placeholder="05 / 06 / 07 ...">
-
-      </label>
-
-      <label>
-
-        الولاية
-
-        <select
-          name="wilaya"
-          id="wilaya"
-          required>
-
-        </select>
-
-      </label>
-
-      <label>
-
-        البلدية
-
-        <input
-          name="municipality"
-          required
-          placeholder="اكتبي البلدية">
-
-      </label>
-
-      <label>
-
-        نقطة الاستلام / العنوان
-
-        <input
-          name="pickup_point"
-          required
-          placeholder="نقطة الاستلام أو العنوان">
-
-      </label>
-
-      <button
-        class="btn full"
-        type="submit">
-
-        تأكيد الطلب
-
-      </button>
-
-      <p
-        id="orderMsg"
-        role="status">
-      </p>
-
-    </form>
-
-  </div>
-
-</div>
-
-<div
-  id="toast"
-  class="toast"
-  aria-live="polite">
-</div>
-
-
-<script src="config.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script src="app.js?v=3"></script>
-
-<script>
-
-/*
-  إظهار الشعار المحفوظ في Supabase
-*/
-
-(function(){
-
-  function showSavedLogo(){
-
-    const url =
-      window.HAYATI_LOGO_URL || '';
-
-    const box =
-      document.getElementById('siteLogo');
-
-    if(!url || !box)
-      return;
-
-    box.innerHTML = '';
-
-    const img =
-      document.createElement('img');
-
-    img.src = url;
-
-    img.alt = 'شعار حياتي';
-
-    img.style.maxWidth = '190px';
-
-    img.style.maxHeight = '95px';
-
-    img.style.width = 'auto';
-
-    img.style.height = 'auto';
-
-    img.style.objectFit = 'contain';
-
-    img.style.display = 'block';
-
-    img.style.margin = '0 auto 6px';
-
-    img.onerror = function(){
-
-      box.innerHTML = '';
-
-    };
-
-    box.appendChild(img);
-
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Tahoma, sans-serif;
+  background: #fff;
+  color: #222;
+  direction: rtl;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.top {
+  background: #111;
+  color: #fff;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  text-align: center;
+  min-width: 150px;
+}
+
+.logo b {
+  display: block;
+  font-size: 23px;
+}
+
+.logo span {
+  display: block;
+  color: #777;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.site-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.site-logo img {
+  max-width: 190px;
+  max-height: 95px;
+  object-fit: contain;
+}
+
+.search {
+  width: 100%;
+  max-width: 400px;
+  height: 43px;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  font-size: 14px;
+}
+
+.search:focus {
+  border-color: #c2185b;
+}
+
+.cart {
+  border: 0;
+  background: #111;
+  color: #fff;
+  padding: 11px 17px;
+  border-radius: 25px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.cart:hover {
+  background: #c2185b;
+}
+
+/* =========================
+   NAV
+========================= */
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 13px 15px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.nav a:hover {
+  color: #c2185b;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  min-height: 430px;
+  padding: 60px 20px;
+  background:
+    linear-gradient(
+      rgba(255,255,255,.88),
+      rgba(255,255,255,.88)
+    ),
+    #f8e9ef;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+}
+
+.heroText {
+  max-width: 650px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  color: #c2185b;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(38px, 7vw, 70px);
+  line-height: 1.25;
+}
+
+.hero h1 em {
+  color: #c2185b;
+  font-style: normal;
+}
+
+.hero p {
+  color: #666;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.heroArt {
+  font-size: 130px;
+}
+
+.btn {
+  display: inline-block;
+  border: 0;
+  background: #c2185b;
+  color: #fff;
+  text-decoration: none;
+  padding: 13px 25px;
+  border-radius: 25px;
+  font-size: 15px;
+}
+
+.btn:hover {
+  background: #111;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.section {
+  padding: 55px 18px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.title h2 {
+  margin: 5px 0 8px;
+  font-size: 28px;
+}
+
+.title p {
+  color: #777;
+  margin: 0;
+}
+
+/* =========================
+   CATEGORIES
+========================= */
+
+.cats {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.cat {
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 18px;
+  padding: 25px 15px;
+  text-align: center;
+  transition: .2s;
+}
+
+.cat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.cat .icon {
+  display: block;
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.cat strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 7px;
+}
+
+.cat small {
+  display: block;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================
+   BENEFITS
+========================= */
+
+.benefits {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.benefit {
+  text-align: center;
+  padding: 22px 15px;
+  background: #fafafa;
+  border-radius: 15px;
+  font-size: 28px;
+}
+
+.benefit b {
+  display: block;
+  font-size: 15px;
+  margin: 8px 0 4px;
+}
+
+.benefit small {
+  display: block;
+  color: #777;
+  font-size: 12px;
+}
+
+/* =========================
+   PRODUCTS
+========================= */
+
+.products {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 3px 15px rgba(0,0,0,.05);
+}
+
+.card-img {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: #f7f7f7;
+  overflow: hidden;
+}
+
+.card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-body h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.price {
+  color: #e00000 !important;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 8px 0 13px;
+}
+
+.old-price {
+  color: #888;
+  text-decoration: line-through;
+  margin-left: 7px;
+  font-size: 14px;
+}
+
+.add {
+  width: 100%;
+  border: 0;
+  background: #111;
+  color: #fff;
+  padding: 11px;
+  border-radius: 10px;
+}
+
+.add:hover {
+  background: #c2185b;
+}
+
+.status {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 35px;
+  color: #777;
+}
+
+/* =========================
+   PROMO
+========================= */
+
+.promo {
+  padding: 50px 20px;
+  background: #f8e9ef;
+  text-align: center;
+}
+
+.promo h2 {
+  margin-top: 0;
+}
+
+.promo p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+  background: #111;
+  color: #fff;
+  text-align: center;
+  padding: 30px 15px;
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 15px !important;
+
+  background: rgba(0,0,0,.58) !important;
+
+  z-index: 9999 !important;
+
+  overflow-y: auto;
+}
+
+.modal[aria-hidden="true"] {
+  display: none !important;
+}
+
+.modal.hidden {
+  display: none !important;
+}
+
+/* =========================
+   MODAL BOX
+========================= */
+
+.box {
+  position: relative !important;
+
+  width: 100% !important;
+  max-width: 520px !important;
+
+  max-height: calc(100vh - 30px) !important;
+
+  margin: auto !important;
+
+  background: #fff !important;
+
+  border-radius: 20px !important;
+
+  padding: 28px 22px !important;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,.25) !important;
+
+  overflow-y: auto !important;
+
+  animation: modalOpen .2s ease-out;
+}
+
+@keyframes modalOpen {
+  from {
+    opacity: 0;
+    transform: scale(.95) translateY(10px);
   }
 
-  let tries = 0;
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
 
-  const timer =
-    setInterval(function(){
+/* =========================
+   CLOSE BUTTON
+========================= */
 
-      showSavedLogo();
+.close,
+#closeCart,
+#closeCheckout {
+  position: absolute !important;
 
-      tries++;
+  top: 12px !important;
+  left: 12px !important;
 
-      if(
-        window.HAYATI_LOGO_URL ||
-        tries >= 40
-      ){
+  width: 36px !important;
+  height: 36px !important;
 
-        clearInterval(timer);
+  border: 0 !important;
 
-      }
+  border-radius: 50% !important;
 
-    },250);
+  background: #f2f2f2 !important;
 
-})();
+  color: #333 !important;
 
-</script>
+  font-size: 24px !important;
 
-</body>
-</html>
+  line-height: 36px !important;
+
+  padding: 0 !important;
+
+  z-index: 5 !important;
+}
+
+.close:hover,
+#closeCart:hover,
+#closeCheckout:hover {
+  background: #e00000 !important;
+  color: #fff !important;
+}
+
+/* =========================
+   MODAL TITLES
+========================= */
+
+.box h2 {
+  text-align: center;
+  margin: 5px 35px 12px;
+  font-size: 23px;
+}
+
+.box > p {
+  text-align: center;
+  color: #777;
+  line-height: 1.7;
+}
+
+/* =========================
+   CART
+========================= */
+
+#cartItems {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.cart-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-row img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.cart-row strong {
+  font-size: 15px;
+}
+
+.cart-row small {
+  color: #777;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.qty button {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 7px;
+  min-width: 30px;
+  height: 30px;
+}
+
+.qty .remove {
+  color: #c00000;
+  border-color: #ffcaca;
+}
+
+.box h3 {
+  text-align: center;
+  padding: 15px 0;
+  margin: 0;
+}
+
+#checkoutBtn {
+  width: 100%;
+  border: 0;
+  background: #c2185b;
+  color: #fff;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+#checkoutBtn:hover {
+  background: #111;
+}
+
+/* =========================
+   ORDER FORM
+   إصلاح الخانات فوق بعضها
+========================= */
+
+#orderForm {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 13px !important;
+
+  width: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* كل خانة مستقلة */
+
+#orderForm label {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+
+  gap: 6px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+
+  position: static !important;
+}
+
+/* جميع الحقول */
+
+#orderForm input,
+#orderForm select,
+#orderForm textarea {
+  display: block !important;
+
+  position: static !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+
+  height: 46px !important;
+  min-height: 46px !important;
+
+  margin: 0 !important;
+
+  padding: 11px 13px !important;
+
+  border: 1px solid #ddd !important;
+
+  border-radius: 10px !important;
+
+  background: #fff !important;
+
+  color: #222 !important;
+
+  outline: none !important;
+
+  font-size: 14px !important;
+
+  line-height: 1.4 !important;
+
+  box-sizing: border-box !important;
+}
+
+#orderForm input:focus,
+#orderForm select:focus,
+#orderForm textarea:focus {
+  border-color: #c2185b !important;
+}
+
+/* زر تأكيد الطلب */
+
+#orderForm button[type="submit"] {
+  display: block !important;
+
+  position: static !important;
+
+  width: 100% !important;
+
+  min-width: 0 !important;
+
+  min-height: 48px !important;
+
+  margin: 3px 0 0 !important;
+
+  padding: 13px !important;
+
+  border: 0 !important;
+
+  border-radius: 11px !important;
+
+  background: #111 !important;
+
+  color: #fff !important;
+
+  font-size: 16px !important;
+
+  box-sizing: border-box !important;
+}
+
+#orderForm button[type="submit"]:hover {
+  background: #c2185b !important;
+}
+
+/* رسالة الطلب */
+
+#orderMsg {
+  display: block !important;
+
+  width: 100% !important;
+
+  margin: 3px 0 0 !important;
+
+  padding: 0 !important;
+
+  text-align: center !important;
+
+  line-height: 1.7 !important;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+  position: fixed;
+
+  bottom: 25px;
+  right: 50%;
+
+  transform: translateX(50%) translateY(20px);
+
+  background: #111;
+  color: #fff;
+
+  padding: 12px 20px;
+
+  border-radius: 25px;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: .25s;
+
+  z-index: 10000;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateX(50%) translateY(0);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+  .products {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .benefits {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .top {
+    gap: 8px 15px;
+    font-size: 11px;
+  }
+
+  .header {
+    padding: 11px 12px;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    min-width: 110px;
+  }
+
+  .logo b {
+    font-size: 18px;
+  }
+
+  .logo span {
+    font-size: 11px;
+  }
+
+  .site-logo img {
+    max-width: 120px;
+    max-height: 65px;
+  }
+
+  .search {
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  .cart {
+    padding: 9px 12px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .hero {
+    min-height: 360px;
+    padding: 45px 15px;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .heroArt {
+    font-size: 80px;
+  }
+
+  .section {
+    padding: 40px 12px;
+  }
+
+  .title h2 {
+    font-size: 24px;
+  }
+
+  .cats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .cat {
+    padding: 18px 10px;
+  }
+
+  .cat .icon {
+    font-size: 32px;
+  }
+
+  .cat strong {
+    font-size: 16px;
+  }
+
+  .cat small {
+    font-size: 11px;
+  }
+
+  .benefits {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .benefit {
+    padding: 17px 8px;
+    font-size: 24px;
+  }
+
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .card-body {
+    padding: 11px;
+  }
+
+  .card-body h3 {
+    font-size: 15px;
+  }
+
+  .price {
+    font-size: 16px;
+  }
+
+  /* النافذة */
+
+  .modal {
+    padding: 10px !important;
+  }
+
+  .box {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    max-height: calc(100vh - 20px) !important;
+
+    padding: 25px 15px 18px !important;
+
+    border-radius: 18px !important;
+  }
+
+  .box h2 {
+    font-size: 21px;
+    margin-bottom: 12px;
+  }
+
+  /* نموذج الطلب */
+
+  #orderForm {
+    gap: 10px !important;
+  }
+
+  #orderForm label {
+    width: 100% !important;
+    gap: 5px !important;
+  }
+
+  #orderForm input,
+  #orderForm select,
+  #orderForm textarea {
+    width: 100% !important;
+    height: 45px !important;
+    min-height: 45px !important;
+    font-size: 14px !important;
+  }
+
+  #orderForm button[type="submit"] {
+    width: 100% !important;
+    min-height: 47px !important;
+  }
+
+  .cart-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .qty {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .products {
+    grid-template-columns: 1fr;
+  }
+
+  .cats {
+    grid-template-columns: 1fr;
+  }
+
+  .benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+  }
+}
