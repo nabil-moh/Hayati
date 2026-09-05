@@ -30,7 +30,10 @@ img {
   display: block;
 }
 
-/* الشريط العلوي */
+/* =========================
+   الشريط العلوي
+========================= */
+
 .top {
   background: #111;
   color: #fff;
@@ -43,7 +46,10 @@ img {
   flex-wrap: wrap;
 }
 
-/* رأس الصفحة */
+/* =========================
+   رأس الصفحة
+========================= */
+
 .header {
   background: #fff;
   border-bottom: 1px solid #eee;
@@ -116,7 +122,10 @@ img {
   background: #c2185b;
 }
 
-/* القائمة */
+/* =========================
+   NAV
+========================= */
+
 .nav {
   display: flex;
   justify-content: center;
@@ -137,7 +146,10 @@ img {
   color: #c2185b;
 }
 
-/* الواجهة الرئيسية */
+/* =========================
+   البطل
+========================= */
+
 .hero {
   min-height: 430px;
   padding: 60px 20px;
@@ -203,7 +215,10 @@ img {
   background: #111;
 }
 
-/* الأقسام */
+/* =========================
+   الأقسام
+========================= */
+
 .section {
   padding: 55px 18px;
 }
@@ -223,7 +238,10 @@ img {
   margin: 0;
 }
 
-/* الفئات */
+/* =========================
+   الفئات
+========================= */
+
 .cats {
   max-width: 1200px;
   margin: auto;
@@ -265,7 +283,10 @@ img {
   line-height: 1.6;
 }
 
-/* الفوائد */
+/* =========================
+   الفوائد
+========================= */
+
 .benefits {
   max-width: 1200px;
   margin: auto;
@@ -294,7 +315,10 @@ img {
   font-size: 12px;
 }
 
-/* المنتجات */
+/* =========================
+   المنتجات
+========================= */
+
 .products {
   max-width: 1200px;
   margin: auto;
@@ -309,12 +333,6 @@ img {
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-  transition: 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
 .card-img {
@@ -373,7 +391,10 @@ img {
   color: #777;
 }
 
-/* العرض الترويجي */
+/* =========================
+   PROMO
+========================= */
+
 .promo {
   padding: 50px 20px;
   background: #f8e9ef;
@@ -389,7 +410,10 @@ img {
   margin-bottom: 20px;
 }
 
-/* أسفل الصفحة */
+/* =========================
+   FOOTER
+========================= */
+
 .footer {
   background: #111;
   color: #fff;
@@ -397,7 +421,10 @@ img {
   padding: 30px 15px;
 }
 
-/* النوافذ المنبثقة */
+/* =========================
+   النوافذ المنبثقة
+========================= */
+
 .modal {
   position: fixed !important;
   inset: 0 !important;
@@ -420,7 +447,10 @@ img {
   display: none !important;
 }
 
-/* مربع النافذة */
+/* =========================
+   مربع النافذة المنبثقة
+========================= */
+
 .box {
   position: relative !important;
   width: 100% !important;
@@ -447,7 +477,10 @@ img {
   }
 }
 
-/* زر الإغلاق */
+/* =========================
+   زر الإغلاق
+========================= */
+
 .close,
 #closeCart,
 #closeCheckout {
@@ -473,7 +506,10 @@ img {
   color: #fff !important;
 }
 
-/* عناوين النوافذ */
+/* =========================
+   عناوين النوافذ
+========================= */
+
 .box h2 {
   text-align: center;
   margin: 5px 35px 12px;
@@ -486,7 +522,10 @@ img {
   line-height: 1.7;
 }
 
-/* السلة */
+/* =========================
+   سلة التسوق
+========================= */
+
 #cartItems {
   max-height: 45vh;
   overflow-y: auto;
@@ -554,7 +593,10 @@ img {
   background: #111;
 }
 
-/* نموذج الطلب */
+/* =========================
+   نموذج الطلب
+========================= */
+
 #orderForm {
   display: flex !important;
   flex-direction: column !important;
@@ -576,16 +618,18 @@ img {
   padding: 0 !important;
   font-size: 14px !important;
   line-height: 1.5 !important;
+  position: relative !important;
 }
 
 #orderForm input,
 #orderForm select,
 #orderForm textarea {
   display: block !important;
+  position: relative !important;
   width: 100% !important;
   min-width: 0 !important;
-  height: 46px !important;
   min-height: 46px !important;
+  height: 46px !important;
   margin: 0 !important;
   padding: 11px 13px !important;
   border: 1px solid #ddd !important;
@@ -599,6 +643,7 @@ img {
 }
 
 #orderForm textarea {
+  height: 90px !important;
   min-height: 90px !important;
   resize: vertical;
 }
@@ -609,8 +654,13 @@ img {
   border-color: #c2185b !important;
 }
 
+/* =========================
+   زر تأكيد الطلب
+========================= */
+
 #orderForm button[type="submit"] {
   display: block !important;
+  position: relative !important;
   width: 100% !important;
   min-width: 0 !important;
   min-height: 48px !important;
@@ -628,6 +678,10 @@ img {
   background: #c2185b !important;
 }
 
+/* =========================
+   رسالة إرسال الطلب
+========================= */
+
 #orderMsg {
   display: block !important;
   width: 100% !important;
@@ -637,7 +691,10 @@ img {
   line-height: 1.7 !important;
 }
 
-/* الرسائل */
+/* =========================
+   TOAST
+========================= */
+
 .toast {
   position: fixed;
   bottom: 25px;
@@ -659,7 +716,10 @@ img {
   transform: translateX(50%) translateY(0);
 }
 
-/* الشاشات المتوسطة */
+/* =========================
+   الأجهزة اللوحية
+========================= */
+
 @media (max-width: 900px) {
   .products {
     grid-template-columns: repeat(3, 1fr);
@@ -678,7 +738,10 @@ img {
   }
 }
 
-/* الهاتف */
+/* =========================
+   الجوال
+========================= */
+
 @media (max-width: 600px) {
   .top {
     gap: 8px 15px;
@@ -718,14 +781,7 @@ img {
   }
 
   .nav {
-    overflow-x: auto;
-    justify-content: flex-start;
-    gap: 18px;
-    white-space: nowrap;
-  }
-
-  .nav a {
-    flex-shrink: 0;
+    display: none;
   }
 
   .hero {
@@ -839,6 +895,7 @@ img {
   }
 
   #orderForm textarea {
+    height: 80px !important;
     min-height: 80px !important;
   }
 
@@ -858,7 +915,10 @@ img {
   }
 }
 
-/* الهواتف الصغيرة */
+/* =========================
+   الجوال الصغير جدًا
+========================= */
+
 @media (max-width: 380px) {
   .products {
     grid-template-columns: 1fr;
