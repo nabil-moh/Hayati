@@ -501,8 +501,7 @@ event.preventDefault();
 const message=$('#orderMsg');
 
 if(message)
-message.textContent=
-'جاري إرسال الطلب...';
+message.textContent='جاري إرسال الطلب...';
 
 const form=new FormData(orderForm);
 
@@ -549,9 +548,7 @@ try{
 
 if(!window.HAYATI_DB){
 
-throw new Error(
-'Supabase غير متصل'
-);
+throw new Error('Supabase غير متصل');
 
 }
 
@@ -563,13 +560,15 @@ phone:phone,
 
 wilaya:wilaya,
 
-municipality:municipality,
+address:pickup,
 
-pickup_point:pickup,
+notes:municipality,
 
 items:cart,
 
-total:total
+total:total,
+
+status:'pending'
 
 };
 
