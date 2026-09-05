@@ -1,426 +1,700 @@
 (() => {
   'use strict';
 
-  const demo = [
-    {
-      id: 'demo-1',
-      name: 'فستان وردي ناعم',
-      category: 'ملابس',
-      price: 2900,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-2',
-      name: 'بلوزة أنيقة',
-      category: 'ملابس',
-      price: 1850,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1564257577054-0e5ab90e0f0f?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-3',
-      name: 'عباية مطرزة',
-      category: 'ملابس',
-      price: 3500,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-4',
-      name: 'عطر نسائي أنيق',
-      category: 'عطور',
-      price: 2200,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-5',
-      name: 'سيروم للبشرة',
-      category: 'مواد التجميل',
-      price: 1950,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-6',
-      name: 'أحمر شفاه مطفي',
-      category: 'مواد التجميل',
-      price: 1250,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-7',
-      name: 'حذاء نسائي أنيق',
-      category: 'أحذية',
-      price: 3200,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=700&q=80'
-    },
-    {
-      id: 'demo-8',
-      name: 'حذاء بكعب أنيق',
-      category: 'أحذية',
-      price: 3900,
-      old_price: null,
-      image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=700&q=80'
-    }
-  ];
+  /*
+   * =========================================================
+   * HAYATI - ADMIN.JS
+   * لوحة المدير
+   * =========================================================
+   */
 
-  const wilayas = [
-    'أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار',
-    'البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو',
-    'الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس',
-    'عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر',
-    'ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف',
-    'تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة',
-    'عين الدفلى','النعامة','عين تموشنت','غرداية','غليزان','تيميمون',
-    'برج باجي مختار','أولاد جلال','بني عباس','عين صالح','عين قزام',
-    'تقرت','جانت','المغير','المنيعة'
-  ];
+  const $ = (selector) => document.querySelector(selector);
 
-  const $ = selector => document.querySelector(selector);
+  const config = window.HAYATI_CONFIG || {};
 
-  const money = value =>
-    new Intl.NumberFormat('ar-DZ').format(Number(value) || 0) + ' دج';
+  let db = null;
+  let editingProductId = null;
 
-  const esc = value =>
-    String(value ?? '').replace(/[&<>"']/g, char => ({
+  const money = (value) => {
+    return new Intl.NumberFormat('ar-DZ').format(
+      Number(value) || 0
+    ) + ' دج';
+  };
+
+  const esc = (value) => {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
       '"': '&quot;',
       "'": '&#39;'
     }[char]));
+  };
 
-  let products = [...demo];
-  let cart = loadCart();
-  let activeCat = '';
-  let toastTimer;
+  /*
+   * =========================================================
+   * رسائل
+   * =========================================================
+   */
 
-  function loadCart() {
-    try {
-      const saved = JSON.parse(
-        localStorage.getItem('hayati_cart') || '[]'
-      );
+  function showLoginMessage(message, success = false) {
+    const el = $('#loginMsg');
 
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
+    if (!el) return;
+
+    el.textContent = message;
+    el.style.color = success ? 'green' : 'crimson';
+  }
+
+  function showLogoMessage(message, success = false) {
+    const el = $('#logoMsg');
+
+    if (!el) return;
+
+    el.textContent = message;
+    el.style.color = success ? 'green' : 'crimson';
+  }
+
+  /*
+   * =========================================================
+   * إظهار لوحة المدير
+   * =========================================================
+   */
+
+  function showPanel() {
+    const login = $('#login');
+    const panel = $('#panel');
+    const logoutBtn = $('#logoutBtn');
+
+    if (login) {
+      login.style.display = 'none';
+    }
+
+    if (panel) {
+      panel.style.display = 'block';
+    }
+
+    if (logoutBtn) {
+      logoutBtn.style.display = 'inline-block';
+    }
+
+    loadOrders();
+    loadProducts();
+  }
+
+  function showLogin() {
+    const login = $('#login');
+    const panel = $('#panel');
+    const logoutBtn = $('#logoutBtn');
+
+    if (login) {
+      login.style.display = 'block';
+    }
+
+    if (panel) {
+      panel.style.display = 'none';
+    }
+
+    if (logoutBtn) {
+      logoutBtn.style.display = 'none';
     }
   }
 
-  function save() {
-    localStorage.setItem(
-      'hayati_cart',
-      JSON.stringify(cart)
-    );
+  /*
+   * =========================================================
+   * الاتصال بـ Supabase
+   * =========================================================
+   */
 
-    renderCart();
-  }
-
-  function toast(text) {
-    const t = $('#toast');
-
-    if (!t) return;
-
-    t.textContent = text;
-    t.classList.add('show');
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-      t.classList.remove('show');
-    }, 2300);
-  }
-
-  function renderProducts() {
-    const search = $('#search');
-
-    const q = (search?.value || '')
-      .trim()
-      .toLowerCase();
-
-    const list = products.filter(product =>
-      (!activeCat || product.category === activeCat) &&
-      (
-        !q ||
-        String(product.name || '')
-          .toLowerCase()
-          .includes(q) ||
-        String(product.category || '')
-          .toLowerCase()
-          .includes(q)
-      )
-    );
-
-    const container = $('#list');
-
-    if (!container) return;
-
-    container.innerHTML = list.length
-      ? list.map(product => `
-        <article class="product">
-
-          <div class="pic">
-            <img
-              src="${esc(product.image || '')}"
-              alt="${esc(product.name)}"
-              style="width:100%;height:100%;object-fit:cover"
-              onerror="this.style.display='none';this.parentElement.textContent='🛍️'"
-            >
-          </div>
-
-          <div class="info">
-
-            <h3>${esc(product.name)}</h3>
-
-            <span>${esc(product.category)}</span>
-
-            ${
-              product.old_price !== null &&
-              product.old_price !== undefined &&
-              product.old_price !== ''
-                ? `
-                  <p style="
-                    margin:6px 0 0;
-                    color:#888;
-                  ">
-                    <del>${money(product.old_price)}</del>
-                  </p>
-                `
-                : ''
-            }
-
-            <p class="price">
-              ${money(product.price)}
-            </p>
-
-            <button
-              class="buy"
-              data-id="${esc(product.id)}">
-              أضيفي إلى السلة
-            </button>
-
-          </div>
-
-        </article>
-      `).join('')
-      : '<div class="status">لا توجد منتجات حاليا.</div>';
-
-    document.querySelectorAll('.buy').forEach(button => {
-      button.onclick = () => {
-        add(button.dataset.id);
-      };
-    });
-  }
-
-  function renderCart() {
-    const count = cart.reduce(
-      (sum, item) =>
-        sum + (Number(item.qty) || 0),
-      0
-    );
-
-    const countEl = $('#cartCount');
-
-    if (countEl) {
-      countEl.textContent = count;
-    }
-
-    const total = cart.reduce(
-      (sum, item) =>
-        sum +
-        (Number(item.price) || 0) *
-        (Number(item.qty) || 0),
-      0
-    );
-
-    const items = $('#cartItems');
-
-    if (items) {
-      items.innerHTML = cart.length
-        ? cart.map(item => `
-          <div class="row">
-
-            <span>
-              ${esc(item.name)}
-              <br>
-              <small>
-                ${money(item.price)} × ${item.qty}
-              </small>
-            </span>
-
-            <span>
-
-              <button
-                data-minus="${esc(item.id)}">
-                −
-              </button>
-
-              ${item.qty}
-
-              <button
-                data-plus="${esc(item.id)}">
-                +
-              </button>
-
-              <button
-                class="remove"
-                data-remove="${esc(item.id)}">
-                حذف
-              </button>
-
-            </span>
-
-          </div>
-        `).join('')
-        : '<p class="status">السلة فارغة.</p>';
-    }
-
-    const totalEl = $('#total');
-
-    if (totalEl) {
-      totalEl.textContent =
-        new Intl.NumberFormat('ar-DZ').format(total);
-    }
-
-    document.querySelectorAll('[data-minus]')
-      .forEach(button => {
-        button.onclick = () => {
-          change(button.dataset.minus, -1);
-        };
-      });
-
-    document.querySelectorAll('[data-plus]')
-      .forEach(button => {
-        button.onclick = () => {
-          change(button.dataset.plus, 1);
-        };
-      });
-
-    document.querySelectorAll('[data-remove]')
-      .forEach(button => {
-        button.onclick = () => {
-
-          cart = cart.filter(
-            item =>
-              String(item.id) !==
-              String(button.dataset.remove)
-          );
-
-          save();
-        };
-      });
-  }
-
-  function add(id) {
-    const product = products.find(
-      item =>
-        String(item.id) ===
-        String(id)
-    );
-
-    if (!product) return;
-
-    const existing = cart.find(
-      item =>
-        String(item.id) ===
-        String(id)
-    );
-
-    if (existing) {
-      existing.qty++;
-    } else {
-      cart.push({
-        id: product.id,
-        name: product.name,
-        price: Number(product.price) || 0,
-        qty: 1
-      });
-    }
-
-    save();
-
-    toast('تمت إضافة طلبك إلى السلة ✓');
-  }
-
-  function change(id, difference) {
-    const item = cart.find(
-      x =>
-        String(x.id) ===
-        String(id)
-    );
-
-    if (!item) return;
-
-    item.qty =
-      (Number(item.qty) || 0) +
-      difference;
-
-    if (item.qty < 1) {
-      cart = cart.filter(
-        x =>
-          String(x.id) !==
-          String(id)
-      );
-    }
-
-    save();
-  }
-
-  function openModal(modal) {
-    if (!modal) return;
-
-    modal.style.display = 'flex';
-    modal.setAttribute(
-      'aria-hidden',
-      'false'
-    );
-  }
-
-  function closeModal(modal) {
-    if (!modal) return;
-
-    modal.style.display = 'none';
-
-    modal.setAttribute(
-      'aria-hidden',
-      'true'
-    );
-  }
-
-  async function connect() {
-
-    const config =
-      window.HAYATI_CONFIG || {};
-
+  function createDatabase() {
     if (
       !config.SUPABASE_URL ||
-      !config.SUPABASE_ANON_KEY ||
-      !window.supabase
+      !config.SUPABASE_ANON_KEY
     ) {
-      console.error(
-        'Supabase configuration is missing.'
+      showLoginMessage(
+        'إعدادات Supabase غير موجودة في config.js'
       );
-      return;
+
+      console.error(
+        'HAYATI_CONFIG غير موجود أو ناقص.'
+      );
+
+      return null;
+    }
+
+    if (!window.supabase) {
+      showLoginMessage(
+        'تعذر تحميل مكتبة Supabase.'
+      );
+
+      console.error(
+        'Supabase JS library غير موجودة.'
+      );
+
+      return null;
     }
 
     try {
+      return window.supabase.createClient(
+        config.SUPABASE_URL,
+        config.SUPABASE_ANON_KEY
+      );
+    } catch (error) {
+      console.error(error);
 
-      const db =
-        window.supabase.createClient(
-          config.SUPABASE_URL,
-          config.SUPABASE_ANON_KEY
+      showLoginMessage(
+        'تعذر إنشاء اتصال Supabase.'
+      );
+
+      return null;
+    }
+  }
+
+  /*
+   * =========================================================
+   * التحقق من الجلسة
+   * =========================================================
+   */
+
+  async function checkSession() {
+    if (!db) return;
+
+    try {
+      const result = await db.auth.getSession();
+
+      if (result.error) {
+        console.error(result.error);
+        showLogin();
+        return;
+      }
+
+      if (result.data && result.data.session) {
+        showPanel();
+      } else {
+        showLogin();
+      }
+    } catch (error) {
+      console.error(
+        'Session error:',
+        error
+      );
+
+      showLogin();
+    }
+  }
+
+  /*
+   * =========================================================
+   * تسجيل الدخول
+   * =========================================================
+   */
+
+  const loginForm = $('#loginForm');
+
+  if (loginForm) {
+    loginForm.addEventListener(
+      'submit',
+      async (event) => {
+
+        event.preventDefault();
+
+        if (!db) {
+          showLoginMessage(
+            'Supabase غير متصل.'
+          );
+          return;
+        }
+
+        const email =
+          String($('#email')?.value || '')
+            .trim();
+
+        const password =
+          String($('#password')?.value || '');
+
+        if (!email || !password) {
+          showLoginMessage(
+            'أدخلي البريد الإلكتروني وكلمة المرور.'
+          );
+          return;
+        }
+
+        const submitButton =
+          loginForm.querySelector(
+            'button[type="submit"]'
+          );
+
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent =
+            'جاري الدخول...';
+        }
+
+        showLoginMessage('');
+
+        try {
+
+          const result =
+            await db.auth.signInWithPassword({
+              email,
+              password
+            });
+
+          if (result.error) {
+
+            console.error(
+              'Login error:',
+              result.error
+            );
+
+            showLoginMessage(
+              'بيانات الدخول غير صحيحة.'
+            );
+
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent =
+                'دخول';
+            }
+
+            return;
+          }
+
+          showLoginMessage(
+            'تم تسجيل الدخول بنجاح ✓',
+            true
+          );
+
+          showPanel();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showLoginMessage(
+            'حدث خطأ أثناء تسجيل الدخول.'
+          );
+
+        } finally {
+
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent =
+              'دخول';
+          }
+        }
+      }
+    );
+  }
+
+  /*
+   * =========================================================
+   * تسجيل الخروج
+   * =========================================================
+   */
+
+  const logoutBtn = $('#logoutBtn');
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener(
+      'click',
+      async () => {
+
+        if (!db) return;
+
+        try {
+
+          await db.auth.signOut();
+
+          showLogin();
+
+          const password = $('#password');
+
+          if (password) {
+            password.value = '';
+          }
+
+          showLoginMessage(
+            'تم تسجيل الخروج.'
+          );
+
+        } catch (error) {
+
+          console.error(
+            'Logout error:',
+            error
+          );
+
+        }
+      }
+    );
+  }
+
+  /*
+   * =========================================================
+   * التبويبات
+   * =========================================================
+   */
+
+  function showTab(tabName) {
+
+    const orders =
+      $('#orders');
+
+    const products =
+      $('#products');
+
+    const site =
+      $('#site');
+
+    if (orders) {
+      orders.style.display =
+        tabName === 'orders'
+          ? 'block'
+          : 'none';
+    }
+
+    if (products) {
+      products.style.display =
+        tabName === 'products'
+          ? 'block'
+          : 'none';
+    }
+
+    if (site) {
+      site.style.display =
+        tabName === 'site'
+          ? 'block'
+          : 'none';
+    }
+  }
+
+  const ordersTab = $('#ordersTab');
+  const productsTab = $('#productsTab');
+  const siteTab = $('#siteTab');
+
+  if (ordersTab) {
+    ordersTab.addEventListener(
+      'click',
+      () => {
+        showTab('orders');
+        loadOrders();
+      }
+    );
+  }
+
+  if (productsTab) {
+    productsTab.addEventListener(
+      'click',
+      () => {
+        showTab('products');
+        loadProducts();
+      }
+    );
+  }
+
+  if (siteTab) {
+    siteTab.addEventListener(
+      'click',
+      () => {
+        showTab('site');
+      }
+    );
+  }
+
+  /*
+   * =========================================================
+   * الطلبات
+   * =========================================================
+   */
+
+  async function loadOrders() {
+
+    const container =
+      $('#ordersList');
+
+    if (!container || !db) return;
+
+    container.innerHTML =
+      '<p>جاري تحميل الطلبات...</p>';
+
+    try {
+
+      const result =
+        await db
+          .from('orders')
+          .select('*')
+          .order(
+            'created_at',
+            { ascending: false }
+          );
+
+      if (result.error) {
+
+        console.error(
+          'Orders error:',
+          result.error
         );
 
-      window.HAYATI_DB = db;
+        container.innerHTML =
+          '<p style="color:crimson;">' +
+          'تعذر تحميل الطلبات.<br>' +
+          esc(result.error.message) +
+          '</p>';
+
+        return;
+      }
+
+      const orders =
+        Array.isArray(result.data)
+          ? result.data
+          : [];
+
+      if (!orders.length) {
+
+        container.innerHTML =
+          '<p>لا توجد طلبات حاليا.</p>';
+
+        return;
+      }
+
+      container.innerHTML =
+        orders.map(renderOrder).join('');
+
+    } catch (error) {
+
+      console.error(error);
+
+      container.innerHTML =
+        '<p style="color:crimson;">' +
+        'حدث خطأ أثناء تحميل الطلبات.' +
+        '</p>';
+    }
+  }
+
+  function renderOrder(order) {
+
+    let items = [];
+
+    try {
+
+      if (Array.isArray(order.items)) {
+        items = order.items;
+      } else if (typeof order.items === 'string') {
+        items = JSON.parse(order.items);
+      }
+
+    } catch {
+      items = [];
+    }
+
+    const itemsHtml =
+      items.length
+        ? items.map(item => `
+            <div style="
+              padding:6px 0;
+              border-bottom:1px solid #eee;
+            ">
+              <b>${esc(item.name || 'منتج')}</b>
+              <br>
+              <small>
+                الكمية:
+                ${Number(item.qty) || 0}
+                ×
+                ${money(item.price)}
+              </small>
+            </div>
+          `).join('')
+        : '<span>لا توجد تفاصيل المنتجات</span>';
+
+    const date =
+      order.created_at
+        ? new Date(order.created_at)
+            .toLocaleString('ar-DZ')
+        : '';
+
+    return `
+      <article
+        class="admin-order"
+        style="
+          border:1px solid #ddd;
+          border-radius:12px;
+          padding:15px;
+          margin:12px 0;
+          background:#fff;
+        "
+      >
+
+        <h3>
+          طلب رقم:
+          ${esc(order.id || '')}
+        </h3>
+
+        <p>
+          <b>الزبون:</b>
+          ${esc(order.customer_name || '')}
+        </p>
+
+        <p>
+          <b>الهاتف:</b>
+          ${esc(order.phone || '')}
+        </p>
+
+        <p>
+          <b>الولاية:</b>
+          ${esc(order.wilaya || '')}
+        </p>
+
+        <p>
+          <b>البلدية:</b>
+          ${esc(order.municipality || '')}
+        </p>
+
+        <p>
+          <b>نقطة الاستلام:</b>
+          ${esc(order.pickup_point || '')}
+        </p>
+
+        <p>
+          <b>المجموع:</b>
+          ${money(order.total)}
+        </p>
+
+        ${
+          date
+            ? `
+              <p>
+                <b>التاريخ:</b>
+                ${esc(date)}
+              </p>
+            `
+            : ''
+        }
+
+        <div style="
+          margin-top:12px;
+          padding:10px;
+          background:#f8f8f8;
+          border-radius:8px;
+        ">
+          <b>المنتجات:</b>
+          ${itemsHtml}
+        </div>
+
+        <button
+          type="button"
+          class="delete-order"
+          data-id="${esc(order.id || '')}"
+          style="
+            margin-top:12px;
+            background:#c62828;
+            color:#fff;
+            border:0;
+            padding:9px 14px;
+            border-radius:7px;
+            cursor:pointer;
+          "
+        >
+          حذف الطلب
+        </button>
+
+      </article>
+    `;
+  }
+
+  /*
+   * حذف الطلب
+   */
+
+  async function deleteOrder(id) {
+
+    if (!id || !db) return;
+
+    const confirmed =
+      confirm(
+        'هل أنت متأكدة من حذف هذا الطلب؟'
+      );
+
+    if (!confirmed) return;
+
+    try {
+
+      const result =
+        await db
+          .from('orders')
+          .delete()
+          .eq('id', id);
+
+      if (result.error) {
+
+        console.error(
+          'Delete order error:',
+          result.error
+        );
+
+        alert(
+          'تعذر حذف الطلب:\n' +
+          result.error.message
+        );
+
+        return;
+      }
+
+      await loadOrders();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        'حدث خطأ أثناء حذف الطلب.'
+      );
+    }
+  }
+
+  document.addEventListener(
+    'click',
+    (event) => {
+
+      const button =
+        event.target.closest(
+          '.delete-order'
+        );
+
+      if (!button) return;
+
+      deleteOrder(
+        button.dataset.id
+      );
+    }
+  );
+
+  /*
+   * =========================================================
+   * المنتجات
+   * =========================================================
+   */
+
+  async function loadProducts() {
+
+    const container =
+      $('#productList');
+
+    if (!container || !db) return;
+
+    container.innerHTML =
+      '<p>جاري تحميل المنتجات...</p>';
+
+    try {
 
       const result =
         await db
           .from('products')
-          .select('*');
+          .select('*')
+          .order(
+            'created_at',
+            { ascending: false }
+          );
 
       if (result.error) {
 
@@ -429,362 +703,964 @@
           result.error
         );
 
+        container.innerHTML =
+          '<p style="color:crimson;">' +
+          'تعذر تحميل المنتجات.<br>' +
+          esc(result.error.message) +
+          '</p>';
+
         return;
       }
 
-      if (
-        Array.isArray(result.data) &&
-        result.data.length
-      ) {
+      const products =
+        Array.isArray(result.data)
+          ? result.data
+          : [];
 
-        products =
-          result.data.map(product => ({
-            id: product.id,
+      if (!products.length) {
 
-            name:
-              product.name ||
-              product.title ||
-              'منتج',
+        container.innerHTML =
+          '<p>لا توجد منتجات حاليا.</p>';
 
-            category:
-              product.category || '',
-
-            price:
-              Number(product.price) || 0,
-
-            old_price:
-              product.old_price !== null &&
-              product.old_price !== undefined
-                ? Number(product.old_price)
-                : null,
-
-            image:
-              product.image_url ||
-              product.image ||
-              ''
-          }));
-
+        return;
       }
+
+      container.innerHTML =
+        products
+          .map(renderProduct)
+          .join('');
 
     } catch (error) {
 
-      console.error(
-        'Supabase connection error:',
-        error
-      );
+      console.error(error);
+
+      container.innerHTML =
+        '<p style="color:crimson;">' +
+        'حدث خطأ أثناء تحميل المنتجات.' +
+        '</p>';
     }
   }
 
-  const wilayaSelect = $('#wilaya');
+  function renderProduct(product) {
 
-  if (wilayaSelect) {
+    const image =
+      product.image_url ||
+      product.image ||
+      '';
 
-    wilayaSelect.innerHTML =
-      '<option value="">اختاري الولاية</option>' +
-      wilayas.map(wilaya =>
-        `<option value="${esc(wilaya)}">${esc(wilaya)}</option>`
-      ).join('');
-  }
+    const oldPrice =
+      product.old_price !== null &&
+      product.old_price !== undefined &&
+      product.old_price !== ''
+        ? `
+          <div>
+            <del>
+              ${money(product.old_price)}
+            </del>
+          </div>
+        `
+        : '';
 
-  document.querySelectorAll('.cat')
-    .forEach(button => {
+    return `
+      <article
+        class="admin-product"
+        style="
+          border:1px solid #ddd;
+          border-radius:12px;
+          padding:12px;
+          margin:12px 0;
+          background:#fff;
+        "
+      >
 
-      button.onclick = () => {
-
-        activeCat =
-          activeCat === button.dataset.cat
-            ? ''
-            : button.dataset.cat;
-
-        document.querySelectorAll('.cat')
-          .forEach(item => {
-
-            item.classList.toggle(
-              'active',
-              item === button &&
-              !!activeCat
-            );
-
-          });
-
-        renderProducts();
-
-        const productsSection =
-          $('#products');
-
-        if (productsSection) {
-          productsSection.scrollIntoView({
-            behavior: 'smooth'
-          });
+        ${
+          image
+            ? `
+              <img
+                src="${esc(image)}"
+                alt="${esc(product.name || '')}"
+                style="
+                  width:100%;
+                  max-width:180px;
+                  height:180px;
+                  object-fit:cover;
+                  border-radius:10px;
+                  margin-bottom:10px;
+                "
+              >
+            `
+            : `
+              <div style="
+                width:180px;
+                height:180px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#f3f3f3;
+                border-radius:10px;
+                margin-bottom:10px;
+              ">
+                🛍️
+              </div>
+            `
         }
-      };
 
-    });
+        <h3>
+          ${esc(product.name || 'منتج')}
+        </h3>
 
-  const search = $('#search');
+        <p>
+          القسم:
+          <b>
+            ${esc(product.category || '')}
+          </b>
+        </p>
 
-  if (search) {
-    search.oninput = renderProducts;
+        ${oldPrice}
+
+        <p>
+          السعر:
+          <b>
+            ${money(product.price)}
+          </b>
+        </p>
+
+        <p>
+          المخزون:
+          <b>
+            ${Number(product.stock) || 0}
+          </b>
+        </p>
+
+        ${
+          product.description
+            ? `
+              <p>
+                ${esc(product.description)}
+              </p>
+            `
+            : ''
+        }
+
+        <div style="
+          display:flex;
+          gap:8px;
+          flex-wrap:wrap;
+          margin-top:10px;
+        ">
+
+          <button
+            type="button"
+            class="edit-product"
+            data-id="${esc(product.id)}"
+          >
+            تعديل
+          </button>
+
+          <button
+            type="button"
+            class="delete-product"
+            data-id="${esc(product.id)}"
+            style="
+              background:#c62828;
+              color:#fff;
+            "
+          >
+            حذف
+          </button>
+
+        </div>
+
+      </article>
+    `;
   }
 
-  const cartButton = $('#cartBtn');
+  /*
+   * =========================================================
+   * تعبئة نموذج التعديل
+   * =========================================================
+   */
 
-  if (cartButton) {
+  async function editProduct(id) {
 
-    cartButton.onclick = () => {
-      openModal($('#cartModal'));
-    };
+    if (!id || !db) return;
 
-  }
+    try {
 
-  const closeCart = $('#closeCart');
+      const result =
+        await db
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
 
-  if (closeCart) {
+      if (result.error) {
 
-    closeCart.onclick = () => {
-      closeModal($('#cartModal'));
-    };
+        console.error(
+          result.error
+        );
 
-  }
-
-  const closeCheckout =
-    $('#closeCheckout');
-
-  if (closeCheckout) {
-
-    closeCheckout.onclick = () => {
-      closeModal($('#checkoutModal'));
-    };
-
-  }
-
-  const checkoutButton =
-    $('#checkoutBtn');
-
-  if (checkoutButton) {
-
-    checkoutButton.onclick = () => {
-
-      if (!cart.length) {
-
-        toast(
-          'السلة فارغة، أضيفي منتجا أولا'
+        alert(
+          'تعذر تحميل المنتج:\n' +
+          result.error.message
         );
 
         return;
       }
 
-      closeModal($('#cartModal'));
+      const product =
+        result.data;
 
-      openModal(
-        $('#checkoutModal')
-      );
-
-      const message =
-        $('#orderMsg');
-
-      if (message) {
-        message.textContent = '';
+      if (!product) {
+        alert('المنتج غير موجود.');
+        return;
       }
-    };
+
+      editingProductId =
+        product.id;
+
+      $('#pid').value =
+        product.id || '';
+
+      $('#pname').value =
+        product.name || '';
+
+      $('#pcat').value =
+        product.category || '';
+
+      $('#pprice').value =
+        product.price ?? '';
+
+      $('#pold').value =
+        product.old_price ?? '';
+
+      $('#pstock').value =
+        product.stock ?? 0;
+
+      $('#pdesc').value =
+        product.description || '';
+
+      $('#pimage').value =
+        product.image_url ||
+        product.image ||
+        '';
+
+      const preview =
+        $('#productPreview');
+
+      const image =
+        product.image_url ||
+        product.image ||
+        '';
+
+      if (preview && image) {
+
+        preview.src = image;
+        preview.style.display =
+          'block';
+      }
+
+      const cancel =
+        $('#cancelEdit');
+
+      if (cancel) {
+        cancel.style.display =
+          'inline-block';
+      }
+
+      const form =
+        $('#productForm');
+
+      if (form) {
+        form.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        'حدث خطأ أثناء تعديل المنتج.'
+      );
+    }
   }
 
-  document.querySelectorAll('.modal')
-    .forEach(modal => {
+  /*
+   * =========================================================
+   * حذف المنتج
+   * =========================================================
+   */
 
-      modal.addEventListener(
-        'click',
-        event => {
+  async function deleteProduct(id) {
 
-          if (event.target === modal) {
-            closeModal(modal);
-          }
+    if (!id || !db) return;
 
-        }
+    const confirmed =
+      confirm(
+        'هل أنت متأكد من حذف هذا المنتج؟'
       );
 
-    });
+    if (!confirmed) return;
 
-  const orderForm =
-    $('#orderForm');
+    try {
 
-  if (orderForm) {
+      const result =
+        await db
+          .from('products')
+          .delete()
+          .eq('id', id);
 
-    orderForm.onsubmit =
-      async event => {
+      if (result.error) {
+
+        console.error(
+          'Delete product error:',
+          result.error
+        );
+
+        alert(
+          'تعذر حذف المنتج:\n' +
+          result.error.message
+        );
+
+        return;
+      }
+
+      if (
+        String(editingProductId) ===
+        String(id)
+      ) {
+        resetProductForm();
+      }
+
+      await loadProducts();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        'حدث خطأ أثناء حذف المنتج.'
+      );
+    }
+  }
+
+  document.addEventListener(
+    'click',
+    (event) => {
+
+      const editButton =
+        event.target.closest(
+          '.edit-product'
+        );
+
+      if (editButton) {
+        editProduct(
+          editButton.dataset.id
+        );
+        return;
+      }
+
+      const deleteButton =
+        event.target.closest(
+          '.delete-product'
+        );
+
+      if (deleteButton) {
+        deleteProduct(
+          deleteButton.dataset.id
+        );
+      }
+    }
+  );
+
+  /*
+   * =========================================================
+   * رفع صورة
+   * =========================================================
+   */
+
+  async function uploadImage(file, folder) {
+
+    if (!file || !db) {
+      return null;
+    }
+
+    /*
+     * اسم آمن وفريد للصورة
+     */
+
+    const extension =
+      (
+        file.name.split('.').pop() ||
+        'jpg'
+      )
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '');
+
+    const random =
+      Math.random()
+        .toString(36)
+        .substring(2, 10);
+
+    const path =
+      `${folder}/${Date.now()}-${random}.${extension}`;
+
+    /*
+     * اسم الـ bucket المتوقع
+     */
+
+    const bucket =
+      'hayati';
+
+    try {
+
+      const upload =
+        await db.storage
+          .from(bucket)
+          .upload(
+            path,
+            file,
+            {
+              upsert: true,
+              contentType:
+                file.type ||
+                'image/jpeg'
+            }
+          );
+
+      if (upload.error) {
+
+        console.error(
+          'Storage upload error:',
+          upload.error
+        );
+
+        return null;
+      }
+
+      const publicUrl =
+        db.storage
+          .from(bucket)
+          .getPublicUrl(path);
+
+      return (
+        publicUrl.data &&
+        publicUrl.data.publicUrl
+      )
+        ? publicUrl.data.publicUrl
+        : null;
+
+    } catch (error) {
+
+      console.error(
+        'Image upload error:',
+        error
+      );
+
+      return null;
+    }
+  }
+
+  /*
+   * معاينة صورة المنتج
+   */
+
+  const pimageFile =
+    $('#pimageFile');
+
+  if (pimageFile) {
+
+    pimageFile.addEventListener(
+      'change',
+      () => {
+
+        const file =
+          pimageFile.files &&
+          pimageFile.files[0];
+
+        const preview =
+          $('#productPreview');
+
+        if (!file || !preview) {
+          return;
+        }
+
+        const reader =
+          new FileReader();
+
+        reader.onload = () => {
+
+          preview.src =
+            reader.result;
+
+          preview.style.display =
+            'block';
+        };
+
+        reader.readAsDataURL(file);
+      }
+    );
+  }
+
+  /*
+   * =========================================================
+   * حفظ المنتج
+   * =========================================================
+   */
+
+  const productForm =
+    $('#productForm');
+
+  if (productForm) {
+
+    productForm.addEventListener(
+      'submit',
+      async (event) => {
 
         event.preventDefault();
 
-        const message =
-          $('#orderMsg');
-
-        if (message) {
-          message.textContent =
-            'جاري إرسال الطلب...';
+        if (!db) {
+          alert(
+            'Supabase غير متصل.'
+          );
+          return;
         }
 
-        const form =
-          new FormData(orderForm);
-
-        const customer_name =
+        const name =
           String(
-            form.get('customer_name') || ''
+            $('#pname')?.value || ''
           ).trim();
 
-        const phone =
+        const category =
           String(
-            form.get('phone') || ''
+            $('#pcat')?.value || ''
           ).trim();
 
-        const wilaya =
-          String(
-            form.get('wilaya') || ''
-          ).trim();
-
-        const municipality =
-          String(
-            form.get('municipality') || ''
-          ).trim();
-
-        const pickup =
-          String(
-            form.get('pickup_point') || ''
-          ).trim();
-
-        const total =
-          cart.reduce(
-            (sum, item) =>
-              sum +
-              (Number(item.price) || 0) *
-              (Number(item.qty) || 0),
-            0
+        const price =
+          Number(
+            $('#pprice')?.value || 0
           );
 
-        if (
-          !customer_name ||
-          !phone ||
-          !wilaya ||
-          !municipality ||
-          !pickup
-        ) {
+        const oldPriceRaw =
+          String(
+            $('#pold')?.value || ''
+          ).trim();
 
-          if (message) {
-            message.textContent =
-              'يرجى ملء جميع الخانات المطلوبة.';
-          }
+        const stock =
+          Number(
+            $('#pstock')?.value || 0
+          );
 
+        const description =
+          String(
+            $('#pdesc')?.value || ''
+          ).trim();
+
+        let image =
+          String(
+            $('#pimage')?.value || ''
+          ).trim();
+
+        if (!name) {
+          alert('أدخلي اسم المنتج.');
           return;
+        }
+
+        if (!category) {
+          alert('اختاري القسم.');
+          return;
+        }
+
+        if (price < 0) {
+          alert('السعر غير صحيح.');
+          return;
+        }
+
+        if (stock < 0) {
+          alert('المخزون غير صحيح.');
+          return;
+        }
+
+        const submit =
+          productForm.querySelector(
+            'button[type="submit"]'
+          );
+
+        if (submit) {
+          submit.disabled = true;
+          submit.textContent =
+            'جاري الحفظ...';
         }
 
         try {
 
-          if (!window.HAYATI_DB) {
-            throw new Error(
-              'Supabase غير متصل'
-            );
+          /*
+           * إذا اختار المدير صورة جديدة
+           */
+
+          const file =
+            pimageFile &&
+            pimageFile.files &&
+            pimageFile.files[0];
+
+          if (file) {
+
+            const uploaded =
+              await uploadImage(
+                file,
+                'products'
+              );
+
+            if (!uploaded) {
+
+              alert(
+                'تعذر رفع الصورة.\n' +
+                'تأكدي من وجود Storage bucket باسم hayati وصلاحياته.'
+              );
+
+              return;
+            }
+
+            image = uploaded;
           }
 
-          const order = {
+          const productData = {
 
-            customer_name,
-            phone,
-            wilaya,
-            municipality,
-            pickup_point: pickup,
+            name,
 
-            items: cart,
+            category,
 
-            total
+            price,
+
+            old_price:
+              oldPriceRaw === ''
+                ? null
+                : Number(oldPriceRaw),
+
+            stock,
+
+            description,
+
+            image_url:
+              image || null
           };
 
-          const result =
-            await window.HAYATI_DB
-              .from('orders')
-              .insert(order);
+          let result;
+
+          if (editingProductId) {
+
+            result =
+              await db
+                .from('products')
+                .update(productData)
+                .eq(
+                  'id',
+                  editingProductId
+                );
+
+          } else {
+
+            result =
+              await db
+                .from('products')
+                .insert(
+                  productData
+                );
+          }
 
           if (result.error) {
 
             console.error(
-              'Hayati Supabase order error:',
+              'Save product error:',
               result.error
             );
 
-            const error =
-              result.error;
-
-            if (message) {
-
-              message.textContent =
-                'خطأ Supabase:' +
-                (
-                  error.code
-                    ? ' | الكود: ' +
-                      error.code
-                    : ''
-                ) +
-                (
-                  error.message
-                    ? ' | ' +
-                      error.message
-                    : ''
-                ) +
-                (
-                  error.details
-                    ? ' | التفاصيل: ' +
-                      error.details
-                    : ''
-                ) +
-                (
-                  error.hint
-                    ? ' | الحل: ' +
-                      error.hint
-                    : ''
-                );
-            }
+            alert(
+              'تعذر حفظ المنتج:\n' +
+              result.error.message
+            );
 
             return;
           }
 
-          cart = [];
+          alert(
+            editingProductId
+              ? 'تم تعديل المنتج بنجاح ✓'
+              : 'تمت إضافة المنتج بنجاح ✓'
+          );
 
-          save();
+          resetProductForm();
 
-          orderForm.reset();
+          await loadProducts();
 
-          if (message) {
-            message.textContent =
-              'تم تأكيد طلبك بنجاح ✓';
+        } catch (error) {
+
+          console.error(error);
+
+          alert(
+            'حدث خطأ أثناء حفظ المنتج.'
+          );
+
+        } finally {
+
+          if (submit) {
+            submit.disabled = false;
+            submit.textContent =
+              'حفظ المنتج';
+          }
+        }
+      }
+    );
+  }
+
+  /*
+   * =========================================================
+   * إلغاء تعديل المنتج
+   * =========================================================
+   */
+
+  function resetProductForm() {
+
+    editingProductId = null;
+
+    const form =
+      $('#productForm');
+
+    if (form) {
+      form.reset();
+    }
+
+    const pid =
+      $('#pid');
+
+    if (pid) {
+      pid.value = '';
+    }
+
+    const pimage =
+      $('#pimage');
+
+    if (pimage) {
+      pimage.value = '';
+    }
+
+    const preview =
+      $('#productPreview');
+
+    if (preview) {
+      preview.src = '';
+      preview.style.display =
+        'none';
+    }
+
+    const cancel =
+      $('#cancelEdit');
+
+    if (cancel) {
+      cancel.style.display =
+        'none';
+    }
+  }
+
+  const cancelEdit =
+    $('#cancelEdit');
+
+  if (cancelEdit) {
+
+    cancelEdit.addEventListener(
+      'click',
+      resetProductForm
+    );
+  }
+
+  /*
+   * =========================================================
+   * الشعار
+   * =========================================================
+   */
+
+  const logoFile =
+    $('#logoFile');
+
+  if (logoFile) {
+
+    logoFile.addEventListener(
+      'change',
+      () => {
+
+        const file =
+          logoFile.files &&
+          logoFile.files[0];
+
+        const preview =
+          $('#logoPreview');
+
+        if (!file || !preview) {
+          return;
+        }
+
+        const reader =
+          new FileReader();
+
+        reader.onload = () => {
+
+          preview.src =
+            reader.result;
+
+          preview.style.display =
+            'block';
+        };
+
+        reader.readAsDataURL(file);
+      }
+    );
+  }
+
+  const logoForm =
+    $('#logoForm');
+
+  if (logoForm) {
+
+    logoForm.addEventListener(
+      'submit',
+      async (event) => {
+
+        event.preventDefault();
+
+        if (!db) {
+          showLogoMessage(
+            'Supabase غير متصل.'
+          );
+          return;
+        }
+
+        const file =
+          logoFile &&
+          logoFile.files &&
+          logoFile.files[0];
+
+        if (!file) {
+
+          showLogoMessage(
+            'اختاري صورة الشعار أولا.'
+          );
+
+          return;
+        }
+
+        const button =
+          logoForm.querySelector(
+            'button[type="submit"]'
+          );
+
+        if (button) {
+          button.disabled = true;
+          button.textContent =
+            'جاري الحفظ...';
+        }
+
+        showLogoMessage('');
+
+        try {
+
+          const url =
+            await uploadImage(
+              file,
+              'site'
+            );
+
+          if (!url) {
+
+            showLogoMessage(
+              'تعذر رفع الشعار. تأكدي من Storage bucket باسم hayati.'
+            );
+
+            return;
           }
 
-          toast(
-            'تم تأكيد طلبك بنجاح ✓'
+          /*
+           * نخزن رابط الشعار في localStorage
+           * حتى تستطيع صفحات المتجر قراءته.
+           */
+
+          localStorage.setItem(
+            'hayati_logo',
+            url
+          );
+
+          showLogoMessage(
+            'تم حفظ الشعار بنجاح ✓',
+            true
           );
 
         } catch (error) {
 
-          console.error(
-            'Hayati final order error:',
-            error
+          console.error(error);
+
+          showLogoMessage(
+            'حدث خطأ أثناء حفظ الشعار.'
           );
 
-          if (message) {
-            message.textContent =
-              'خطأ: ' +
-              (
-                error.message ||
-                'تعذر إرسال الطلب'
-              );
+        } finally {
+
+          if (button) {
+            button.disabled = false;
+            button.textContent =
+              'حفظ الشعار';
           }
         }
-      };
+      }
+    );
   }
 
-  renderCart();
+  /*
+   * =========================================================
+   * بدء لوحة المدير
+   * =========================================================
+   */
 
-  renderProducts();
+  async function start() {
 
-  connect().then(() => {
-    renderProducts();
-  });
+    db = createDatabase();
+
+    if (!db) {
+      return;
+    }
+
+    window.HAYATI_DB =
+      db;
+
+    try {
+
+      db.auth.onAuthStateChange(
+        (event, session) => {
+
+          if (session) {
+            showPanel();
+          } else {
+            showLogin();
+          }
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Auth listener error:',
+        error
+      );
+    }
+
+    await checkSession();
+  }
+
+  /*
+   * البداية
+   */
+
+  start();
 
 })();
