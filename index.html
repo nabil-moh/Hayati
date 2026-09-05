@@ -20,23 +20,25 @@
 <header class="header">
 
   <div class="logo">
-
-    <!-- الشعار المحفوظ من لوحة المدير سيظهر هنا -->
     <div id="siteLogo" class="site-logo"></div>
 
     <b>حياتي Hayati</b>
 
     <span>متجر نسائي</span>
-
   </div>
 
   <input
     id="search"
     class="search"
+    type="search"
     placeholder="ابحث عن منتج..."
   >
 
-  <button id="cartBtn" class="cart">
+  <button
+    id="cartBtn"
+    class="cart"
+    type="button"
+  >
     🛍️ السلة <b id="cartCount">0</b>
   </button>
 
@@ -46,21 +48,13 @@
 
   <a href="#home">الرئيسية</a>
 
-  <a href="#categories">
-    ملابس نسائية
-  </a>
+  <a href="#categories">ملابس نسائية</a>
 
-  <a href="#categories">
-    مواد التجميل
-  </a>
+  <a href="#categories">مواد التجميل</a>
 
-  <a href="#products">
-    العروض والتخفيضات
-  </a>
+  <a href="#products">العروض والتخفيضات</a>
 
-  <a href="#contact">
-    اتصل بنا
-  </a>
+  <a href="#contact">اتصل بنا</a>
 
 </nav>
 
@@ -95,6 +89,7 @@
 
 </section>
 
+
 <section id="categories" class="section">
 
   <div class="title">
@@ -111,117 +106,98 @@
 
   <div class="cats">
 
-    <button class="cat" data-cat="ملابس">
+    <button
+      type="button"
+      class="cat"
+      data-cat="ملابس"
+    >
+      <span class="icon">👗</span>
 
-      <span class="icon">
-        👗
-      </span>
-
-      <strong>
-        ملابس
-      </strong>
+      <strong>ملابس</strong>
 
       <small>
         فساتين، بلوزات، عبايات والمزيد
       </small>
-
     </button>
 
-    <button class="cat" data-cat="عطور">
 
-      <span class="icon">
-        🌸
-      </span>
+    <button
+      type="button"
+      class="cat"
+      data-cat="عطور"
+    >
+      <span class="icon">🌸</span>
 
-      <strong>
-        عطور
-      </strong>
+      <strong>عطور</strong>
 
       <small>
         عطور نسائية بروائح مميزة
       </small>
-
     </button>
 
-    <button class="cat" data-cat="مواد التجميل">
 
-      <span class="icon">
-        💄
-      </span>
+    <button
+      type="button"
+      class="cat"
+      data-cat="مواد التجميل"
+    >
+      <span class="icon">💄</span>
 
-      <strong>
-        مواد التجميل
-      </strong>
+      <strong>مواد التجميل</strong>
 
       <small>
         ماكياج وعناية بالبشرة
       </small>
-
     </button>
 
-    <button class="cat" data-cat="أحذية">
 
-      <span class="icon">
-        👠
-      </span>
+    <button
+      type="button"
+      class="cat"
+      data-cat="أحذية"
+    >
+      <span class="icon">👠</span>
 
-      <strong>
-        أحذية
-      </strong>
+      <strong>أحذية</strong>
 
       <small>
         أحذية نسائية أنيقة ومريحة
       </small>
-
     </button>
 
   </div>
 
 </section>
+
 
 <section class="section benefits">
 
   <div class="benefit">
     🎧
-    <b>
-      خدمة عملاء مميزة
-    </b>
-    <small>
-      نحن هنا لمساعدتك
-    </small>
+    <b>خدمة عملاء مميزة</b>
+    <small>نحن هنا لمساعدتك</small>
   </div>
 
   <div class="benefit">
     💵
-    <b>
-      الدفع عند الاستلام
-    </b>
-    <small>
-      بكل أمان
-    </small>
+    <b>الدفع عند الاستلام</b>
+    <small>بكل أمان</small>
   </div>
 
   <div class="benefit">
     🚚
-    <b>
-      توصيل سريع
-    </b>
-    <small>
-      إلى جميع ولايات الجزائر
-    </small>
+    <b>توصيل سريع</b>
+    <small>إلى جميع ولايات الجزائر</small>
   </div>
 
   <div class="benefit">
     ✓
-    <b>
-      جودة مضمونة
-    </b>
-    <small>
-      منتجات أصلية
-    </small>
+    <b>جودة مضمونة</b>
+    <small>منتجات أصلية</small>
   </div>
 
 </section>
+
 
 <section id="products" class="section">
 
@@ -247,6 +223,7 @@
 
 </section>
 
+
 <section id="contact" class="promo">
 
   <div>
@@ -269,53 +246,54 @@
 
 </main>
 
+
 <footer class="footer">
-
   حياتي Hayati — جميع الحقوق محفوظة © 2026
-
 </footer>
 
 
-<!-- ========================= -->
-<!-- سلة المشتريات -->
-<!-- ========================= -->
+<!-- =====================================================
+     سلة المشتريات
+     ===================================================== -->
 
 <div
   id="cartModal"
   class="modal"
   aria-hidden="true"
+  hidden
 >
 
-  <div class="box">
+  <div
+    class="box"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cartTitle"
+  >
 
     <button
       class="close"
       id="closeCart"
+      type="button"
+      aria-label="إغلاق"
     >
       ×
     </button>
 
-    <h2>
+    <h2 id="cartTitle">
       سلة المشتريات
     </h2>
 
     <div id="cartItems"></div>
 
     <h3>
-
       المجموع:
-
-      <span id="total">
-        0
-      </span>
-
-      دج
-
+      <span id="total">0 دج</span>
     </h3>
 
     <button
       id="checkoutBtn"
       class="btn full"
+      type="button"
     >
       إتمام الطلب
     </button>
@@ -325,26 +303,34 @@
 </div>
 
 
-<!-- ========================= -->
-<!-- إتمام الطلب -->
-<!-- ========================= -->
+<!-- =====================================================
+     إتمام الطلب
+     ===================================================== -->
 
 <div
   id="checkoutModal"
   class="modal"
   aria-hidden="true"
+  hidden
 >
 
-  <div class="box">
+  <div
+    class="box"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="checkoutTitle"
+  >
 
     <button
       class="close"
       id="closeCheckout"
+      type="button"
+      aria-label="إغلاق"
     >
       ×
     </button>
 
-    <h2>
+    <h2 id="checkoutTitle">
       إتمام الطلب
     </h2>
 
@@ -355,35 +341,37 @@
     <form
       id="orderForm"
       class="form"
+      novalidate
     >
 
       <label>
-
         الاسم واللقب
 
         <input
           name="customer_name"
+          type="text"
           required
+          autocomplete="name"
           placeholder="اكتبي الاسم واللقب"
         >
-
       </label>
 
-      <label>
 
+      <label>
         رقم الهاتف
 
         <input
           name="phone"
+          type="tel"
           required
           inputmode="tel"
+          autocomplete="tel"
           placeholder="05 / 06 / 07 ..."
         >
-
       </label>
 
-      <label>
 
+      <label>
         الولاية
 
         <select
@@ -391,33 +379,41 @@
           id="wilaya"
           required
         >
+          <option value="">
+            اختاري الولاية
+          </option>
         </select>
-
       </label>
 
-      <label>
 
+      <label>
         البلدية
 
-        <input
+        <select
           name="municipality"
+          id="municipality"
           required
-          placeholder="اكتبي البلدية"
+          disabled
         >
-
+          <option value="">
+            اختاري البلدية
+          </option>
+        </select>
       </label>
 
-      <label>
 
+      <label>
         نقطة الاستلام / العنوان
 
         <input
           name="pickup_point"
+          type="text"
           required
+          autocomplete="street-address"
           placeholder="نقطة الاستلام أو العنوان"
         >
-
       </label>
+
 
       <button
         class="btn full"
@@ -426,11 +422,12 @@
         تأكيد الطلب
       </button>
 
+
       <p
         id="orderMsg"
         role="status"
-      >
-      </p>
+        aria-live="polite"
+      ></p>
 
     </form>
 
@@ -439,24 +436,35 @@
 </div>
 
 
+<!-- =====================================================
+     الرسائل
+     ===================================================== -->
+
 <div
   id="toast"
   class="toast"
   aria-live="polite"
+  aria-atomic="true"
+  hidden
 ></div>
 
+
+<!-- =====================================================
+     Supabase
+     ===================================================== -->
 
 <script src="config.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
+
+
+<!-- =====================================================
+     الشعار
+     ===================================================== -->
 
 <script>
-
-/*
-  إظهار الشعار المحفوظ في Supabase
-*/
 
 (function(){
 
@@ -468,8 +476,7 @@
     const box =
       document.getElementById('siteLogo');
 
-    if(!url || !box)
-      return;
+    if(!url || !box) return;
 
     box.innerHTML = '';
 
@@ -481,28 +488,20 @@
     img.alt = 'شعار حياتي';
 
     img.style.maxWidth = '190px';
-
     img.style.maxHeight = '95px';
-
     img.style.width = 'auto';
-
     img.style.height = 'auto';
-
     img.style.objectFit = 'contain';
-
     img.style.display = 'block';
-
     img.style.margin = '0 auto 6px';
 
     img.onerror = function(){
-
       box.innerHTML = '';
-
     };
 
     box.appendChild(img);
-
   }
+
 
   let tries = 0;
 
@@ -517,9 +516,7 @@
         window.HAYATI_LOGO_URL ||
         tries >= 40
       ){
-
         clearInterval(timer);
-
       }
 
     },250);
