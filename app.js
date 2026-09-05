@@ -150,6 +150,10 @@
       return false;
     }
 
+    if (supabaseClient) {
+      return true;
+    }
+
     supabaseClient = window.supabase.createClient(
       cfg.SUPABASE_URL,
       cfg.SUPABASE_ANON_KEY
@@ -172,8 +176,10 @@
 
     wilayaNames.forEach((wilaya) => {
       const option = document.createElement("option");
+
       option.value = wilaya;
       option.textContent = wilaya;
+
       select.appendChild(option);
     });
   }
@@ -205,18 +211,21 @@
       select.required = true;
 
       municipality.replaceWith(select);
+
       municipality = select;
     }
 
     municipality.id = "municipality";
 
     function updateMunicipalities() {
-      const selectedWilaya = wilayaSelect.value;
+      const selectedWilaya =
+        wilayaSelect.value;
 
       municipality.innerHTML =
         '<option value="">اختاري البلدية</option>';
 
-      municipality.disabled = !selectedWilaya;
+      municipality.disabled =
+        !selectedWilaya;
 
       if (!selectedWilaya) return;
 
@@ -237,10 +246,15 @@
       });
     }
 
-    wilayaSelect.addEventListener(
-      "change",
-      updateMunicipalities
-    );
+    if (!wilayaSelect.dataset.municipalityReady) {
+      wilayaSelect.addEventListener(
+        "change",
+        updateMunicipalities
+      );
+
+      wilayaSelect.dataset.municipalityReady =
+        "true";
+    }
 
     updateMunicipalities();
   }
@@ -260,6 +274,7 @@
     if (!connectSupabase()) {
       list.innerHTML =
         '<div class="status">تعذر الاتصال بقاعدة البيانات.</div>';
+
       return;
     }
 
@@ -289,6 +304,7 @@
         : [];
 
       renderProducts();
+
     } catch (error) {
       console.error(error);
 
@@ -303,7 +319,9 @@
 
   function filteredProducts() {
     const searchValue =
-      normalize($("search")?.value || "");
+      normalize(
+        $("search")?.value || ""
+      );
 
     return products.filter((product) => {
       const name =
@@ -314,7 +332,8 @@
 
       const matchesCategory =
         !activeCategory ||
-        category === normalize(activeCategory);
+        category ===
+          normalize(activeCategory);
 
       const matchesSearch =
         !searchValue ||
@@ -339,6 +358,7 @@
     if (!visible.length) {
       list.innerHTML =
         '<div class="status">لا توجد منتجات مطابقة.</div>';
+
       return;
     }
 
@@ -365,7 +385,9 @@
 
               <img
                 src="${escapeHtml(image)}"
-                alt="${escapeHtml(product.name || "منتج")}"
+                alt="${escapeHtml(
+                  product.name || "منتج"
+                )}"
                 loading="lazy"
                 onerror="this.src='https://via.placeholder.com/700x700?text=Hayati'"
               >
@@ -396,23 +418,42 @@
                       gap:8px;
                       flex-wrap:wrap;
                     ">
+
                       <span
                         style="
-                          text-decoration:line-through;
-                          color:#999;
-                          font-size:12px;
+                          color:#000 !important;
+                          text-decoration-line:line-through !important;
+                          text-decoration-style:solid !important;
+                          text-decoration-thickness:2px !important;
+                          font-size:13px;
+                          display:inline-block;
                         ">
-                        ${formatNumber(oldPrice)} دج
+                        ${formatNumber(
+                          oldPrice
+                        )} دج
                       </span>
 
-                      <span class="price">
-                        ${formatNumber(price)} دج
+                      <span
+                        class="price"
+                        style="
+                          color:#e00000 !important;
+                        ">
+                        ${formatNumber(
+                          price
+                        )} دج
                       </span>
+
                     </div>
                   `
                   : `
-                    <div class="price">
-                      ${formatNumber(price)} دج
+                    <div
+                      class="price"
+                      style="
+                        color:#e00000 !important;
+                      ">
+                      ${formatNumber(
+                        price
+                      )} دج
                     </div>
                   `
               }
@@ -420,11 +461,14 @@
               <button
                 class="add"
                 type="button"
-                data-add="${escapeHtml(product.id)}">
+                data-add="${escapeHtml(
+                  product.id
+                )}">
                 أضف إلى السلة
               </button>
 
             </div>
+
           </article>
         `;
       })
@@ -504,6 +548,7 @@
       if (!Array.isArray(cart)) {
         cart = [];
       }
+
     } catch {
       cart = [];
     }
@@ -512,10 +557,17 @@
   }
 
   function saveCart() {
-    localStorage.setItem(
-      "hayati_cart",
-      JSON.stringify(cart)
-    );
+    try {
+      localStorage.setItem(
+        "hayati_cart",
+        JSON.stringify(cart)
+      );
+    } catch (error) {
+      console.error(
+        "Cart save error:",
+        error
+      );
+    }
 
     updateCartCount();
   }
@@ -550,6 +602,7 @@
       showToast(
         "المنتج غير موجود."
       );
+
       return;
     }
 
@@ -563,12 +616,17 @@
     if (existing) {
       existing.qty =
         Number(existing.qty || 1) + 1;
+
     } else {
       cart.push({
         id: product.id,
         name: product.name,
-        price: Number(product.price || 0),
-        old_price: Number(product.old_price || 0),
+        price: Number(
+          product.price || 0
+        ),
+        old_price: Number(
+          product.old_price || 0
+        ),
         image: imageOf(product),
         qty: 1
       });
@@ -602,8 +660,10 @@
       box.innerHTML =
         '<p style="text-align:center;padding:20px">السلة فارغة.</p>';
 
-      $("total").textContent =
-        "0";
+      if ($("total")) {
+        $("total").textContent =
+          "0";
+      }
 
       return;
     }
@@ -617,13 +677,17 @@
               <div style="flex:1">
 
                 <strong>
-                  ${escapeHtml(item.name)}
+                  ${escapeHtml(
+                    item.name
+                  )}
                 </strong>
 
                 <br>
 
                 <small>
-                  ${formatNumber(item.price)} دج
+                  ${formatNumber(
+                    item.price
+                  )} دج
                 </small>
 
               </div>
@@ -678,7 +742,10 @@
             if (
               cart[index].qty <= 0
             ) {
-              cart.splice(index, 1);
+              cart.splice(
+                index,
+                1
+              );
             }
 
             saveCart();
@@ -719,7 +786,10 @@
                 button.dataset.remove
               );
 
-            cart.splice(index, 1);
+            cart.splice(
+              index,
+              1
+            );
 
             saveCart();
             renderCart();
@@ -727,10 +797,12 @@
         );
       });
 
-    $("total").textContent =
-      formatNumber(
-        cartTotal()
-      );
+    if ($("total")) {
+      $("total").textContent =
+        formatNumber(
+          cartTotal()
+        );
+    }
   }
 
   /* =========================
@@ -778,14 +850,19 @@
       "click",
       () => {
         renderCart();
-        openModal("cartModal");
+
+        openModal(
+          "cartModal"
+        );
       }
     );
 
     $("closeCart")?.addEventListener(
       "click",
       () => {
-        closeModal("cartModal");
+        closeModal(
+          "cartModal"
+        );
       }
     );
 
@@ -805,11 +882,17 @@
           showToast(
             "السلة فارغة."
           );
+
           return;
         }
 
-        closeModal("cartModal");
-        openModal("checkoutModal");
+        closeModal(
+          "cartModal"
+        );
+
+        openModal(
+          "checkoutModal"
+        );
       }
     );
 
@@ -852,6 +935,13 @@
 
     if (!form) return;
 
+    if (form.dataset.ready) {
+      return;
+    }
+
+    form.dataset.ready =
+      "true";
+
     form.addEventListener(
       "submit",
       async (event) => {
@@ -859,6 +949,10 @@
 
         const msg =
           $("orderMsg");
+
+        if (msg) {
+          msg.textContent = "";
+        }
 
         if (!cart.length) {
           if (msg) {
@@ -969,25 +1063,45 @@
         const total =
           cartTotal();
 
+        const orderData = {
+          customer_name:
+            customerName,
+
+          phone:
+            phone,
+
+          wilaya:
+            wilaya,
+
+          municipality:
+            municipality,
+
+          pickup_point:
+            pickupPoint,
+
+          items:
+            items,
+
+          total:
+            total,
+
+          status:
+            "pending"
+        };
+
+        console.log(
+          "Sending order:",
+          orderData
+        );
+
         try {
-          const { error } =
+          const { data, error } =
             await supabaseClient
               .from("orders")
               .insert([
-                {
-                  customer_name:
-                    customerName,
-                  phone: phone,
-                  wilaya: wilaya,
-                  municipality:
-                    municipality,
-                  pickup_point:
-                    pickupPoint,
-                  items: items,
-                  total: total,
-                  status: "pending"
-                }
-              ]);
+                orderData
+              ])
+              .select();
 
           if (error) {
             console.error(
@@ -995,17 +1109,75 @@
               error
             );
 
+            const realError =
+              error.message ||
+              error.details ||
+              error.hint ||
+              error.code ||
+              "خطأ غير معروف";
+
             if (msg) {
-              msg.textContent =
-                "لم يتم إرسال الطلب. تحقق من اتصال قاعدة البيانات.";
+              msg.innerHTML = `
+                <div style="
+                  color:#c00000;
+                  background:#fff0f0;
+                  border:1px solid #ffcccc;
+                  padding:12px;
+                  border-radius:10px;
+                  line-height:1.8;
+                  direction:rtl;
+                  text-align:right;
+                ">
+                  <strong>
+                    لم يتم إرسال الطلب ❌
+                  </strong>
+
+                  <br>
+
+                  ${escapeHtml(
+                    realError
+                  )}
+
+                  ${
+                    error.code
+                      ? `
+                        <br>
+                        <small>
+                          Code: ${escapeHtml(
+                            error.code
+                          )}
+                        </small>
+                      `
+                      : ""
+                  }
+                </div>
+              `;
             }
+
+            showToast(
+              "تعذر إرسال الطلب ❌"
+            );
 
             return;
           }
 
+          console.log(
+            "Order inserted:",
+            data
+          );
+
           if (msg) {
-            msg.textContent =
-              "تم إرسال الطلب بنجاح ✅";
+            msg.innerHTML = `
+              <div style="
+                color:#087f23;
+                background:#effff2;
+                padding:12px;
+                border-radius:10px;
+                text-align:center;
+              ">
+                تم إرسال الطلب بنجاح ✅
+              </div>
+            `;
           }
 
           showToast(
@@ -1013,7 +1185,9 @@
           );
 
           cart = [];
+
           saveCart();
+
           renderCart();
 
           form.reset();
@@ -1026,10 +1200,10 @@
             );
 
             if (msg) {
-              msg.textContent =
-                "";
+              msg.innerHTML = "";
+              msg.textContent = "";
             }
-          }, 1200);
+          }, 1500);
 
         } catch (error) {
           console.error(
@@ -1037,9 +1211,35 @@
             error
           );
 
+          const realError =
+            error?.message ||
+            error?.details ||
+            String(error) ||
+            "خطأ غير معروف";
+
           if (msg) {
-            msg.textContent =
-              "حدث خطأ أثناء إرسال الطلب.";
+            msg.innerHTML = `
+              <div style="
+                color:#c00000;
+                background:#fff0f0;
+                border:1px solid #ffcccc;
+                padding:12px;
+                border-radius:10px;
+                line-height:1.8;
+                direction:rtl;
+                text-align:right;
+              ">
+                <strong>
+                  حدث خطأ أثناء إرسال الطلب ❌
+                </strong>
+
+                <br>
+
+                ${escapeHtml(
+                  realError
+                )}
+              </div>
+            `;
           }
 
         } finally {
@@ -1063,12 +1263,15 @@
     loadCart();
 
     setupWilayas();
+
     setupMunicipality();
 
     setupSearch();
+
     setupCategories();
 
     setupModals();
+
     setupOrderForm();
 
     await loadProducts();
