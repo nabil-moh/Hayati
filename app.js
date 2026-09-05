@@ -3,11 +3,10 @@
 
   /* =========================================================
      HAYATI STORE - APP.JS
-     نسخة إعادة البناء
+     النسخة المصححة
      ========================================================= */
 
   const cfg = window.HAYATI_CONFIG || {};
-
   const $ = (id) => document.getElementById(id);
 
   let db = null;
@@ -22,420 +21,129 @@
      ========================================================= */
 
   const wilayas = [
-    "أدرار",
-    "الشلف",
-    "الأغواط",
-    "أم البواقي",
-    "باتنة",
-    "بجاية",
-    "بسكرة",
-    "بشار",
-    "البليدة",
-    "البويرة",
-    "تمنراست",
-    "تبسة",
-    "تلمسان",
-    "تيارت",
-    "تيزي وزو",
-    "الجزائر",
-    "الجلفة",
-    "جيجل",
-    "سطيف",
-    "سعيدة",
-    "سكيكدة",
-    "سيدي بلعباس",
-    "عنابة",
-    "قالمة",
-    "قسنطينة",
-    "المدية",
-    "مستغانم",
-    "المسيلة",
-    "معسكر",
-    "ورقلة",
-    "وهران",
-    "البيض",
-    "إليزي",
-    "برج بوعريريج",
-    "بومرداس",
-    "الطارف",
-    "تندوف",
-    "تيسمسيلت",
-    "الوادي",
-    "خنشلة",
-    "سوق أهراس",
-    "تيبازة",
-    "ميلة",
-    "عين الدفلى",
-    "النعامة",
-    "عين تموشنت",
-    "غرداية",
-    "غليزان",
-    "تيميمون",
-    "برج باجي مختار",
-    "أولاد جلال",
-    "بني عباس",
-    "إن صالح",
-    "إن قزام",
-    "تقرت",
-    "جانت",
-    "المغير",
-    "المنيعة"
+    "أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار",
+    "البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر",
+    "الجلفة","جيجل","سطيف","سعيدة","سكيكدة","سيدي بلعباس","عنابة","قالمة",
+    "قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة","وهران","البيض",
+    "إليزي","برج بوعريريج","بومرداس","الطارف","تندوف","تيسمسيلت","الوادي",
+    "خنشلة","سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت",
+    "غرداية","غليزان","تيميمون","برج باجي مختار","أولاد جلال","بني عباس",
+    "إن صالح","إن قزام","تقرت","جانت","المغير","المنيعة"
   ];
 
   const municipalities = {
-    "أدرار": [
-      "أدرار","تامست","شروين","رقان","إن زغمير","تيت","تمنطيط",
-      "فنوغيل","تسابيت","سالي","أولاد أحمد تيمي","بودة","أسبع"
-    ],
-
-    "الشلف": [
-      "الشلف","تنس","بوقادير","وادي الفضة","الكريمية","الزبوجة",
-      "أولاد فارس","أبو الحسن","تاوقريت","بني حواء","المرسى",
-      "سيدي عكاشة","عين مران","بنايرية","الصبحة","حرشون","الهرانفة"
-    ],
-
-    "الأغواط": [
-      "الأغواط","قصر الحيران","عين ماضي","الحويطة","تاجموت",
-      "الخنق","قلتة سيدي سعد","البيضاء","سيدي مخلوف","حاسي الرمل"
-    ],
-
-    "أم البواقي": [
-      "أم البواقي","عين البيضاء","عين مليلة","عين فكرون","عين كرشة",
-      "الضلعة","مسكيانة","الحرملية","الزرق","سوق نعمان","العامرية"
-    ],
-
-    "باتنة": [
-      "باتنة","عين التوتة","مروانة","نقاوس","آريس","بريكة",
-      "منعة","تكوت","ثنية العابد","إشمول","المعذر","تازولت"
-    ],
-
-    "بجاية": [
-      "بجاية","أميزور","أقبو","خراطة","صدوق","تيشي","أوقاس",
-      "سيدي عيش","تازمالت","شميني","القصر","ملبو","دراق"
-    ],
-
-    "بسكرة": [
-      "بسكرة","طولقة","سيدي عقبة","زريبة الوادي","أورلال",
-      "فوغالة","ليوة","جمورة","القنطرة","الحوش","عين الناقة"
-    ],
-
-    "بشار": [
-      "بشار","القنادسة","العبادلة","تاغيت","بني ونيف","كرزاز",
-      "تبلبالة","إقلي","عرق فراج"
-    ],
-
-    "البليدة": [
-      "البليدة","بوعرفة","بوفاريك","الأربعاء","موزاية","العفرون",
-      "الشفة","وادي العلايق","بني مراد","بوقرة","الصومعة",
-      "الشريعة","حمام ملوان"
-    ],
-
-    "البويرة": [
-      "البويرة","سور الغزلان","الأخضرية","عين بسام","برج أخريص",
-      "مشدا الله","بشلول","حيزر","ديرة","الهاشمية","الجباحية"
-    ],
-
-    "تمنراست": [
-      "تمنراست","عين أمقل","إدلس","أبلسة","تاظروك","إنغر"
-    ],
-
-    "تبسة": [
-      "تبسة","الشريعة","العوينات","بئر العاتر","الونزة","مرسط",
-      "الماء الأبيض","نقرين","العقلة","الكويف","صفصاف الوسرى"
-    ],
-
-    "تلمسان": [
-      "تلمسان","المنصورة","شتوان","مغنية","ندرومة","الغزوات",
-      "سبدو","بني سنوس","هنين","سوق الثلاثاء","الحناية",
-      "الرمشي","أولاد ميمون"
-    ],
-
-    "تيارت": [
-      "تيارت","فرندة","مهدية","السوقر","قصر الشلالة","رحوية",
-      "حمادية","عين الذهب","مدروسة","مغيلة","دحموني"
-    ],
-
-    "تيزي وزو": [
-      "تيزي وزو","ذراع بن خدة","تيقزيرت","عزازقة","بوغني",
-      "عين الحمام","واقنون","ذراع الميزان","مقلع","بوزغن"
-    ],
-
-    "الجزائر": [
-      "الجزائر الوسطى","المدنية","المرادية","الأبيار","بئر مراد رايس",
-      "حيدرة","بن عكنون","الشراقة","دالي إبراهيم","باب الوادي",
-      "القصبة","الحمامات","الدار البيضاء","باب الزوار","برج الكيفان",
-      "الحراش","براقي","الكاليتوس","الرويبة","الرغاية"
-    ],
-
-    "الجلفة": [
-      "الجلفة","عين وسارة","حاسي بحبح","مسعد","الإدريسية","دار الشيوخ",
-      "حد الصحاري","الشارف","فيض البطمة","البيرين","سيدي لعجال",
-      "عين الإبل","زعفران","قطارة","سد رحال","بويرة الأحداب"
-    ],
-
-    "جيجل": [
-      "جيجل","الطاهير","الميلية","العوانة","القنار نشفي","الشقفة",
-      "تاكسنة","زيامة منصورية","سيدي معروف","وجانة"
-    ],
-
-    "سطيف": [
-      "سطيف","العلمة","عين أرنات","عين ولمان","بوقاعة","عين الكبيرة",
-      "صالح باي","حمام قرقور","بئر العرش","جميلة","قجال"
-    ],
-
-    "سعيدة": [
-      "سعيدة","عين الحجر","الحساسنة","يوب","سيدي بوبكر","مولاي العربي"
-    ],
-
-    "سكيكدة": [
-      "سكيكدة","عزابة","الحروش","القل","رمضان جمال","الحدائق",
-      "تمالوس","الزيتونة","عين قشرة","المرسى"
-    ],
-
-    "سيدي بلعباس": [
-      "سيدي بلعباس","تسالة","سفيزف","تلاغ","رأس الماء","بن باديس",
-      "عين البرد","مرحوم","سيدي علي بوسيدي","مصطفى بن إبراهيم"
-    ],
-
-    "عنابة": [
-      "عنابة","البوني","الحجار","برحال","سيدي عمار","الشطايبي"
-    ],
-
-    "قالمة": [
-      "قالمة","هيليوبوليس","حمام دباغ","وادي الزناتي","بوشقوف",
-      "قلعة بوصبع","عين مخلوف","خزارة"
-    ],
-
-    "قسنطينة": [
-      "قسنطينة","الخروب","عين سمارة","حامة بوزيان","ديدوش مراد",
-      "ابن زياد","زيغود يوسف","مسعود بوجريو"
-    ],
-
-    "المدية": [
-      "المدية","البرواقية","قصر البخاري","شلالة العذاورة","تابلاط",
-      "العمارية","وزرة","بن شكاو","سيدي نعمان","عين بوسيف"
-    ],
-
-    "مستغانم": [
-      "مستغانم","مزغران","عين تادلس","حاسي مماش","سيدي علي",
-      "عشعاشة","خير الدين","بوقيراط","سيرات","فرناكة"
-    ],
-
-    "المسيلة": [
-      "المسيلة","بوسعادة","سيدي عيسى","مقرة","برهوم","حمام الضلعة",
-      "عين الملح","جبل مساعد","خبانة","أولاد دراج"
-    ],
-
-    "معسكر": [
-      "معسكر","تيغنيف","المحمدية","سيق","غريس","بوحنيفية",
-      "وادي الأبطال","عين فكان","حسين","عوف"
-    ],
-
-    "ورقلة": [
-      "ورقلة","حاسي مسعود","الرويسات","تقرت","سيدي خويلد",
-      "البرمة","حاسي بن عبد الله","الطيبات"
-    ],
-
-    "وهران": [
-      "وهران","السانية","بئر الجير","قديل","أرزيو","بطيوة",
-      "عين الترك","مرسى الحجاج","الكرمة","المرسى الكبير","العامرية"
-    ],
-
-    "البيض": [
-      "البيض","بوقطب","الأبيض سيدي الشيخ","بريزينة","الرقاصة",
-      "بوعلام","كراكدة","الشلالة"
-    ],
-
-    "إليزي": [
-      "إليزي","جانت","برج الحواس","دبداب","إن أميناس"
-    ],
-
-    "برج بوعريريج": [
-      "برج بوعريريج","رأس الوادي","المنصورة","برج الغدير",
-      "مجانة","الحمادية","بليمور","عين تاغروت"
-    ],
-
-    "بومرداس": [
-      "بومرداس","دلس","برج منايل","خميس الخشنة","بودواو",
-      "الرغاية","يسر","الثنية","بغلية","زموري"
-    ],
-
-    "الطارف": [
-      "الطارف","القالة","البسباس","الذرعان","الشيحاني",
-      "العيون","الزيتونة","الحمامات"
-    ],
-
-    "تندوف": [
-      "تندوف","أم العسل"
-    ],
-
-    "تيسمسيلت": [
-      "تيسمسيلت","ثنية الحد","برج بونعامة","لرجام","خميستي",
-      "عماري","الأربعاء","سيدي العنتري"
-    ],
-
-    "الوادي": [
-      "الوادي","الرباح","قمار","الدبيلة","الرقيبة","البياضة",
-      "حساني عبد الكريم","الطالب العربي","كوينين","النخلة"
-    ],
-
-    "خنشلة": [
-      "خنشلة","قايس","ششار","الحامة","بابار","بوحمامة",
-      "عين الطويلة","يابوس","أولاد رشاش"
-    ],
-
-    "سوق أهراس": [
-      "سوق أهراس","سدراتة","تاورة","مداوروش","المشروحة",
-      "الحنانشة","الزعرورية","ترقالت"
-    ],
-
-    "تيبازة": [
-      "تيبازة","القليعة","شرشال","حجوط","فوكة","بواسماعيل",
-      "الدواودة","أحمر العين","سيدي راشد","الناظور"
-    ],
-
-    "ميلة": [
-      "ميلة","فرجيوة","شلغوم العيد","التلاغمة","القرارم قوقة",
-      "وادي النجاء","عين الملوك","سيدي مروان","بوحاتم"
-    ],
-
-    "عين الدفلى": [
-      "عين الدفلى","خميس مليانة","العطاف","مليانة","العبادية",
-      "جليدة","الروينة","بومدفع","عين الأشياخ"
-    ],
-
-    "النعامة": [
-      "النعامة","المشرية","عين الصفراء","مغرار","البيوض",
-      "عسلة","صفيصيفة"
-    ],
-
-    "عين تموشنت": [
-      "عين تموشنت","بني صاف","العامرية","حمام بوحجر","المالح",
-      "حاسي الغلة","ولهاصة","عين الكيحل"
-    ],
-
-    "غرداية": [
-      "غرداية","بونورة","العطف","بريان","متليلي","القرارة",
-      "ضاية بن ضحوة","زلفانة"
-    ],
-
-    "غليزان": [
-      "غليزان","وادي رهيو","مازونة","عمي موسى","جديوية","سيدي أمحمد بن علي",
-      "يلل","منداس","عين طارق","زمورة"
-    ],
-
-    "تيميمون": [
-      "تيميمون","أوقروت","تنركوك","شروين","دلدول","المطارفة"
-    ],
-
-    "برج باجي مختار": [
-      "برج باجي مختار","تيمياوين"
-    ],
-
-    "أولاد جلال": [
-      "أولاد جلال","رأس الميعاد","البسباس","الدوسن","سيدي خالد"
-    ],
-
-    "بني عباس": [
-      "بني عباس","الواتة","إقلي","كرزاز","القصابي","تبلبالة"
-    ],
-
-    "إن صالح": [
-      "إن صالح","فقارة الزوى","عين صالح"
-    ],
-
-    "إن قزام": [
-      "إن قزام","تين زواتين"
-    ],
-
-    "تقرت": [
-      "تقرت","الزاوية العابدية","النزلة","تبسبست","تماسين",
-      "الطيبات","المقارين","الحجيرة","العالية"
-    ],
-
-    "جانت": [
-      "جانت","برج الحواس"
-    ],
-
-    "المغير": [
-      "المغير","جامعة","المرارة","سيدي خليل","أم الطيور",
-      "سطيل","الحمراية"
-    ],
-
-    "المنيعة": [
-      "المنيعة","حاسي القارة","المنصورة"
-    ]
+    "أدرار":["أدرار","تامست","شروين","رقان","إن زغمير","تيت","تمنطيط","فنوغيل","تسابيت","سالي","أولاد أحمد تيمي","بودة","أسبع"],
+    "الشلف":["الشلف","تنس","بوقادير","وادي الفضة","الكريمية","الزبوجة","أولاد فارس","أبو الحسن","تاوقريت","بني حواء","المرسى","سيدي عكاشة","عين مران","بنايرية","الصبحة","حرشون","الهرانفة"],
+    "الأغواط":["الأغواط","قصر الحيران","عين ماضي","الحويطة","تاجموت","الخنق","قلتة سيدي سعد","البيضاء","سيدي مخلوف","حاسي الرمل"],
+    "أم البواقي":["أم البواقي","عين البيضاء","عين مليلة","عين فكرون","عين كرشة","الضلعة","مسكيانة","الحرملية","الزرق","سوق نعمان","العامرية"],
+    "باتنة":["باتنة","عين التوتة","مروانة","نقاوس","آريس","بريكة","منعة","تكوت","ثنية العابد","إشمول","المعذر","تازولت"],
+    "بجاية":["بجاية","أميزور","أقبو","خراطة","صدوق","تيشي","أوقاس","سيدي عيش","تازمالت","شميني","القصر","ملبو","دراق"],
+    "بسكرة":["بسكرة","طولقة","سيدي عقبة","زريبة الوادي","أورلال","فوغالة","ليوة","جمورة","القنطرة","الحوش","عين الناقة"],
+    "بشار":["بشار","القنادسة","العبادلة","تاغيت","بني ونيف","كرزاز","تبلبالة","إقلي","عرق فراج"],
+    "البليدة":["البليدة","بوعرفة","بوفاريك","الأربعاء","موزاية","العفرون","الشفة","وادي العلايق","بني مراد","بوقرة","الصومعة","الشريعة","حمام ملوان"],
+    "البويرة":["البويرة","سور الغزلان","الأخضرية","عين بسام","برج أخريص","مشدا الله","بشلول","حيزر","ديرة","الهاشمية","الجباحية"],
+    "تمنراست":["تمنراست","عين أمقل","إدلس","أبلسة","تاظروك","إنغر"],
+    "تبسة":["تبسة","الشريعة","العوينات","بئر العاتر","الونزة","مرسط","الماء الأبيض","نقرين","العقلة","الكويف","صفصاف الوسرى"],
+    "تلمسان":["تلمسان","المنصورة","شتوان","مغنية","ندرومة","الغزوات","سبدو","بني سنوس","هنين","سوق الثلاثاء","الحناية","الرمشي","أولاد ميمون"],
+    "تيارت":["تيارت","فرندة","مهدية","السوقر","قصر الشلالة","رحوية","حمادية","عين الذهب","مدروسة","مغيلة","دحموني"],
+    "تيزي وزو":["تيزي وزو","ذراع بن خدة","تيقزيرت","عزازقة","بوغني","عين الحمام","واقنون","ذراع الميزان","مقلع","بوزغن"],
+    "الجزائر":["الجزائر الوسطى","المدنية","المرادية","الأبيار","بئر مراد رايس","حيدرة","بن عكنون","الشراقة","دالي إبراهيم","باب الوادي","القصبة","الحمامات","الدار البيضاء","باب الزوار","برج الكيفان","الحراش","براقي","الكاليتوس","الرويبة","الرغاية"],
+    "الجلفة":["الجلفة","عين وسارة","حاسي بحبح","مسعد","الإدريسية","دار الشيوخ","حد الصحاري","الشارف","فيض البطمة","البيرين","سيدي لعجال","عين الإبل","زعفران","قطارة","سد رحال","بويرة الأحداب"],
+    "جيجل":["جيجل","الطاهير","الميلية","العوانة","القنار نشفي","الشقفة","تاكسنة","زيامة منصورية","سيدي معروف","وجانة"],
+    "سطيف":["سطيف","العلمة","عين أرنات","عين ولمان","بوقاعة","عين الكبيرة","صالح باي","حمام قرقور","بئر العرش","جميلة","قجال"],
+    "سعيدة":["سعيدة","عين الحجر","الحساسنة","يوب","سيدي بوبكر","مولاي العربي"],
+    "سكيكدة":["سكيكدة","عزابة","الحروش","القل","رمضان جمال","الحدائق","تمالوس","الزيتونة","عين قشرة","المرسى"],
+    "سيدي بلعباس":["سيدي بلعباس","تسالة","سفيزف","تلاغ","رأس الماء","بن باديس","عين البرد","مرحوم","سيدي علي بوسيدي","مصطفى بن إبراهيم"],
+    "عنابة":["عنابة","البوني","الحجار","برحال","سيدي عمار","الشطايبي"],
+    "قالمة":["قالمة","هيليوبوليس","حمام دباغ","وادي الزناتي","بوشقوف","قلعة بوصبع","عين مخلوف","خزارة"],
+    "قسنطينة":["قسنطينة","الخروب","عين سمارة","حامة بوزيان","ديدوش مراد","ابن زياد","زيغود يوسف","مسعود بوجريو"],
+    "المدية":["المدية","البرواقية","قصر البخاري","شلالة العذاورة","تابلاط","العمارية","وزرة","بن شكاو","سيدي نعمان","عين بوسيف"],
+    "مستغانم":["مستغانم","مزغران","عين تادلس","حاسي مماش","سيدي علي","عشعاشة","خير الدين","بوقيراط","سيرات","فرناكة"],
+    "المسيلة":["المسيلة","بوسعادة","سيدي عيسى","مقرة","برهوم","حمام الضلعة","عين الملح","جبل مساعد","خبانة","أولاد دراج"],
+    "معسكر":["معسكر","تيغنيف","المحمدية","سيق","غريس","بوحنيفية","وادي الأبطال","عين فكان","حسين","عوف"],
+    "ورقلة":["ورقلة","حاسي مسعود","الرويسات","تقرت","سيدي خويلد","البرمة","حاسي بن عبد الله","الطيبات"],
+    "وهران":["وهران","السانية","بئر الجير","قديل","أرزيو","بطيوة","عين الترك","مرسى الحجاج","الكرمة","المرسى الكبير","العامرية"],
+    "البيض":["البيض","بوقطب","الأبيض سيدي الشيخ","بريزينة","الرقاصة","بوعلام","كراكدة","الشلالة"],
+    "إليزي":["إليزي","جانت","برج الحواس","دبداب","إن أميناس"],
+    "برج بوعريريج":["برج بوعريريج","رأس الوادي","المنصورة","برج الغدير","مجانة","الحمادية","بليمور","عين تاغروت"],
+    "بومرداس":["بومرداس","دلس","برج منايل","خميس الخشنة","بودواو","الرغاية","يسر","الثنية","بغلية","زموري"],
+    "الطارف":["الطارف","القالة","البسباس","الذرعان","الشيحاني","العيون","الزيتونة","الحمامات"],
+    "تندوف":["تندوف","أم العسل"],
+    "تيسمسيلت":["تيسمسيلت","ثنية الحد","برج بونعامة","لرجام","خميستي","عماري","الأربعاء","سيدي العنتري"],
+    "الوادي":["الوادي","الرباح","قمار","الدبيلة","الرقيبة","البياضة","حساني عبد الكريم","الطالب العربي","كوينين","النخلة"],
+    "خنشلة":["خنشلة","قايس","ششار","الحامة","بابار","بوحمامة","عين الطويلة","يابوس","أولاد رشاش"],
+    "سوق أهراس":["سوق أهراس","سدراتة","تاورة","مداوروش","المشروحة","الحنانشة","الزعرورية","ترقالت"],
+    "تيبازة":["تيبازة","القليعة","شرشال","حجوط","فوكة","بواسماعيل","الدواودة","أحمر العين","سيدي راشد","الناظور"],
+    "ميلة":["ميلة","فرجيوة","شلغوم العيد","التلاغمة","القرارم قوقة","وادي النجاء","عين الملوك","سيدي مروان","بوحاتم"],
+    "عين الدفلى":["عين الدفلى","خميس مليانة","العطاف","مليانة","العبادية","جليدة","الروينة","بومدفع","عين الأشياخ"],
+    "النعامة":["النعامة","المشرية","عين الصفراء","مغرار","البيوض","عسلة","صفيصيفة"],
+    "عين تموشنت":["عين تموشنت","بني صاف","العامرية","حمام بوحجر","المالح","حاسي الغلة","ولهاصة","عين الكيحل"],
+    "غرداية":["غرداية","بونورة","العطف","بريان","متليلي","القرارة","ضاية بن ضحوة","زلفانة"],
+    "غليزان":["غليزان","وادي رهيو","مازونة","عمي موسى","جديوية","سيدي أمحمد بن علي","يلل","منداس","عين طارق","زمورة"],
+    "تيميمون":["تيميمون","أوقروت","تنركوك","شروين","دلدول","المطارفة"],
+    "برج باجي مختار":["برج باجي مختار","تيمياوين"],
+    "أولاد جلال":["أولاد جلال","رأس الميعاد","البسباس","الدوسن","سيدي خالد"],
+    "بني عباس":["بني عباس","الواتة","إقلي","كرزاز","القصابي","تبلبالة"],
+    "إن صالح":["إن صالح","فقارة الزوى","عين صالح"],
+    "إن قزام":["إن قزام","تين زواتين"],
+    "تقرت":["تقرت","الزاوية العابدية","النزلة","تبسبست","تماسين","الطيبات","المقارين","الحجيرة","العالية"],
+    "جانت":["جانت","برج الحواس"],
+    "المغير":["المغير","جامعة","المرارة","سيدي خليل","أم الطيور","سطيل","الحمراية"],
+    "المنيعة":["المنيعة","حاسي القارة","المنصورة"]
   };
 
   /* =========================================================
-     أدوات عامة
+     أدوات
      ========================================================= */
 
   function esc(value) {
     return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
   }
 
   function normalize(value) {
     return String(value ?? "")
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[أإآ]/g, "ا")
-      .replace(/ة/g, "ه")
+      .replace(/[\u0300-\u036f]/g,"")
+      .replace(/[أإآ]/g,"ا")
+      .replace(/ة/g,"ه")
       .trim();
   }
 
   function money(value) {
-    const n = Number(value || 0);
-
-    return `${n.toLocaleString("ar-DZ")} دج`;
+    return `${Number(value || 0).toLocaleString("ar-DZ")} دج`;
   }
 
   function imageOf(product) {
-    return (
-      product?.image_url ||
-      product?.image ||
-      product?.imageUrl ||
-      "https://via.placeholder.com/500x500?text=Hayati"
-    );
+    return product?.image_url ||
+           product?.image ||
+           product?.imageUrl ||
+           "https://via.placeholder.com/500x500?text=Hayati";
   }
 
+  /* =========================================================
+     الرسالة المنبثقة
+     ========================================================= */
+
   function toast(message) {
-    let box = $("toast");
-
-    if (!box) {
-      box = document.createElement("div");
-      box.id = "toast";
-
-      Object.assign(box.style, {
-        position: "fixed",
-        bottom: "20px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: "99999",
-        background: "#222",
-        color: "#fff",
-        padding: "12px 20px",
-        borderRadius: "12px",
-        fontSize: "15px",
-        maxWidth: "90%",
-        textAlign: "center"
-      });
-
-      document.body.appendChild(box);
-    }
+    const box = $("toast");
+    if (!box) return;
 
     box.textContent = message;
+
+    /* مهم: CSS الحالي يعتمد على show */
     box.hidden = false;
+    box.classList.add("show");
 
     clearTimeout(toastTimer);
 
     toastTimer = setTimeout(() => {
+      box.classList.remove("show");
       box.hidden = true;
     }, 2500);
   }
@@ -445,22 +153,15 @@
      ========================================================= */
 
   function connectSupabase() {
-    if (
-      !cfg.SUPABASE_URL ||
-      !cfg.SUPABASE_ANON_KEY
-    ) {
+    if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
       console.error("HAYATI_CONFIG غير موجود");
-
       toast("تعذر الاتصال بقاعدة البيانات.");
-
       return false;
     }
 
-    if (!window.supabase || !window.supabase.createClient) {
+    if (!window.supabase?.createClient) {
       console.error("Supabase library غير موجودة");
-
       toast("خطأ في تحميل Supabase.");
-
       return false;
     }
 
@@ -469,7 +170,6 @@
         cfg.SUPABASE_URL,
         cfg.SUPABASE_ANON_KEY
       );
-
       return true;
     } catch (error) {
       console.error(error);
@@ -485,14 +185,7 @@
   function loadCart() {
     try {
       const raw = localStorage.getItem("hayati_cart");
-
-      if (!raw) {
-        cart = [];
-        return;
-      }
-
-      const parsed = JSON.parse(raw);
-
+      const parsed = raw ? JSON.parse(raw) : [];
       cart = Array.isArray(parsed)
         ? parsed.filter(item => item && item.id)
         : [];
@@ -504,10 +197,7 @@
 
   function saveCart() {
     try {
-      localStorage.setItem(
-        "hayati_cart",
-        JSON.stringify(cart)
-      );
+      localStorage.setItem("hayati_cart", JSON.stringify(cart));
     } catch (error) {
       console.error("Cart save error:", error);
     }
@@ -516,52 +206,38 @@
   }
 
   function cartTotal() {
-    return cart.reduce((sum, item) => {
-      return sum + (
+    return cart.reduce(
+      (sum,item) =>
+        sum +
         Number(item.price || 0) *
-        Number(item.quantity || 1)
-      );
-    }, 0);
+        Number(item.quantity || 1),
+      0
+    );
   }
 
   function updateCartCount() {
     const count = cart.reduce(
-      (sum, item) => sum + Number(item.quantity || 0),
+      (sum,item) => sum + Number(item.quantity || 0),
       0
     );
 
-    const btn = $("cartBtn");
+    /* لا نغيّر محتوى زر السلة بالكامل */
+    const countEl = $("cartCount") || $("cart-count");
 
-    if (btn) {
-      const number = btn.querySelector(".cart-count");
-
-      if (number) {
-        number.textContent = count;
-      } else {
-        btn.textContent = `🛍️ السلة ${count}`;
-      }
+    if (countEl) {
+      countEl.textContent = count;
     }
-
-    const possible = [
-      $("cartCount"),
-      $("cart-count")
-    ];
-
-    possible.forEach(el => {
-      if (el) el.textContent = count;
-    });
   }
 
   function addToCart(product) {
-    if (!product || !product.id) return;
+    if (!product?.id) return;
 
     const existing = cart.find(
       item => String(item.id) === String(product.id)
     );
 
     if (existing) {
-      existing.quantity =
-        Number(existing.quantity || 0) + 1;
+      existing.quantity = Number(existing.quantity || 0) + 1;
     } else {
       cart.push({
         id: product.id,
@@ -593,7 +269,8 @@
     if (!item) return;
 
     item.quantity =
-      Number(item.quantity || 1) + Number(amount || 0);
+      Number(item.quantity || 1) +
+      Number(amount || 0);
 
     if (item.quantity <= 0) {
       cart = cart.filter(
@@ -612,7 +289,6 @@
 
     saveCart();
     renderCart();
-
     toast("تم حذف المنتج من السلة");
   }
 
@@ -626,102 +302,50 @@
       box.innerHTML =
         '<p style="text-align:center;padding:20px">السلة فارغة 🛍️</p>';
 
-      if (total) {
-        total.textContent = "0 دج";
-      }
-
+      if (total) total.textContent = "0 دج";
       return;
     }
 
-    box.innerHTML = cart.map(item => {
-      const qty = Number(item.quantity || 1);
-      const price = Number(item.price || 0);
+    box.innerHTML = cart.map(item => `
+      <div class="cart-row">
+        <img
+          src="${esc(item.image)}"
+          alt="${esc(item.name)}"
+          onerror="this.src='https://via.placeholder.com/100?text=Hayati'"
+        >
 
-      return `
-        <div class="cart-item"
-             style="
-               display:flex;
-               align-items:center;
-               gap:10px;
-               padding:10px 0;
-               border-bottom:1px solid #eee;
-             ">
+        <div class="cart-row-info">
+          <strong>${esc(item.name)}</strong>
+          <div>${money(item.price)}</div>
 
-          <img
-            src="${esc(item.image)}"
-            alt="${esc(item.name)}"
-            style="
-              width:65px;
-              height:65px;
-              object-fit:cover;
-              border-radius:10px;
-            "
-            onerror="this.src='https://via.placeholder.com/100?text=Hayati'"
-          >
+          <div class="qty">
+            <button type="button"
+              data-action="minus"
+              data-id="${esc(item.id)}">−</button>
 
-          <div style="flex:1">
+            <strong>${Number(item.quantity || 1)}</strong>
 
-            <strong>${esc(item.name)}</strong>
+            <button type="button"
+              data-action="plus"
+              data-id="${esc(item.id)}">+</button>
 
-            <div style="margin-top:4px">
-              ${money(price)}
-            </div>
-
-            <div
-              style="
-                display:flex;
-                align-items:center;
-                gap:8px;
-                margin-top:8px;
-              "
-            >
-
-              <button
-                type="button"
-                data-action="minus"
-                data-id="${esc(item.id)}"
-              >−</button>
-
-              <strong>${qty}</strong>
-
-              <button
-                type="button"
-                data-action="plus"
-                data-id="${esc(item.id)}"
-              >+</button>
-
-              <button
-                type="button"
-                data-action="delete"
-                data-id="${esc(item.id)}"
-              >
-                حذف
-              </button>
-
-            </div>
-
+            <button type="button"
+              class="remove"
+              data-action="delete"
+              data-id="${esc(item.id)}">حذف</button>
           </div>
-
         </div>
-      `;
-    }).join("");
+      </div>
+    `).join("");
 
     box.querySelectorAll("[data-action]").forEach(button => {
       button.addEventListener("click", () => {
         const id = button.dataset.id;
         const action = button.dataset.action;
 
-        if (action === "minus") {
-          changeQuantity(id, -1);
-        }
-
-        if (action === "plus") {
-          changeQuantity(id, 1);
-        }
-
-        if (action === "delete") {
-          removeFromCart(id);
-        }
+        if (action === "minus") changeQuantity(id,-1);
+        if (action === "plus") changeQuantity(id,1);
+        if (action === "delete") removeFromCart(id);
       });
     });
 
@@ -736,94 +360,66 @@
 
   function renderProducts(list) {
     const box = $("list");
-
     if (!box) return;
 
     if (!list.length) {
       box.innerHTML = `
-        <div style="
-          text-align:center;
-          padding:40px 15px;
-        ">
+        <div class="status">
           <h3>لا توجد منتجات</h3>
           <p>لم نجد منتجات مطابقة للبحث.</p>
         </div>
       `;
-
       return;
     }
 
     box.innerHTML = list.map(product => {
       const price = Number(product.price || 0);
-
       const oldPrice =
         product.old_price == null
           ? null
           : Number(product.old_price);
 
-      const image = imageOf(product);
-
       return `
-        <article
-          class="product-card"
-          data-id="${esc(product.id)}"
-        >
+        <article class="card" data-id="${esc(product.id)}">
 
-          <div class="product-image">
+          <div class="card-img">
             <img
-              src="${esc(image)}"
+              src="${esc(imageOf(product))}"
               alt="${esc(product.name || "منتج")}"
               loading="lazy"
               onerror="this.src='https://via.placeholder.com/500x500?text=Hayati'"
             >
           </div>
 
-          <div class="product-info">
+          <div class="card-body">
 
             <h3>${esc(product.name || "منتج")}</h3>
 
-            <p class="product-category">
+            <p>
               ${esc(product.category || "")}
             </p>
 
             ${
               product.description
-                ? `<p class="product-description">${esc(product.description)}</p>`
+                ? `<p>${esc(product.description)}</p>`
                 : ""
             }
 
-            <div class="prices">
+            <div class="price">
 
               ${
-                oldPrice &&
-                oldPrice > price
-                  ? `
-                    <span
-                      class="old-price"
-                      style="
-                        text-decoration:line-through;
-                        color:#777;
-                        margin-left:8px;
-                      "
-                    >
-                      ${money(oldPrice)}
-                    </span>
-                  `
+                oldPrice && oldPrice > price
+                  ? `<span class="old-price">${money(oldPrice)}</span>`
                   : ""
               }
 
-              <strong
-                class="current-price"
-                style="color:#d6336c"
-              >
-                ${money(price)}
-              </strong>
+              <strong>${money(price)}</strong>
 
             </div>
 
             <button
               type="button"
-              class="add-to-cart"
+              class="add"
               data-id="${esc(product.id)}"
             >
               أضيفي إلى السلة
@@ -835,17 +431,13 @@
       `;
     }).join("");
 
-    box.querySelectorAll(".add-to-cart").forEach(button => {
+    box.querySelectorAll(".add").forEach(button => {
       button.addEventListener("click", () => {
-        const id = button.dataset.id;
-
         const product = products.find(
-          p => String(p.id) === String(id)
+          p => String(p.id) === String(button.dataset.id)
         );
 
-        if (product) {
-          addToCart(product);
-        }
+        if (product) addToCart(product);
       });
     });
   }
@@ -856,9 +448,10 @@
     if (activeCategory) {
       const category = normalize(activeCategory);
 
-      result = result.filter(product => {
-        return normalize(product.category) === category;
-      });
+      result = result.filter(
+        product =>
+          normalize(product.category) === category
+      );
     }
 
     if (searchText) {
@@ -884,45 +477,24 @@
     const box = $("list");
 
     if (box) {
-      box.innerHTML = `
-        <div style="text-align:center;padding:30px">
-          جارٍ تحميل المنتجات...
-        </div>
-      `;
+      box.innerHTML =
+        '<div class="status">جارٍ تحميل المنتجات...</div>';
     }
 
-    if (!db) {
-      if (box) {
-        box.innerHTML = `
-          <div style="text-align:center;padding:30px">
-            تعذر الاتصال بقاعدة البيانات.
-          </div>
-        `;
-      }
-
-      return;
-    }
+    if (!db) return;
 
     try {
       const result = await db
         .from("products")
         .select("*")
-        .order("created_at", {
-          ascending: false
-        });
+        .order("created_at", { ascending:false });
 
       if (result.error) {
-        console.error(
-          "Products loading error:",
-          result.error
-        );
+        console.error(result.error);
 
         if (box) {
           box.innerHTML = `
-            <div style="
-              text-align:center;
-              padding:30px;
-            ">
+            <div class="status">
               <h3>تعذر تحميل المنتجات</h3>
               <p>${esc(result.error.message)}</p>
             </div>
@@ -936,22 +508,14 @@
         ? result.data
         : [];
 
-      /*
-        مهم:
-        لا نضع منتجات تجريبية إذا كانت قاعدة البيانات فارغة.
-      */
-
       filterProducts();
 
     } catch (error) {
       console.error(error);
 
       if (box) {
-        box.innerHTML = `
-          <div style="text-align:center;padding:30px">
-            حدث خطأ أثناء تحميل المنتجات.
-          </div>
-        `;
+        box.innerHTML =
+          '<div class="status">حدث خطأ أثناء تحميل المنتجات.</div>';
       }
     }
   }
@@ -962,7 +526,6 @@
 
   function setupWilayas() {
     const select = $("wilaya");
-
     if (!select) return;
 
     select.innerHTML =
@@ -970,10 +533,8 @@
 
     wilayas.forEach(name => {
       const option = document.createElement("option");
-
       option.value = name;
       option.textContent = name;
-
       select.appendChild(option);
     });
 
@@ -986,8 +547,15 @@
 
   function setupMunicipality(wilaya) {
     const select = $("municipality");
-
     if (!select) return;
+
+    /*
+      إذا كان municipality في index.html عبارة عن input
+      نحافظ عليه بدل أن نحاول إضافة options إليه.
+    */
+    if (select.tagName !== "SELECT") {
+      return;
+    }
 
     select.innerHTML =
       '<option value="">اختاري البلدية</option>';
@@ -999,14 +567,10 @@
 
     select.disabled = false;
 
-    const list = municipalities[wilaya] || [];
-
-    list.forEach(name => {
+    (municipalities[wilaya] || []).forEach(name => {
       const option = document.createElement("option");
-
       option.value = name;
       option.textContent = name;
-
       select.appendChild(option);
     });
   }
@@ -1017,11 +581,12 @@
 
   function openModal(id) {
     const modal = $(id);
-
     if (!modal) return;
 
     modal.hidden = false;
 
+    /* إصلاح أساسي مع CSS الحالي */
+    modal.setAttribute("aria-hidden","false");
     modal.classList.add("show");
 
     document.body.classList.add("modal-open");
@@ -1029,61 +594,53 @@
 
   function closeModal(id) {
     const modal = $(id);
-
     if (!modal) return;
 
     modal.hidden = true;
 
+    /* إصلاح أساسي مع CSS الحالي */
+    modal.setAttribute("aria-hidden","true");
     modal.classList.remove("show");
 
-    document.body.classList.remove("modal-open");
+    if (
+      $("cartModal")?.hidden !== false &&
+      $("checkoutModal")?.hidden !== false
+    ) {
+      document.body.classList.remove("modal-open");
+    }
   }
 
   function setupModals() {
-    const cartBtn = $("cartBtn");
+    $("cartBtn")?.addEventListener("click", () => {
+      renderCart();
+      openModal("cartModal");
+    });
 
-    if (cartBtn) {
-      cartBtn.addEventListener("click", () => {
-        renderCart();
-        openModal("cartModal");
-      });
-    }
+    $("closeCart")?.addEventListener("click", () => {
+      closeModal("cartModal");
+    });
 
-    const closeCart = $("closeCart");
+    $("closeCheckout")?.addEventListener("click", () => {
+      closeModal("checkoutModal");
+    });
 
-    if (closeCart) {
-      closeCart.addEventListener("click", () => {
-        closeModal("cartModal");
-      });
-    }
+    $("checkoutBtn")?.addEventListener("click", () => {
+      if (!cart.length) {
+        toast("السلة فارغة.");
+        return;
+      }
 
-    const closeCheckout = $("closeCheckout");
+      closeModal("cartModal");
+      openModal("checkoutModal");
+    });
 
-    if (closeCheckout) {
-      closeCheckout.addEventListener("click", () => {
-        closeModal("checkoutModal");
-      });
-    }
-
-    const checkoutBtn = $("checkoutBtn");
-
-    if (checkoutBtn) {
-      checkoutBtn.addEventListener("click", () => {
-
-        if (!cart.length) {
-          toast("السلة فارغة.");
-          return;
-        }
-
-        closeModal("cartModal");
-        openModal("checkoutModal");
-      });
-    }
-
-    ["cartModal", "checkoutModal"].forEach(id => {
+    ["cartModal","checkoutModal"].forEach(id => {
       const modal = $(id);
-
       if (!modal) return;
+
+      /* ضمان أن النوافذ مغلقة عند بداية الصفحة */
+      modal.setAttribute("aria-hidden","true");
+      modal.hidden = true;
 
       modal.addEventListener("click", event => {
         if (event.target === modal) {
@@ -1093,10 +650,10 @@
     });
 
     document.addEventListener("keydown", event => {
-      if (event.key !== "Escape") return;
-
-      closeModal("cartModal");
-      closeModal("checkoutModal");
+      if (event.key === "Escape") {
+        closeModal("cartModal");
+        closeModal("checkoutModal");
+      }
     });
   }
 
@@ -1106,23 +663,26 @@
 
   function setupOrderForm() {
     const form = $("orderForm");
-
     if (!form) return;
 
     form.addEventListener("submit", async event => {
       event.preventDefault();
 
       const msg = $("orderMsg");
+      const submitButton =
+        form.querySelector('button[type="submit"]');
+
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
 
       if (msg) {
         msg.textContent = "جارٍ إرسال الطلب...";
       }
 
       if (!cart.length) {
-        if (msg) {
-          msg.textContent = "السلة فارغة ❌";
-        }
-
+        if (msg) msg.textContent = "السلة فارغة ❌";
+        if (submitButton) submitButton.disabled = false;
         return;
       }
 
@@ -1132,51 +692,44 @@
             "تعذر الاتصال بقاعدة البيانات ❌";
         }
 
+        if (submitButton) submitButton.disabled = false;
         return;
       }
 
-      const customerName =
-        form.elements["customer_name"]?.value.trim() ||
-        $("customer_name")?.value.trim() ||
-        "";
+      const getValue = name => {
+        const field = form.elements[name];
+        return field
+          ? String(field.value || "").trim()
+          : "";
+      };
 
-      const phone =
-        form.elements["phone"]?.value.trim() ||
-        $("phone")?.value.trim() ||
-        "";
-
-      const wilaya =
-        form.elements["wilaya"]?.value.trim() ||
-        $("wilaya")?.value.trim() ||
-        "";
-
-      const municipality =
-        form.elements["municipality"]?.value.trim() ||
-        $("municipality")?.value.trim() ||
-        "";
-
-      const pickup =
-        form.elements["pickup_point"]?.value.trim() ||
-        $("pickup_point")?.value.trim() ||
-        "";
+      const customerName = getValue("customer_name");
+      const phone = getValue("phone");
+      const wilaya = getValue("wilaya");
+      const municipality = getValue("municipality");
+      const pickup = getValue("pickup_point");
 
       if (!customerName) {
         if (msg) msg.textContent = "أدخلي الاسم واللقب ❌";
+        if (submitButton) submitButton.disabled = false;
         return;
       }
 
       if (!phone) {
         if (msg) msg.textContent = "أدخلي رقم الهاتف ❌";
+        if (submitButton) submitButton.disabled = false;
         return;
       }
 
       if (!wilaya) {
         if (msg) msg.textContent = "اختاري الولاية ❌";
+        if (submitButton) submitButton.disabled = false;
         return;
       }
 
       if (!municipality) {
         if (msg) msg.textContent = "اختاري البلدية ❌";
+        if (submitButton) submitButton.disabled = false;
         return;
       }
 
@@ -1186,13 +739,9 @@
             "أدخلي نقطة الاستلام أو العنوان ❌";
         }
 
+        if (submitButton) submitButton.disabled = false;
         return;
       }
-
-      /*
-        نخزن داخل الطلب نسخة من المنتجات
-        حتى تبقى تفاصيل الطلب موجودة.
-      */
 
       const items = cart.map(item => ({
         id: item.id,
@@ -1207,16 +756,14 @@
         image: item.image || ""
       }));
 
-      const total = cartTotal();
-
       const order = {
         customer_name: customerName,
-        phone: phone,
-        wilaya: wilaya,
-        municipality: municipality,
+        phone,
+        wilaya,
+        municipality,
         pickup_point: pickup,
-        items: items,
-        total: total,
+        items,
+        total: cartTotal(),
         status: "pending"
       };
 
@@ -1231,7 +778,7 @@
             result.error
           );
 
-          const realError =
+          const errorText =
             result.error.message ||
             result.error.details ||
             result.error.hint ||
@@ -1241,11 +788,11 @@
           if (msg) {
             msg.innerHTML = `
               <strong>لم يتم إرسال الطلب ❌</strong>
-              <br>
-              ${esc(realError)}
+              <br>${esc(errorText)}
             `;
           }
 
+          if (submitButton) submitButton.disabled = false;
           return;
         }
 
@@ -1257,25 +804,24 @@
         cart = [];
         saveCart();
         renderCart();
-
         form.reset();
 
         setupMunicipality("");
 
         setTimeout(() => {
           closeModal("checkoutModal");
-        }, 2500);
+          if (submitButton) submitButton.disabled = false;
+        },2500);
 
       } catch (error) {
-        console.error(
-          "Unexpected order error:",
-          error
-        );
+        console.error(error);
 
         if (msg) {
           msg.textContent =
             "حدث خطأ غير متوقع أثناء إرسال الطلب ❌";
         }
+
+        if (submitButton) submitButton.disabled = false;
       }
     });
   }
@@ -1286,7 +832,6 @@
 
   function setupSearch() {
     const input = $("search");
-
     if (!input) return;
 
     input.addEventListener("input", () => {
@@ -1296,54 +841,69 @@
   }
 
   /* =========================================================
-     الأقسام
+     التصنيفات
      ========================================================= */
 
   function setupCategories() {
-    const possibleButtons = document.querySelectorAll(
-      "[data-category]"
-    );
 
-    possibleButtons.forEach(button => {
+    /*
+      يدعم الاثنين:
+      data-cat
+      data-category
+    */
+
+    const buttons =
+      document.querySelectorAll(
+        "[data-cat], [data-category]"
+      );
+
+    buttons.forEach(button => {
+
       button.addEventListener("click", () => {
 
         const category =
-          button.dataset.category || "";
+          button.dataset.category ||
+          button.dataset.cat ||
+          "";
 
         activeCategory = category;
 
         filterProducts();
 
         document
-          .querySelectorAll("[data-category]")
+          .querySelectorAll("[data-cat], [data-category]")
           .forEach(item => {
             item.classList.remove("active");
           });
 
         button.classList.add("active");
 
-        const productsSection = $("products");
-
-        if (productsSection) {
-          productsSection.scrollIntoView({
-            behavior: "smooth"
-          });
-        }
+        $("products")?.scrollIntoView({
+          behavior:"smooth"
+        });
       });
+
     });
   }
 
   /* =========================================================
-     أزرار القسم بطريقة إضافية للتوافق
+     توافق إضافي مع أزرار الأقسام
      ========================================================= */
 
   function setupCategoryTextButtons() {
-    const buttons = document.querySelectorAll(
-      ".category-btn, .category-card, .category-item"
-    );
+    const buttons =
+      document.querySelectorAll(
+        ".category-btn,.category-card,.category-item"
+      );
 
     buttons.forEach(button => {
-      if (button.dataset.category) return;
+
+      if (
+        button.dataset.category ||
+        button.dataset.cat
+      ) {
+        return;
+      }
 
       const text = normalize(button.textContent);
 
@@ -1358,7 +918,10 @@
         text.includes("مكياج")
       ) {
         category = "مواد التجميل";
-      } else if (text.includes("احذيه")) {
+      } else if (
+        text.includes("احذيه") ||
+        text.includes("أحذيه")
+      ) {
         category = "أحذية";
       }
 
@@ -1368,37 +931,10 @@
         activeCategory = category;
         filterProducts();
 
-        const productsSection = $("products");
-
-        if (productsSection) {
-          productsSection.scrollIntoView({
-            behavior: "smooth"
-          });
-        }
+        $("products")?.scrollIntoView({
+          behavior:"smooth"
+        });
       });
-    });
-  }
-
-  /* =========================================================
-     حماية بسيطة من ضغط زر الطلب بسرعة
-     ========================================================= */
-
-  function preventDoubleSubmit() {
-    const form = $("orderForm");
-
-    if (!form) return;
-
-    form.addEventListener("submit", () => {
-      const button =
-        form.querySelector(
-          'button[type="submit"], button:not([type])'
-        );
-
-      if (!button) return;
-
-      setTimeout(() => {
-        button.disabled = false;
-      }, 3000);
     });
   }
 
@@ -1419,19 +955,14 @@
     setupCategories();
     setupCategoryTextButtons();
     setupWilayas();
-    preventDoubleSubmit();
 
     const connected = connectSupabase();
 
-    if (!connected) {
-      return;
-    }
+    if (!connected) return;
 
     await loadProducts();
 
-    console.log(
-      "Hayati Store ready."
-    );
+    console.log("Hayati Store ready.");
   }
 
   if (document.readyState === "loading") {
