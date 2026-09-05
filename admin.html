@@ -1,282 +1,249 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>حياتي - لوحة المدير</title>
-
-  <link rel="stylesheet" href="admin.css">
-
-  <script src="config.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-
-<body>
-
-<div class="wrap">
-
-  <header>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>حياتي - لوحة المدير</title>  <link rel="stylesheet" href="admin.css">  <script src="config.js"></script>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><div class="wrap">  <header>
     <div>
       <b>حياتي Hayati</b>
-    </div>
+    </div><button id="logoutBtn" style="display:none;">
+  خروج
+</button>
 
-    <button id="logoutBtn" style="display:none;">
-      خروج
+  </header>  <!-- تسجيل الدخول -->  <section id="login"><h1>قويتا زعوفتي</h1>
+<p>المديرة</p>
+
+<form id="loginForm">
+
+  <label for="email">
+    البريد الإلكتروني
+  </label>
+
+  <input
+    id="email"
+    type="email"
+    placeholder="أدخل البريد الإلكتروني"
+    required
+  >
+
+  <label for="password">
+    كلمة المرور
+  </label>
+
+  <div class="password-wrap">
+
+    <input
+      id="password"
+      type="password"
+      placeholder="أدخل كلمة المرور"
+      required
+    >
+
+    <button
+      type="button"
+      id="password-toggle"
+      class="password-toggle"
+      onclick="togglePassword()"
+      aria-label="إظهار كلمة المرور"
+    >
+      👁️
     </button>
-  </header>
 
-  <!-- تسجيل الدخول -->
-  <section id="login">
+  </div>
 
-    <h1>قويتا زعوفتي</h1>
-    <p>المديرة</p>
+  <button type="submit">
+    دخول
+  </button>
 
-    <form id="loginForm">
+  <p id="loginMsg"></p>
 
-      <label for="email">
-        البريد الإلكتروني
-      </label>
+</form>
 
-      <input
-        id="email"
-        type="email"
-        placeholder="أدخل البريد الإلكتروني"
-        required
-      >
+  </section>  <!-- لوحة المدير -->  <section id="panel" style="display:none;"><div class="tabs">
 
-      <label for="password">
-        كلمة المرور
-      </label>
+  <button id="ordersTab">
+    الطلبات
+  </button>
 
-      <div class="password-wrap">
+  <button id="productsTab">
+    المنتجات
+  </button>
 
-        <input
-          id="password"
-          type="password"
-          placeholder="أدخل كلمة المرور"
-          required
-        >
-
-        <button
-          type="button"
-          id="password-toggle"
-          class="password-toggle"
-          onclick="togglePassword()"
-          aria-label="إظهار كلمة المرور"
-        >
-          👁️
-        </button>
-
-      </div>
-
-      <button type="submit">
-        دخول
-      </button>
-
-      <p id="loginMsg"></p>
-
-    </form>
-
-  </section>
-
-
-  <!-- لوحة المدير -->
-  <section id="panel" style="display:none;">
-
-    <div class="tabs">
-
-      <button id="ordersTab">
-        الطلبات
-      </button>
-
-      <button id="productsTab">
-        المنتجات
-      </button>
-
-      <button id="siteTab">
-        إعدادات الموقع
-      </button>
-
-    </div>
-
-
-    <!-- الطلبات -->
-    <section id="orders">
-
-      <h2>طلبات الزبائن</h2>
-
-      <div id="ordersList">
-        جاري تحميل الطلبات...
-      </div>
-
-    </section>
-
-
-    <!-- المنتجات -->
-    <section id="products" style="display:none;">
-
-      <h2>إدارة المنتجات</h2>
-
-      <form id="productForm">
-
-        <input
-          id="pid"
-          type="hidden"
-        >
-
-        <label>
-          اسم المنتج
-        </label>
-
-        <input
-          id="pname"
-          type="text"
-          placeholder="اسم المنتج"
-          required
-        >
-
-        <label>
-          القسم
-        </label>
-
-        <select id="pcat" required>
-          <option value="">اختر القسم</option>
-          <option value="ملابس">ملابس نسائية</option>
-          <option value="عطور">عطور</option>
-          <option value="تجميل">مواد التجميل</option>
-          <option value="أحذية">أحذية</option>
-        </select>
-
-        <label>
-          السعر
-        </label>
-
-        <input
-          id="pprice"
-          type="number"
-          min="0"
-          placeholder="السعر"
-          required
-        >
-
-        <label>
-          السعر القديم
-        </label>
-
-        <input
-          id="pold"
-          type="number"
-          min="0"
-          placeholder="السعر القديم"
-        >
-
-        <label>
-          المخزون
-        </label>
-
-        <input
-          id="pstock"
-          type="number"
-          min="0"
-          placeholder="الكمية المتوفرة"
-        >
-
-        <label>
-          صورة المنتج
-        </label>
-
-        <input
-          id="pimageFile"
-          type="file"
-          accept="image/*"
-          class="image-upload"
-        >
-
-        <img
-          id="productPreview"
-          class="preview"
-          style="display:none;"
-          alt="معاينة الصورة"
-        >
-
-        <input
-          id="pimage"
-          type="hidden"
-        >
-
-        <label>
-          وصف المنتج
-        </label>
-
-        <textarea
-          id="pdesc"
-          placeholder="وصف المنتج"
-        ></textarea>
-
-        <button type="submit">
-          حفظ المنتج
-        </button>
-
-        <button
-          type="button"
-          id="cancelEdit"
-          style="display:none;"
-        >
-          إلغاء التعديل
-        </button>
-
-      </form>
-
-      <div id="productList">
-        جاري تحميل المنتجات...
-      </div>
-
-    </section>
-
-
-    <!-- إعدادات الموقع -->
-    <section id="site" style="display:none;">
-
-      <h2>إعدادات الموقع</h2>
-
-      <form id="logoForm">
-
-        <label>
-          شعار المتجر
-        </label>
-
-        <input
-          id="logoFile"
-          type="file"
-          accept="image/*"
-          class="image-upload"
-        >
-
-        <img
-          id="logoPreview"
-          class="preview"
-          style="display:none;"
-          alt="معاينة الشعار"
-        >
-
-        <button type="submit">
-          حفظ الشعار
-        </button>
-
-        <p id="logoMsg"></p>
-
-      </form>
-
-    </section>
-
-  </section>
+  <button id="siteTab">
+    إعدادات الموقع
+  </button>
 
 </div>
 
 
-<script>
+<!-- الطلبات -->
+<section id="orders">
+
+  <h2>طلبات الزبائن</h2>
+
+  <div id="ordersList">
+    جاري تحميل الطلبات...
+  </div>
+
+</section>
+
+
+<!-- المنتجات -->
+<section id="products" style="display:none;">
+
+  <h2>إدارة المنتجات</h2>
+
+  <form id="productForm">
+
+    <input
+      id="pid"
+      type="hidden"
+    >
+
+    <label for="pname">
+      اسم المنتج
+    </label>
+
+    <input
+      id="pname"
+      type="text"
+      placeholder="اسم المنتج"
+      required
+    >
+
+    <label for="pcat">
+      القسم
+    </label>
+
+    <select id="pcat" required>
+      <option value="">اختر القسم</option>
+      <option value="ملابس">ملابس نسائية</option>
+      <option value="عطور">عطور</option>
+      <option value="تجميل">مواد التجميل</option>
+      <option value="أحذية">أحذية</option>
+    </select>
+
+    <label for="pprice">
+      السعر الحالي
+    </label>
+
+    <input
+      id="pprice"
+      type="number"
+      min="0"
+      placeholder="السعر الحالي"
+      required
+    >
+
+    <label for="pold">
+      السعر القديم
+    </label>
+
+    <input
+      id="pold"
+      type="number"
+      min="0"
+      placeholder="السعر القديم"
+    >
+
+    <label for="pstock">
+      المخزون
+    </label>
+
+    <input
+      id="pstock"
+      type="number"
+      min="0"
+      placeholder="الكمية المتوفرة"
+    >
+
+    <label for="pimageFile">
+      صورة المنتج
+    </label>
+
+    <input
+      id="pimageFile"
+      type="file"
+      accept="image/*"
+      class="image-upload"
+    >
+
+    <img
+      id="productPreview"
+      class="preview"
+      style="display:none;"
+      alt="معاينة صورة المنتج"
+    >
+
+    <input
+      id="pimage"
+      type="hidden"
+    >
+
+    <label for="pdesc">
+      وصف المنتج
+    </label>
+
+    <textarea
+      id="pdesc"
+      placeholder="وصف المنتج"
+    ></textarea>
+
+    <button type="submit">
+      حفظ المنتج
+    </button>
+
+    <button
+      type="button"
+      id="cancelEdit"
+      style="display:none;"
+    >
+      إلغاء التعديل
+    </button>
+
+  </form>
+
+  <div id="productList">
+    جاري تحميل المنتجات...
+  </div>
+
+</section>
+
+
+<!-- إعدادات الموقع -->
+<section id="site" style="display:none;">
+
+  <h2>إعدادات الموقع</h2>
+
+  <form id="logoForm">
+
+    <label for="logoFile">
+      شعار المتجر
+    </label>
+
+    <input
+      id="logoFile"
+      type="file"
+      accept="image/*"
+      class="image-upload"
+    >
+
+    <img
+      id="logoPreview"
+      class="preview"
+      style="display:none;"
+      alt="معاينة الشعار"
+    >
+
+    <button type="submit">
+      حفظ الشعار
+    </button>
+
+    <p id="logoMsg"></p>
+
+  </form>
+
+</section>
+
+  </section></div><script>
 
 function togglePassword(){
 
@@ -305,10 +272,5 @@ function togglePassword(){
 
 }
 
-</script>
-
-
-<script src="admin.js?v=4"></script>
-
-</body>
+</script><script src="admin.js?v=5"></script></body>
 </html>
